@@ -1,0 +1,49 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "21.1.2"
+
+    defaultConfig {
+        applicationId "nd.rw.cassetteui"
+        minSdkVersion 23
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    /*
+    below packagingOptions solves following error:
+    Error:Execution failed for task ':app:transformResourcesWithMergeJavaResForDebug'.
+    > com.android.build.api.transform.TransformException: com.android.builder.packaging.DuplicateFileException: Duplicate files copied in APK META-INF/services/javax.annotation.processing.Processor
+  	File1: /Users/andrew/.gradle/caches/modules-2/files-2.1/com.google.dagger/dagger-compiler/2.0/2c5c7cfd604076f09eac6fd0783b3eebbc125732/dagger-compiler-2.0.jar
+  	File2: /Users/andrew/.gradle/caches/modules-2/files-2.1/com.jakewharton/butterknife/7.0.1/d5d13ea991eab0252e3710e5df3d6a9d4b21d461/butterknife-7.0.1.jar
+     */
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+}
+
+apply plugin: 'com.neenbedankt.android-apt'
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    testCompile 'junit:junit:4.12'
+
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:design:23.1.1'
+    compile 'com.android.support:recyclerview-v7:23.1.1'
+    compile 'com.android.support:cardview-v7:23.1.1'
+
+    compile 'com.google.dagger:dagger:2.0'
+    compile 'com.google.dagger:dagger-compiler:2.0'
+    compile 'com.jakewharton:butterknife:7.0.1'
+
+    compile 'org.glassfish:javax.annotation:10.0-b28'
+}

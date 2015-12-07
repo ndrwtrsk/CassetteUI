@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_margin"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view_cassette"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:contentPadding="5dp">
+
+
+        <RelativeLayout
+            android:id="@+id/card_view_cassette_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/card_view_cassette_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:text="title"
+                    android:textColor="@color/primary_text"
+                    android:textSize="@dimen/cassette_card_view_title_text_size"/>
+
+                <TextView
+                    android:id="@+id/card_view_cassette_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/card_view_cassette_title"
+                    android:text="desc"
+                    android:textSize="@dimen/cassette_card_view_description_text_size"
+                    android:textColor="@color/secondary_text"/>
+
+                <TableLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_alignParentEnd="true">
+
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/card_view_cassette_no_of_recordings"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="noRec"
+                            android:textSize="@dimen/cassette_card_view_additional_text_size"
+                            android:textColor="@color/secondary_text"
+                            android:textAlignment="textEnd"
+                            />
+                    </TableRow>
+
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/card_view_cassette_duration"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="dura"
+                            android:textSize="@dimen/cassette_card_view_additional_text_size"
+                            android:textAlignment="textEnd"/>
+                    </TableRow>
+
+                </TableLayout>
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+    
+</RelativeLayout>
