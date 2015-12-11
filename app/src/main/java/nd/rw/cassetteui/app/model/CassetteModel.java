@@ -1,11 +1,14 @@
 package nd.rw.cassetteui.app.model;
 
+import android.util.Log;
+
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
 public class CassetteModel {
 
+    private static final String TAG = "CAS_MOD";
     int id;
     String title;
     String description;
@@ -63,9 +66,11 @@ public class CassetteModel {
         for (int i = 1; i <= numberOfCassettes; i++) {
             CassetteModel cassette = new CassetteModel(i, "Cassette #" + i, "Lorem ipsum good stuff", new GregorianCalendar(), recordingsPerCassette);
             RecordingModel.populateCassetteWithRecordings(cassette, currentStartingIndexOfNewRecordings, recordingsPerCassette - 1);
+            resultList.add(cassette);
             currentStartingIndexOfNewRecordings += recordingsPerCassette;
         }
 
+        Log.d(TAG, "getListOfCassettes: number of cassettes:" + resultList.size());
         return resultList;
     }
 

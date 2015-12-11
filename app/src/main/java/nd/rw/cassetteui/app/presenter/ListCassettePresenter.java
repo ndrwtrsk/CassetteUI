@@ -8,6 +8,7 @@ import nd.rw.cassetteui.app.view.ListCassettesView;
 import nd.rw.cassetteui.domain.usecase.ListCassettesUseCase;
 
 public class ListCassettePresenter implements Presenter{
+    private static final String TAG = "LI_CAS_PRE";
 
     //region Field
 
@@ -16,6 +17,13 @@ public class ListCassettePresenter implements Presenter{
     private ListCassettesView view;
 
     //endregion Field
+
+    public ListCassettePresenter(ListCassettesView view) {
+        this.view = view;
+    }
+
+    public ListCassettePresenter() {
+    }
 
     //region Methods
 
@@ -28,7 +36,11 @@ public class ListCassettePresenter implements Presenter{
 
     public void initialize(){
         List<CassetteModel> list = this.useCase.getCassettes();
-        view.renderCassetteList(list);
+        this.view.renderCassetteList(list);
+    }
+
+    public void onCassetteClicked(CassetteModel cassetteModel){
+        this.view.viewCassette(cassetteModel);
     }
 
     //endregion Methods

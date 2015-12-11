@@ -17,12 +17,9 @@ public class BaseFragment extends Fragment {
         this.setRetainInstance(true);
     }
 
-    /**
-     * Gets a component for dependency injection by its type.
-     */
     @SuppressWarnings("unchecked")
     protected <C> C getComponent(Class<C> componentType) {
-        C component = ((HasComponent<C>) getActivity()).getComponent();
+        C component = ((HasComponent<C>) this.getActivity()).getComponent();
 
         if (component == null) {
         }

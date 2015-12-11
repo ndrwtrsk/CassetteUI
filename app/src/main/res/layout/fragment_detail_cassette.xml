@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_detail_cassette_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+    android:layout_marginStart="@dimen/activity_horizontal_margin">
+
+    <View
+        android:id="@+id/focus_thief"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
+    <EditText
+        android:id="@+id/card_view_and_details_cassette_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:textColor="@color/primary_text"
+        android:textSize="@dimen/font_great"
+        android:transitionName="@string/cassette_card_view_to_details_transition"
+        android:background="@android:color/transparent"
+        />
+
+    <EditText
+        android:id="@+id/cassette_details_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/card_view_and_details_cassette_title"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:textColor="@color/secondary_text"
+        android:textSize="@dimen/font_normal"
+        android:text="@string/samuel_l_ipsum_placeholder"
+        android:background="@android:color/transparent"/>
+
+    <TextView
+        android:id="@+id/cassette_details_recorded_on_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cassette_details_description"
+        android:layout_marginTop="@dimen/spacing_tiny"
+        android:text="Recorded on " />
+
+    <TextView
+        android:id="@+id/cassette_details_creation_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cassette_details_description"
+        android:layout_marginTop="@dimen/spacing_tiny"
+        android:layout_toRightOf="@id/cassette_details_recorded_on_label"
+        android:text="@string/recorded_on_placeholder" />
+
+    <TextView
+        android:id="@+id/cassette_details_no_of_recordings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cassette_details_creation_date"
+        android:layout_marginTop="@dimen/spacing_tiny"
+        android:text="@string/number_of_recordings_placeholder" />
+
+    <Button
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/cassette_details_no_of_recordings"
+        android:layout_marginTop="@dimen/spacing_large"
+        android:text="Play all"
+        android:textColor="@color/primary_text_material_light"
+        android:background="@color/accent"
+        android:foreground="?android:attr/selectableItemBackground"
+        />
+
+</RelativeLayout>

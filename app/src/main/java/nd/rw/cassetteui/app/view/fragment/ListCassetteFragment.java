@@ -2,7 +2,11 @@ package nd.rw.cassetteui.app.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,57 +14,65 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.inject.Inject;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import nd.rw.cassetteui.R;
-import nd.rw.cassetteui.app.di.components.CassetteComponent;
+import nd.rw.cassetteui.app.listeners.OnCassetteClickedHandler;
 import nd.rw.cassetteui.app.model.CassetteModel;
 import nd.rw.cassetteui.app.presenter.ListCassettePresenter;
 import nd.rw.cassetteui.app.view.ListCassettesView;
 import nd.rw.cassetteui.app.view.adapter.CassetteLayoutManager;
-import nd.rw.cassetteui.app.view.adapter.CassettesAdapter;
+import nd.rw.cassetteui.app.view.adapter.CassettesCardViewAdapter;
 
-public class ListCassetteFragment extends BaseFragment implements ListCassettesView{
+public class ListCassetteFragment
+        extends BaseFragment
+        implements ListCassettesView{
 
     //region Fields
 
+    public static final String TAG = "LI_CAS_FRAG";
+
     @Bind(R.id.rv_cassettes)
-    private RecyclerView rv_cassettes;
+    public RecyclerView rv_cassettes;
 
-    @Inject
-    private ListCassettePresenter presenter;
+    @Bind(R.id.layout_cassettes)
+    public CoordinatorLayout cl_layout;
 
-    private CassettesAdapter cassettesAdapter;
+    @Bind(R.id.fab_addCassette)
+    public FloatingActionButton fab_addCassette;
+
+    public ListCassettePresenter presenter;
+
+    private CassettesCardViewAdapter cassettesAdapter;
 
     private CassetteLayoutManager layoutManager;
+
+    private OnCassetteClickedHandler onCassetteClickedHandler;
 
 
     //endregion Fields
 
     //region Constructor
 
-    @Inject
     public ListCassetteFragment(){
+
     }
 
     //endregion Constructor
 
     //region Private Methods
 
-    private void initialize(){
-        CassetteComponent component = this.getComponent(CassetteComponent.class);
-        if (component != null) {
-            component.inject(this);
-        }
-        this.presenter.setView(this);
-    }
-
     private void setupUI(){
         this.layoutManager = new CassetteLayoutManager(this.getContext());
         this.rv_cassettes.setLayoutManager(layoutManager);
-        this.cassettesAdapter = new CassettesAdapter(new ArrayList<CassetteModel>());
+        this.cassettesAdapter = new CassettesCardViewAdapter(new ArrayList<CassetteModel>(), onCassetteClickedHandler);
+        this.rv_cassettes.setAdapter(cassettesAdapter);
+        this.fab_addCassette.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(cl_layout, "Fab clicked!", Snackbar.LENGTH_LONG).show();
+            }
+        });
     }
 
     //endregion Private Methods
@@ -69,6 +81,7 @@ public class ListCassetteFragment extends BaseFragment implements ListCassettesV
 
     @Override
     public void renderCassetteList(Collection<CassetteModel> cassetteModelCollection) {
+        Log.d(TAG, "renderCassetteList");
         if (cassetteModelCollection == null) {
             throw new RuntimeException("Cassette model collection should not be null.");
         }
@@ -77,6 +90,15 @@ public class ListCassetteFragment extends BaseFragment implements ListCassettesV
 
     @Override
     public void viewCassette(CassetteModel cassetteModel) {
+    }
+
+    @Override
+    public void setOnCassetteClicked(OnCassetteClickedHandler onCassetteClickedHandler) {
+        this.onCassetteClickedHandler = onCassetteClickedHandler;
+    }
+
+    @Override
+    public void addCassette() {
 
     }
 
@@ -113,10 +135,10 @@ public class ListCassetteFragment extends BaseFragment implements ListCassettesV
 
     //region Fragment overridden methods
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_section_cassettes, container, false);
         ButterKnife.bind(this, view);
         this.setupUI();
@@ -125,18 +147,24 @@ public class ListCassetteFragment extends BaseFragment implements ListCassettesV
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        Log.d(TAG, "OnActivityCreated");
         super.onActivityCreated(savedInstanceState);
-        this.initialize();
+
+        //  why exactly is presenter instantiated here?
+        //  could it be done elsewhere?
+        this.presenter = new ListCassettePresenter(this);
         this.presenter.initialize();
     }
 
-
     //endregion Fragment overridden methods
+
+    //region Listeners and Events
+
+    //endregion Listeners and Events
 
     //region Static Methods
 
     public static ListCassetteFragment newInstance() {
-
         Bundle args = new Bundle();
 
         ListCassetteFragment fragment = new ListCassetteFragment();

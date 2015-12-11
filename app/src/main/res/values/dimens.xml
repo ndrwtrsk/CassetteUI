@@ -5,9 +5,37 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
 
+    <!-- Cassette Card View dimensions-->
 
     <dimen name="cassette_card_view_title_text_size">25sp</dimen>
     <dimen name="cassette_card_view_description_text_size">15sp</dimen>
     <dimen name="cassette_card_view_additional_text_size">15sp</dimen>
+
+    <!-- Cassette Details dimensions-->
+
+    <dimen name="cassette_details_title_size">40sp</dimen>
+    <dimen name="cassette_details_text_margin_top_bottom">5sp</dimen>
+
+
+    <!-- font sizes -->
+    <dimen name="font_great">40sp</dimen>
+    <dimen name="font_huge">32sp</dimen>
+    <dimen name="font_larger">22sp</dimen>
+    <dimen name="font_large">18sp</dimen>
+    <dimen name="font_normal">15sp</dimen>
+    <dimen name="font_small">12sp</dimen>
+
+    <!-- typical spacing between two views -->
+    <dimen name="spacing_huge">40dp</dimen>
+    <dimen name="spacing_large">24dp</dimen>
+    <dimen name="spacing_normal">14dp</dimen>
+    <dimen name="spacing_small">10dp</dimen>
+    <dimen name="spacing_tiny">4dp</dimen>
+
+    <!-- typical sizes of views -->
+    <dimen name="button_height_tall">60dp</dimen>
+    <dimen name="button_height_normal">40dp</dimen>
+    <dimen name="button_height_short">32dp</dimen>
+
 
 </resources>

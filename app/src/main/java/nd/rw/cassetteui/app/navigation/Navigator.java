@@ -1,43 +1,34 @@
 package nd.rw.cassetteui.app.navigation;
 
+import android.content.Context;
+import android.content.Intent;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import nd.rw.cassetteui.app.view.activity.DetailCassetteActivity;
 
 /**
  * Application-wide Navigator which provides means of starting activities.
  */
-@Singleton
 public class Navigator {
 
-    @Inject
     public void Navigator() {
         //empty
     }
 
-    /*
-    *//**
-     * Navigates to the Cassette list from the provided Context.
-     *//*
-    public void navigateToCassetteList(Context context) {
-        if (context == null) {
-            return;
-        }
-        Intent intent = L.getCallingIntent(context);
-        context.startActivity(intent);
-    }
-
-    *//**
+    /**
      * Navigates to the details of the Cassette of specified identifier from the provided Context.
-     *//*
-    public void navigateToCassetteDetails(Context context, long cassetteId) {
+     */
+    public static void navigateToCassetteDetails(Context context, int cassetteId) {
         if (context == null) {
             return;
         }
 
-        Intent intent = CassetteDetailActivity.getCallingIntent(context, cassetteId);
+        Intent intent = DetailCassetteActivity.getCallingIntent(context, cassetteId);
         context.startActivity(intent);
     }
-    */
+
 
 }
 

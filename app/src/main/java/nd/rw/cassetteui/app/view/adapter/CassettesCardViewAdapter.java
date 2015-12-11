@@ -1,8 +1,10 @@
 package nd.rw.cassetteui.app.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import java.util.Collection;
@@ -11,31 +13,43 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import nd.rw.cassetteui.R;
+import nd.rw.cassetteui.app.listeners.OnCassetteClickedHandler;
 import nd.rw.cassetteui.app.model.CassetteModel;
 
-public class CassettesAdapter extends RecyclerView.Adapter<CassettesAdapter.CassetteViewHolder>{
+public class CassettesCardViewAdapter extends RecyclerView.Adapter<CassettesCardViewAdapter.CassetteViewHolder>{
+
+    private static final String TAG = "CAS_ADAPT";
 
     //region Fields
 
     private List<CassetteModel> cassetteModelList;
 
+    private OnCassetteClickedHandler onCassetteClickedHandler;
+
     //endregion Fields
 
-    public CassettesAdapter(List<CassetteModel> cassetteModelList) {
+    public CassettesCardViewAdapter(List<CassetteModel> cassetteModelList,
+                                    OnCassetteClickedHandler onCassetteClickedHandler) {
         this.cassetteModelList = cassetteModelList;
+        this.onCassetteClickedHandler = onCassetteClickedHandler;
     }
 
+    //region Methods
+
     public void setCassetteModelList(Collection<CassetteModel> cassetteModelList) {
+//        Log.d(TAG, "setCassetteModelList");
         this.cassetteModelList = (List<CassetteModel>) cassetteModelList;
     }
 
+    //endregion Methods
 
     //region RecyclerView implemented methods
 
     @Override
     public CassetteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = View.inflate(parent.getContext(), R.layout.card_view_cassette, parent);
-
+        View view =
+                LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.card_view_cassette, parent, false);
         return new CassetteViewHolder(view);
     }
 
@@ -43,10 +57,12 @@ public class CassettesAdapter extends RecyclerView.Adapter<CassettesAdapter.Cass
     public void onBindViewHolder(CassetteViewHolder holder, int position) {
         CassetteModel cassetteAtPosition = this.cassetteModelList.get(position);
         holder.fill(cassetteAtPosition);
+        holder.bindListener(cassetteAtPosition, onCassetteClickedHandler);
     }
 
     @Override
     public int getItemCount() {
+//        Log.d(TAG, "count: " + this.cassetteModelList.size());
         return this.cassetteModelList.size();
     }
 
@@ -58,7 +74,7 @@ public class CassettesAdapter extends RecyclerView.Adapter<CassettesAdapter.Cass
 
         //region Fields
 
-        @Bind(R.id.card_view_cassette_title)
+        @Bind(R.id.card_view_and_details_cassette_title)
         public TextView tv_title;
 
         @Bind(R.id.card_view_cassette_description)
@@ -81,10 +97,22 @@ public class CassettesAdapter extends RecyclerView.Adapter<CassettesAdapter.Cass
             if (cassetteModel == null) {
                 return;
             }
+            //  ALWAYS always use Integer.toString(...) when working with integers.
+            //  If you try to set integer as text, you call method setText(int resID)
+            //  and application try to set as text some string resource with this resID.
             this.tv_title.setText(cassetteModel.getTitle());
             this.tv_description.setText(cassetteModel.getDescription());
-            this.tv_numberOfRecordings.setText(cassetteModel.getNumberOfRecordings());
-            this.tv_totalDuration.setText(cassetteModel.getTotalDuration());
+            this.tv_numberOfRecordings.setText(Integer.toString(cassetteModel.getNumberOfRecordings()));
+            this.tv_totalDuration.setText(Integer.toString(cassetteModel.getTotalDuration()));
+        }
+
+        public void bindListener(final CassetteModel cassette, final OnCassetteClickedHandler handler){
+            this.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    handler.onCassetteClicked(cassette, CassetteViewHolder.this.tv_title);
+                }
+            });
         }
     }
 

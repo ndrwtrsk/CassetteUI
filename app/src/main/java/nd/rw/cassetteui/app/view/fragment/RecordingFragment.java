@@ -8,6 +8,7 @@ import android.os.Vibrator;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -52,6 +53,13 @@ public class RecordingFragment extends Fragment {
     //endregion Fields
 
     //region Fragment overridden methods
+
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Log.d(TAG, "OnActivityCreated called.");
+    }
 
     @Nullable
     @Override
