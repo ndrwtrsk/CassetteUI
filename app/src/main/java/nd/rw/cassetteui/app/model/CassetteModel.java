@@ -81,6 +81,13 @@ public class CassetteModel {
         return resultList;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "CassetteModel{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", numberOfRecordings=" + numberOfRecordings +
+                '}';
+    }
 }

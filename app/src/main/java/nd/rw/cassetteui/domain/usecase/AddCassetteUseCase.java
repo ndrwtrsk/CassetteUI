@@ -28,12 +28,12 @@ public class AddCassetteUseCase {
         description = description != null ? description : "";
         CassetteModel newCassetteModel;
 
-        int newId = cassetteModelList.size() - 1;
+        int newId = cassetteModelList.size()+1;
         GregorianCalendar newDate = new GregorianCalendar();
         newCassetteModel = new CassetteModel(newId, title, description, newDate);
 
         Log.d(TAG, "addCassetteModel() called with: " + "title = [" + title + "], description = [" + description + "]");
-
+        Log.d(TAG, "addCassetteModel() returned: " + newCassetteModel);
         return addCasseteModel(newCassetteModel);
     }
 

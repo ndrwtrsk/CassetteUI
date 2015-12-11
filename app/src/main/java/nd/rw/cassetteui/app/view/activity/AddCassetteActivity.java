@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -50,10 +51,12 @@ public class AddCassetteActivity extends BaseActivity implements AddCassetteView
         this.setContentView(R.layout.activity_add_cassette);
         ButterKnife.bind(this);
         this.setSupportActionBar(this.toolbar);
+        this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         this.getSupportActionBar().setDisplayShowHomeEnabled(true);
         this.toolbar.setTitle("Cassette Details");
 
+        this.toolbar.setNavigationOnClickListener(this.toolbarNavigationButtonListener);
         this.presenter = new AddCassettePresenter(this);
         this.et_title.addTextChangedListener(this.titleTextWatcher);
         this.b_addCassette.setOnClickListener(this.addCassetteButtonListener);
@@ -69,10 +72,10 @@ public class AddCassetteActivity extends BaseActivity implements AddCassetteView
     public void notifyPresenter() {
         this.title = et_title.getText().toString();
         this.description = et_description.getText().toString();
-        Log.i(TAG, "notifyPresenter: title = " + title + " desc = " + description);
         presenter.addCassette(title, description);
-        // TODO: 11.12.2015 Leave activity.?
+        this.finish();
     }
+
 
     //endregion Methods
 
@@ -82,6 +85,13 @@ public class AddCassetteActivity extends BaseActivity implements AddCassetteView
         @Override
         public void onClick(View view) {
             notifyPresenter();
+        }
+    };
+
+    private View.OnClickListener toolbarNavigationButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            AddCassetteActivity.this.finish();
         }
     };
 
