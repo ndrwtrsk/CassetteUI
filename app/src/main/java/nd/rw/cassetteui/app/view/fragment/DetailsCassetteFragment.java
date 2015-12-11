@@ -61,7 +61,7 @@ public class DetailsCassetteFragment extends BaseFragment implements DetailCasse
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initialize();
+        this.initialize();
     }
 
     //endregion Fragment Methods

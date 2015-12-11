@@ -1,5 +1,6 @@
 package nd.rw.cassetteui.app.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -21,6 +22,7 @@ import nd.rw.cassetteui.app.listeners.OnCassetteClickedHandler;
 import nd.rw.cassetteui.app.model.CassetteModel;
 import nd.rw.cassetteui.app.presenter.ListCassettePresenter;
 import nd.rw.cassetteui.app.view.ListCassettesView;
+import nd.rw.cassetteui.app.view.activity.AddCassetteActivity;
 import nd.rw.cassetteui.app.view.adapter.CassetteLayoutManager;
 import nd.rw.cassetteui.app.view.adapter.CassettesCardViewAdapter;
 
@@ -70,7 +72,8 @@ public class ListCassetteFragment
         this.fab_addCassette.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(cl_layout, "Fab clicked!", Snackbar.LENGTH_LONG).show();
+                Intent intent = AddCassetteActivity.getCallingIntent(ListCassetteFragment.this.getContext());
+                ListCassetteFragment.this.startActivity(intent);
             }
         });
     }

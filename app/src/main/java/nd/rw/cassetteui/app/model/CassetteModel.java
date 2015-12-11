@@ -13,7 +13,7 @@ public class CassetteModel {
     String title;
     String description;
     GregorianCalendar date;
-    int numberOfRecordings;
+    int numberOfRecordings = 0;
     List<RecordingModel> recordingList = new LinkedList<>();
 
     public CassetteModel(int id, String title, String description, GregorianCalendar date, int numberOfRecordings) {
@@ -22,6 +22,13 @@ public class CassetteModel {
         this.description = description;
         this.date = date;
         this.numberOfRecordings = numberOfRecordings;
+    }
+
+    public CassetteModel(int id, String title, String description, GregorianCalendar date) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.date = date;
     }
 
     public int getTotalDuration(){
@@ -73,6 +80,7 @@ public class CassetteModel {
         Log.d(TAG, "getListOfCassettes: number of cassettes:" + resultList.size());
         return resultList;
     }
+
 
 
 }

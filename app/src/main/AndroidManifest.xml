@@ -25,6 +25,14 @@
             android:name=".app.view.activity.DetailCassetteActivity"
             android:label="Cassette">
         </activity>
+        <activity
+            android:name=".app.view.activity.AddCassetteActivity"
+            android:windowSoftInputMode="stateVisible"
+            android:label="New cassette">
+            <!--    android:windowSoftInputMode="stateVisible" will make the keyboard immediately visible
+                    as soon as the user sees the activity
+            -->
+        </activity>
     </application>
 
 </manifest>

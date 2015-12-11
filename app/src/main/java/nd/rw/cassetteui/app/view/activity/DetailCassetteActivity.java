@@ -35,7 +35,6 @@ public class DetailCassetteActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate: savedInstanceState == null?: " + (savedInstanceState == null));
         this.getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_detail_cassette);
@@ -44,7 +43,7 @@ public class DetailCassetteActivity extends BaseActivity {
         this.setSupportActionBar(this.toolbar);
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         this.getSupportActionBar().setDisplayShowHomeEnabled(true);
-        this.toolbar.setTitle("Cassette Details");
+        this.toolbar.setTitle("New Cassette");
     }
 
     @Override
