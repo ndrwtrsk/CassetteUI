@@ -20,5 +20,13 @@
         android:background="@drawable/button_recording_transition"
         />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Play"
+        android:id="@+id/button"
+        android:layout_below="@+id/recording_main_button"
+        android:layout_centerHorizontal="true" />
+
 
 </RelativeLayout>

@@ -4,19 +4,13 @@
     android:shape="ring"
     android:useLevel="false"
     android:innerRadius="60dp"
-    android:thickness="80dp"
+    android:thickness="60dp"
     >
 
     <size
-        android:height="250dp"
-        android:width="250dp"/>
+        android:height="@dimen/recording_button_height_width"
+        android:width="@dimen/recording_button_height_width"/>
 
     <solid android:color="@color/accent"/>
-
-    <padding
-        android:left="30dp"
-        android:right="30dp"
-        android:top="30dp"
-        android:bottom="30dp"/>
 
 </shape>

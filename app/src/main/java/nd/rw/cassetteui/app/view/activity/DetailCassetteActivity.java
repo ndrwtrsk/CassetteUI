@@ -3,20 +3,25 @@ package nd.rw.cassetteui.app.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import nd.rw.cassetteui.R;
-import nd.rw.cassetteui.app.model.CassetteModel;
-import nd.rw.cassetteui.app.navigation.Navigator;
+import nd.rw.cassetteui.app.presenter.DeleteCassettePresenter;
 import nd.rw.cassetteui.app.view.fragment.BaseFragment;
+import nd.rw.cassetteui.app.view.fragment.DeleteCassetteDialogFragment;
 import nd.rw.cassetteui.app.view.fragment.DetailsCassetteFragment;
-import nd.rw.cassetteui.app.listeners.OnCassetteClickedHandler;
 
-public class DetailCassetteActivity extends BaseActivity {
+public class DetailCassetteActivity
+        extends BaseActivity
+        implements DeleteCassetteDialogFragment.DeleteCassetteNoticeListener{
 
     //region Fields
 
@@ -28,6 +33,8 @@ public class DetailCassetteActivity extends BaseActivity {
     public Toolbar toolbar;
 
     private int cassetteId;
+
+    private DeleteCassettePresenter presenter = new DeleteCassettePresenter();
 
     //endregion Fields
 
@@ -44,6 +51,23 @@ public class DetailCassetteActivity extends BaseActivity {
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         this.getSupportActionBar().setDisplayShowHomeEnabled(true);
         this.toolbar.setTitle("New Cassette");
+        this.toolbar.setNavigationOnClickListener(homeButtonClickListener);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        this.getMenuInflater().inflate(R.menu.menu_detail_cassette, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_delete_cassette) {
+            this.showDeleteDialog();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -70,6 +94,29 @@ public class DetailCassetteActivity extends BaseActivity {
     }
 
     //endregion Private Methods
+
+    //region Listeners and Events
+
+    private void showDeleteDialog(){
+        DialogFragment dialog = new DeleteCassetteDialogFragment();
+        dialog.show(this.getSupportFragmentManager(), "DeleteCassetteDialogFragment");
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        Log.d(TAG, "onDialogPositiveClick: POSITIVE");
+        this.presenter.deleteCassette(this.cassetteId);
+        this.finish();
+    }
+
+    public View.OnClickListener homeButtonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            DetailCassetteActivity.this.finish();
+        }
+    };
+
+    //endregion Listeners and Events
 
     //region Static Methods
 

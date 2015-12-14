@@ -11,4 +11,9 @@
     <string name="total_duration_placeholder">15 minutes 21 seconds</string>
     <string name="number_of_recordings_placeholder">5 recordings in total</string>
 
+    <!-- Dialogs -->
+    <string name="delete_cassette_dialog_title">Delete this cassette?</string>
+    <string name="delete_cassette_dialog_confirm">Delete</string>
+    <string name="delete_cassette_dialog_no">No</string>
+
 </resources>

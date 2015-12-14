@@ -16,6 +16,8 @@
     <dimen name="cassette_details_title_size">40sp</dimen>
     <dimen name="cassette_details_text_margin_top_bottom">5sp</dimen>
 
+    <!-- Recording button sizes -->
+    <dimen name="recording_button_height_width">250dp</dimen>
 
     <!-- font sizes -->
     <dimen name="font_great">40sp</dimen>

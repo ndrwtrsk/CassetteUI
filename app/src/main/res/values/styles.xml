@@ -7,16 +7,16 @@
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
         <item name="android:windowContentTransitions">true</item>
-        <!-- specify shared element transitions -->
-        <!--<item name="android:windowSharedElementEnterTransition">
-            @transition/explode</item>
-        <item name="android:windowSharedElementExitTransition">
-            @transition/explode</item>-->
     </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:textColorPrimary">@color/primary_text</item>
+        <item name="colorAccent">@color/accent</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

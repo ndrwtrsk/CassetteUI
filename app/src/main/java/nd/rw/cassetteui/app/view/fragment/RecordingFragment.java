@@ -54,13 +54,6 @@ public class RecordingFragment extends Fragment {
 
     //region Fragment overridden methods
 
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Log.d(TAG, "OnActivityCreated called.");
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
