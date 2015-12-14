@@ -14,7 +14,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import nd.rw.cassetteui.R;
 import nd.rw.cassetteui.app.model.CassetteModel;
-import nd.rw.cassetteui.app.presenter.DetailCassettePresenter;
+import nd.rw.cassetteui.app.presenter.DetailUpdateCassettePresenter;
 import nd.rw.cassetteui.app.view.DetailCassetteView;
 
 public class DetailsCassetteFragment extends BaseFragment implements DetailCassetteView{
@@ -36,16 +36,9 @@ public class DetailsCassetteFragment extends BaseFragment implements DetailCasse
     @Bind(R.id.cassette_details_creation_date)
     public TextView tv_creationDate;
 
-    private DetailCassettePresenter presenter;
+    private DetailUpdateCassettePresenter detailPresenter;
 
     //endregion Fields
-
-    //region Private Methods
-
-    private void setupUI(){
-    }
-
-    //endregion Private Methods
 
     //region Fragment Methods
 
@@ -55,6 +48,8 @@ public class DetailsCassetteFragment extends BaseFragment implements DetailCasse
         View view = inflater.inflate(R.layout.fragment_detail_cassette, container, false);
         ButterKnife.bind(this, view);
         this.getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        this.et_title.setOnFocusChangeListener(titleFocusListener);
+        this.et_description.setOnFocusChangeListener(descriptionFocusListener);
         return view;
     }
 
@@ -82,6 +77,12 @@ public class DetailsCassetteFragment extends BaseFragment implements DetailCasse
         this.tv_numberOfRecordings.setText(recordings);
     }
 
+    @Override
+    public void refreshTitleAndDescription(CassetteModel cassetteModel) {
+        this.et_title.setText(cassetteModel.getTitle());
+        this.et_description.setText(cassetteModel.getDescription());
+    }
+
     //endregion DetailCassetteView methods
 
     //region Private Methods
@@ -90,11 +91,54 @@ public class DetailsCassetteFragment extends BaseFragment implements DetailCasse
         Bundle args = this.getArguments();
         int cassetteId = args.getInt(ARGUMENT_KEY_CASSETTE_ID);
         Log.d(TAG, "initialize: cassetteId: " + cassetteId);
-        this.presenter = new DetailCassettePresenter(this);
-        this.presenter.initialize(cassetteId);
+        this.detailPresenter = new DetailUpdateCassettePresenter(this);
+        this.detailPresenter.initialize(cassetteId);
+    }
+
+    private boolean isEmpty(EditText editTextToCheck){
+        return editTextToCheck.getText().length() == 0;
+    }
+
+    private boolean isTitleEmpty(){
+        return isEmpty(et_title);
+    }
+
+    private void updateCassette(){
+        String  title = et_title.getText().toString(),
+                description = et_description.getText().toString();
+        detailPresenter.updateCassette(title, description);
     }
 
     //endregion Private Methods
+
+    //region Listeners and Events
+
+    private View.OnFocusChangeListener titleFocusListener = new View.OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            if (!hasFocus) {
+                if (isTitleEmpty()) {
+                    detailPresenter.refreshTitleAndDescriptionInView();
+//                    Log.d(TAG, "TITLE onFocusChange() lost focus and title is empty. May not update.");
+                } else {
+                    updateCassette();
+//                    Log.d(TAG, "TITLE onFocusChange() lost focus and title is not empty. May update.");
+                }
+
+            }
+        }
+    };
+
+    private View.OnFocusChangeListener descriptionFocusListener = new View.OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            if (!hasFocus) {
+                updateCassette();
+            }
+        }
+    };
+
+    //endregion Listeners and Events
 
     //region Static Methods
 

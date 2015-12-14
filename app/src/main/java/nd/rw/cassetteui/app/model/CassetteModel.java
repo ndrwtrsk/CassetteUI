@@ -65,6 +65,34 @@ public class CassetteModel {
         return recordingList;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setNumberOfRecordings(int numberOfRecordings) {
+        this.numberOfRecordings = numberOfRecordings;
+    }
+
+    public void update(CassetteModel cassetteModel){
+        this.title = cassetteModel.getTitle();
+        this.description = cassetteModel.getDescription();
+        this.numberOfRecordings = cassetteModel.numberOfRecordings;
+    }
+
+    @Override
+    public String toString() {
+        return "CassetteModel{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", numberOfRecordings=" + numberOfRecordings +
+                '}';
+    }
+
     public static List<CassetteModel> getListOfCassettes(int numberOfCassettes, int recordingsPerCassette){
 
         List<CassetteModel> resultList = new LinkedList<>();
@@ -79,15 +107,5 @@ public class CassetteModel {
 
         Log.d(TAG, "getListOfCassettes: number of cassettes:" + resultList.size());
         return resultList;
-    }
-
-    @Override
-    public String toString() {
-        return "CassetteModel{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", numberOfRecordings=" + numberOfRecordings +
-                '}';
     }
 }
