@@ -1,9 +1,11 @@
 package nd.rw.cassetteui.app.view.fragment;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Vibrator;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
@@ -21,8 +23,13 @@ import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.ButterKnife;
 import nd.rw.cassetteui.R;
+import nd.rw.cassetteui.app.listeners.MainViewPagerMotionBlocker;
+import nd.rw.cassetteui.app.utils.AudioPlayer;
+import nd.rw.cassetteui.app.utils.VoiceRecorder;
 
-public class RecordingFragment extends Fragment {
+public class RecordingFragment
+        extends Fragment
+        implements MainViewPagerMotionBlocker{
 
     enum ActivationMethod{
         ScreenButtonActivated,
@@ -33,8 +40,13 @@ public class RecordingFragment extends Fragment {
 
     private static String TAG = "REC_ACT";
 
+    // TODO: 14.12.2015 Create a separate class for recording button and move some of the behaviour
+    // defined for the button in this fragment class to aforementioned recording button class.
     @Bind(R.id.recording_main_button)
     public Button b_recording;
+
+    @Bind(R.id.play_button)
+    public Button b_play;
 
     @Bind(R.id.recording_layout)
     public RelativeLayout layout;
@@ -48,7 +60,12 @@ public class RecordingFragment extends Fragment {
     public int c_primaryIndigo;
 
     private boolean isRecording;
+    private String fileName;
+
     private ActivationMethod howWasRecordingActivated;
+
+    private VoiceRecorder voiceRecorder = new VoiceRecorder();
+    private AudioPlayer audioPlayer = new AudioPlayer();
 
     //endregion Fields
 
@@ -63,12 +80,19 @@ public class RecordingFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        fileName = context.getFilesDir() + "/audio";
+    }
+
     //endregion Fragment overridden methods
 
     //region Helper methods
 
     private void setUpListeners(){
         b_recording.setOnTouchListener(speakTouchListener);
+        b_play.setOnClickListener(playButtonListener);
     }
 
     private void stopRecording(){
@@ -77,6 +101,7 @@ public class RecordingFragment extends Fragment {
             setButtonToIdle();
             vibrateEnd();
             isRecording = !isRecording;
+            voiceRecorder.stopRecording();
         }
 
     }
@@ -87,6 +112,7 @@ public class RecordingFragment extends Fragment {
             setButtonToActive();
             vibrateBegin();
             isRecording = !isRecording;
+            voiceRecorder.startRecording(fileName);
         }
     }
 
@@ -142,6 +168,20 @@ public class RecordingFragment extends Fragment {
         }
     };
 
+    private boolean isPlaying = false;
+
+    private View.OnClickListener playButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (!isPlaying){
+                audioPlayer.startPlaybackFile(fileName);
+            }else{
+                audioPlayer.stopPlayback();
+            }
+            isPlaying = !isPlaying;
+        }
+    };
+
     /*
         Returning true from the two following methods will prevent the event from being propagated further
         and thus the volume won't be increased or decreased.
@@ -178,6 +218,11 @@ public class RecordingFragment extends Fragment {
     }
 
     //endregion Listeners and events
+
+    @Override
+    public boolean blockOrNot() {
+        return isRecording;
+    }
 
     //region Static Methods
 

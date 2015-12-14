@@ -7,7 +7,7 @@ import nd.rw.cassetteui.app.model.CassetteModel;
 public class ListCassettesUseCase extends AbstractUseCase {
 
     public List<CassetteModel> getCassettes(){
-        return DataHolderSingleton.getCassetteModelList();
+        return CassetteModelList;
     }
 
 }

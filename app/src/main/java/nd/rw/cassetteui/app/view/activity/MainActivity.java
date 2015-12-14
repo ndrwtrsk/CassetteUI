@@ -19,19 +19,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 
+import butterknife.Bind;
 import nd.rw.cassetteui.R;
+import nd.rw.cassetteui.app.listeners.MainViewPagerMotionBlocker;
 import nd.rw.cassetteui.app.listeners.OnCassetteClickedHandler;
 import nd.rw.cassetteui.app.model.CassetteModel;
 import nd.rw.cassetteui.app.navigation.Navigator;
 import nd.rw.cassetteui.app.view.fragment.ListCassetteFragment;
 import nd.rw.cassetteui.app.view.fragment.RecordingFragment;
+import nd.rw.cassetteui.app.view.ui.MainViewPager;
 
-public class MainActivity extends BaseActivity implements OnCassetteClickedHandler{
+public class MainActivity
+        extends BaseActivity
+        implements OnCassetteClickedHandler{
 
     //region Fields
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
-    private ViewPager mViewPager;
+
+    public MainViewPager mViewPager;
 
     private static final int RECORDING_FRAGMENT_SECTION_INDEX = 0;
     private static final int LIST_CASSETTE_SECTION_INDEX = 1;
@@ -50,10 +56,10 @@ public class MainActivity extends BaseActivity implements OnCassetteClickedHandl
         this.getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mViewPager = (MainViewPager) findViewById(R.id.container);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
@@ -61,6 +67,7 @@ public class MainActivity extends BaseActivity implements OnCassetteClickedHandl
         recordingFragment = RecordingFragment.newInstance();
         listCassetteFragment = ListCassetteFragment.newInstance();
         listCassetteFragment.setOnCassetteClicked(this);
+        mViewPager.setMotionBlocker(recordingFragment);
     }
 
 
