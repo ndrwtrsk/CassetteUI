@@ -24,13 +24,13 @@
     <dimen name="font_huge">32sp</dimen>
     <dimen name="font_larger">22sp</dimen>
     <dimen name="font_large">18sp</dimen>
-    <dimen name="font_normal">15sp</dimen>
+    <dimen name="font_normal">16sp</dimen>
     <dimen name="font_small">12sp</dimen>
 
     <!-- typical spacing between two views -->
     <dimen name="spacing_huge">40dp</dimen>
     <dimen name="spacing_large">24dp</dimen>
-    <dimen name="spacing_normal">14dp</dimen>
+    <dimen name="spacing_normal">16dp</dimen>
     <dimen name="spacing_small">10dp</dimen>
     <dimen name="spacing_tiny">4dp</dimen>
 
@@ -39,5 +39,22 @@
     <dimen name="button_height_normal">40dp</dimen>
     <dimen name="button_height_short">32dp</dimen>
 
+    <!-- list specs -->
+    <dimen name="list_font_size">16sp</dimen>
+    <dimen name="dense_list_font_size">13sp</dimen>
+
+    <dimen name="line_list_item_height">48dp</dimen>
+    <dimen name="line_list_item_left_right_padding">16dp</dimen>
+    <dimen name="line_list_item_top_padding">8dp</dimen>
+    <dimen name="line_list_item_icon_left_padding">16dp</dimen>
+    <dimen name="line_list_item_text_left_padding">72dp</dimen>
+
+    <dimen name="dense_line_list_item_height">40dp</dimen>
+    <dimen name="dense_line_list_item_top_padding">4dp</dimen>
+
+    <dimen name="two_line_list_item_height">72dp</dimen>
+
+    <dimen name="dense_two_line_list_item_height">60dp</dimen>
+    <dimen name="dense_two_line_list_item_top_padding">4dp</dimen>
 
 </resources>

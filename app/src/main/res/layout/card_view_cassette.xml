@@ -1,85 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_view_cassette"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_item_cassette_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/two_line_list_item_height"
     android:layout_gravity="center"
-    android:layout_marginBottom="5dp"
-    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-    android:layout_marginRight="@dimen/activity_horizontal_margin"
-    android:layout_marginTop="5dp"
     android:clickable="true"
-    android:foreground="?android:attr/selectableItemBackground"
-    card_view:cardBackgroundColor="@color/cardview_light_background"
-    card_view:cardCornerRadius="4dp"
-    card_view:contentPadding="5dp">
+    android:paddingLeft="@dimen/line_list_item_left_right_padding"
+    android:paddingRight="@dimen/line_list_item_left_right_padding">
 
 
-    <RelativeLayout
-        android:id="@+id/card_view_cassette_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_centerInParent="true">
 
-        <!--
-            android.view.View cannot be cast to android.view.ViewGroup
+        <TableRow>
+            <TextView
+                android:id="@+id/card_view_and_details_cassette_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="title"
+                android:textColor="@color/primary_text"
+                android:textSize="@dimen/cassette_card_view_title_text_size"
+                android:transitionName="@string/cassette_card_view_to_details_transition" />
+        </TableRow>
 
-            Do not nest TextViews, ImageViews or any other [noun]View in <View></View>
-            This will result in above exception message.
-            Use something nicer. Like a relative layout.
-            It's good.
-        -->
+        <TableRow>
+            <TextView
+                android:id="@+id/list_item_cassette_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="desc"
+                android:textColor="@color/secondary_text"
+                android:textSize="@dimen/list_font_size" />
+        </TableRow>
 
-        <TextView
-            android:id="@+id/card_view_and_details_cassette_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:text="title"
-            android:textColor="@color/primary_text"
-            android:textSize="@dimen/cassette_card_view_title_text_size"
-            android:transitionName="@string/cassette_card_view_to_details_transition"/>
+    </TableLayout>
 
-        <TextView
-            android:id="@+id/card_view_cassette_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@id/card_view_and_details_cassette_title"
-            android:text="desc"
-            android:textColor="@color/secondary_text"
-            android:textSize="@dimen/cassette_card_view_description_text_size" />
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true">
 
-        <TableLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerInParent="true">
+        <TableRow>
 
-            <TableRow>
+            <TextView
+                android:id="@+id/list_item_cassette_no_of_recordings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="noRec"
+                android:textAlignment="textEnd"
+                android:textColor="@color/secondary_text"
+                android:textSize="@dimen/list_font_size" />
+        </TableRow>
 
-                <TextView
-                    android:id="@+id/card_view_cassette_no_of_recordings"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="noRec"
-                    android:textAlignment="textEnd"
-                    android:textColor="@color/secondary_text"
-                    android:textSize="@dimen/cassette_card_view_additional_text_size" />
-            </TableRow>
+        <TableRow>
 
-            <TableRow>
+            <TextView
+                android:id="@+id/list_item_cassette_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="dura"
+                android:textAlignment="textEnd"
+                android:textSize="@dimen/list_font_size" />
+        </TableRow>
 
-                <TextView
-                    android:id="@+id/card_view_cassette_duration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="dura"
-                    android:textAlignment="textEnd"
-                    android:textSize="@dimen/cassette_card_view_additional_text_size" />
-            </TableRow>
+    </TableLayout>
 
-        </TableLayout>
-
-    </RelativeLayout>
-</android.support.v7.widget.CardView>
+</RelativeLayout>

@@ -2,6 +2,7 @@ package nd.rw.cassetteui.app.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,12 +11,17 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import nd.rw.cassetteui.R;
 import nd.rw.cassetteui.app.model.CassetteModel;
+import nd.rw.cassetteui.app.model.RecordingModel;
 import nd.rw.cassetteui.app.presenter.DetailUpdateCassettePresenter;
 import nd.rw.cassetteui.app.view.DetailCassetteView;
+import nd.rw.cassetteui.app.view.adapter.RecordingLayoutManager;
+import nd.rw.cassetteui.app.view.adapter.RecordingListViewAdapter;
 
 public class DetailsCassetteFragment extends BaseFragment implements DetailCassetteView{
 
@@ -36,7 +42,14 @@ public class DetailsCassetteFragment extends BaseFragment implements DetailCasse
     @Bind(R.id.cassette_details_creation_date)
     public TextView tv_creationDate;
 
+    @Bind(R.id.rv_recordings)
+    public RecyclerView rv_recordings;
+
     private DetailUpdateCassettePresenter detailPresenter;
+
+    private RecordingListViewAdapter recordingsAdapter;
+
+    private RecordingLayoutManager recordingLayoutManager;
 
     //endregion Fields
 
@@ -45,11 +58,13 @@ public class DetailsCassetteFragment extends BaseFragment implements DetailCasse
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_detail_cassette, container, false);
         ButterKnife.bind(this, view);
         this.getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         this.et_title.setOnFocusChangeListener(titleFocusListener);
         this.et_description.setOnFocusChangeListener(descriptionFocusListener);
+        this.setupUI();
         return view;
     }
 
@@ -68,13 +83,12 @@ public class DetailsCassetteFragment extends BaseFragment implements DetailCasse
         if (cassetteModel == null) {
             return;
         }
-        String id = Integer.toString(cassetteModel.getId());
         String recordings = cassetteModel.getNumberOfRecordings() + " recordings in total";
-//        this.tv_id.setText(id);
         this.et_title.setText(cassetteModel.getTitle());
         this.et_description.setText(cassetteModel.getDescription());
         this.tv_creationDate.setText(cassetteModel.getDate().toString());
         this.tv_numberOfRecordings.setText(recordings);
+        this.recordingsAdapter.setRecordingList(cassetteModel.getRecordingList());
     }
 
     @Override
@@ -86,6 +100,13 @@ public class DetailsCassetteFragment extends BaseFragment implements DetailCasse
     //endregion DetailCassetteView methods
 
     //region Private Methods
+
+    private void setupUI(){
+        this.recordingLayoutManager = new RecordingLayoutManager(this.getContext());
+        this.rv_recordings.setLayoutManager(recordingLayoutManager);
+        this.recordingsAdapter = new RecordingListViewAdapter(new ArrayList<RecordingModel>());
+        this.rv_recordings.setAdapter(recordingsAdapter);
+    }
 
     private void initialize(){
         Bundle args = this.getArguments();

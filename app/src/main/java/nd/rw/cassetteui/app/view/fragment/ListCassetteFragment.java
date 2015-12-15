@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,7 +23,8 @@ import nd.rw.cassetteui.app.presenter.ListCassettePresenter;
 import nd.rw.cassetteui.app.view.ListCassettesView;
 import nd.rw.cassetteui.app.view.activity.AddCassetteActivity;
 import nd.rw.cassetteui.app.view.adapter.CassetteLayoutManager;
-import nd.rw.cassetteui.app.view.adapter.CassettesCardViewAdapter;
+import nd.rw.cassetteui.app.view.adapter.CassettesListViewAdapter;
+import nd.rw.cassetteui.app.view.decoration.DividerItemDecoration;
 
 public class ListCassetteFragment
         extends BaseFragment
@@ -45,7 +45,7 @@ public class ListCassetteFragment
 
     public ListCassettePresenter presenter;
 
-    private CassettesCardViewAdapter cassettesAdapter;
+    private CassettesListViewAdapter cassettesAdapter;
 
     private CassetteLayoutManager layoutManager;
 
@@ -67,7 +67,7 @@ public class ListCassetteFragment
     private void setupUI(){
         this.layoutManager = new CassetteLayoutManager(this.getContext());
         this.rv_cassettes.setLayoutManager(layoutManager);
-        this.cassettesAdapter = new CassettesCardViewAdapter(new ArrayList<CassetteModel>(), onCassetteClickedHandler);
+        this.cassettesAdapter = new CassettesListViewAdapter(new ArrayList<CassetteModel>(), onCassetteClickedHandler);
         this.rv_cassettes.setAdapter(cassettesAdapter);
         this.fab_addCassette.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,6 +76,7 @@ public class ListCassetteFragment
                 ListCassetteFragment.this.startActivity(intent);
             }
         });
+        this.rv_cassettes.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
     }
 
     //endregion Private Methods
