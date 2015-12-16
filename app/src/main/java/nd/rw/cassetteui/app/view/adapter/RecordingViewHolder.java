@@ -11,6 +11,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import nd.rw.cassetteui.R;
 import nd.rw.cassetteui.app.model.RecordingModel;
+import nd.rw.cassetteui.app.model.descriptors.RecordingModelDescriptor;
 
 public class RecordingViewHolder extends RecyclerView.ViewHolder{
 
@@ -26,8 +27,8 @@ public class RecordingViewHolder extends RecyclerView.ViewHolder{
     @Bind(R.id.list_view_recording_recorded)
     public TextView tv_recordedOn;
 
-    @Bind(R.id.list_view_recording_more)
-    public ImageButton iv_more;
+   /* @Bind(R.id.list_view_recording_more)
+    public ImageButton iv_more;*/
 
     //endregion Fields
 
@@ -41,9 +42,11 @@ public class RecordingViewHolder extends RecyclerView.ViewHolder{
             Log.e(TAG, "bind: Recording is null");
         }
 
-        String title = recording.title.isEmpty() ? "Recording" : recording.title;
-        String date = recording.getFormattedDate();
-        String duration = Integer.toString(recording.getDurationInSeconds());
+        RecordingModelDescriptor descriptor = recording.getDescriptor();
+
+        String title = descriptor.title.isEmpty() ? "Recording" : descriptor.title;
+        String date = descriptor.dateRecorded;
+        String duration = descriptor.duration;
 
         tv_title.setText(title);
         tv_recordedOn.setText(date);

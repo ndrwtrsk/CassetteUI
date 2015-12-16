@@ -14,6 +14,7 @@ import butterknife.ButterKnife;
 import nd.rw.cassetteui.R;
 import nd.rw.cassetteui.app.listeners.OnCassetteClickedHandler;
 import nd.rw.cassetteui.app.model.CassetteModel;
+import nd.rw.cassetteui.app.model.descriptors.CassetteModelDescriptor;
 
 public class CassettesListViewAdapter extends RecyclerView.Adapter<CassettesListViewAdapter.CassetteViewHolder>{
 
@@ -100,10 +101,13 @@ public class CassettesListViewAdapter extends RecyclerView.Adapter<CassettesList
             //  ALWAYS always use Integer.toString(...) when working with integers.
             //  If you try to set integer as text, you call method setText(int resID)
             //  and application try to set as text some string resource with this resID.
-            this.tv_title.setText(cassetteModel.getTitle());
-            this.tv_description.setText(cassetteModel.getDescription());
-            this.tv_numberOfRecordings.setText(Integer.toString(cassetteModel.getNumberOfRecordings()));
-            this.tv_totalDuration.setText(Integer.toString(cassetteModel.getTotalDuration()));
+
+            CassetteModelDescriptor descriptor = cassetteModel.getDescriptor();
+
+            this.tv_title.setText(descriptor.title);
+            this.tv_description.setText(descriptor.description);
+            this.tv_numberOfRecordings.setText(descriptor.dateOfLastRecording);
+            this.tv_totalDuration.setText(descriptor.totalDurationOfAllRecordings);
         }
 
         public void bindListener(final CassetteModel cassette, final OnCassetteClickedHandler handler){

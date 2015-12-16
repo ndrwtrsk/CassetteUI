@@ -3,14 +3,16 @@ package nd.rw.cassetteui.app.model;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
+import nd.rw.cassetteui.app.model.descriptors.RecordingModelDescriptor;
+
 public class RecordingModel {
 
     public int id;
     public String title;
+    public String transcription = "transcription";
     public GregorianCalendar dateRecorded;
     public int durationInMs;
     public String path;
-    public String transcription = "transcription";
     public CassetteModel cassette;
 
 
@@ -30,17 +32,19 @@ public class RecordingModel {
     }
 
     public String getFormattedDate(){
-        SimpleDateFormat fmt = new SimpleDateFormat("HH:mm:ss dd-MMM-yyyy");
+        SimpleDateFormat fmt = new SimpleDateFormat("HH:mm:ss dd MMMM yyyy");
         fmt.setCalendar(dateRecorded);
         String dateFormatted = fmt.format(dateRecorded.getTime());
         return dateFormatted;
     }
 
-
+    public RecordingModelDescriptor getDescriptor(){
+        return new RecordingModelDescriptor(this);
+    }
 
     public static void populateCassetteWithRecordings(CassetteModel cassette, int startingIndex, int endingIndex){
         for (int i = startingIndex; i < endingIndex; i++) {
-            new RecordingModel(i, "Recording " + i, new GregorianCalendar(), 200, "/path", cassette);
+            new RecordingModel(i, "Recording " + i, new GregorianCalendar(), 21230, "/path", cassette);
         }
     }
 

@@ -18,10 +18,12 @@ import butterknife.ButterKnife;
 import nd.rw.cassetteui.R;
 import nd.rw.cassetteui.app.model.CassetteModel;
 import nd.rw.cassetteui.app.model.RecordingModel;
+import nd.rw.cassetteui.app.model.descriptors.CassetteModelDescriptor;
 import nd.rw.cassetteui.app.presenter.DetailUpdateCassettePresenter;
 import nd.rw.cassetteui.app.view.DetailCassetteView;
 import nd.rw.cassetteui.app.view.adapter.RecordingLayoutManager;
 import nd.rw.cassetteui.app.view.adapter.RecordingListViewAdapter;
+import nd.rw.cassetteui.app.view.decoration.DividerItemDecoration;
 
 public class DetailsCassetteFragment extends BaseFragment implements DetailCassetteView{
 
@@ -83,11 +85,11 @@ public class DetailsCassetteFragment extends BaseFragment implements DetailCasse
         if (cassetteModel == null) {
             return;
         }
-        String recordings = cassetteModel.getNumberOfRecordings() + " recordings in total";
-        this.et_title.setText(cassetteModel.getTitle());
-        this.et_description.setText(cassetteModel.getDescription());
-        this.tv_creationDate.setText(cassetteModel.getDate().toString());
-        this.tv_numberOfRecordings.setText(recordings);
+        CassetteModelDescriptor descriptor = cassetteModel.getDescriptor();
+        this.et_title.setText(descriptor.title);
+        this.et_description.setText(descriptor.description);
+        this.tv_creationDate.setText(descriptor.dateCreated);
+        this.tv_numberOfRecordings.setText(descriptor.numberOfRecordings);
         this.recordingsAdapter.setRecordingList(cassetteModel.getRecordingList());
     }
 
@@ -106,6 +108,7 @@ public class DetailsCassetteFragment extends BaseFragment implements DetailCasse
         this.rv_recordings.setLayoutManager(recordingLayoutManager);
         this.recordingsAdapter = new RecordingListViewAdapter(new ArrayList<RecordingModel>());
         this.rv_recordings.setAdapter(recordingsAdapter);
+        this.rv_recordings.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
     }
 
     private void initialize(){

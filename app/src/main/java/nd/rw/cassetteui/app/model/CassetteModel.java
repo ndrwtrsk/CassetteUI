@@ -6,6 +6,8 @@ import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
+import nd.rw.cassetteui.app.model.descriptors.CassetteModelDescriptor;
+
 public class CassetteModel {
 
     private static final String TAG = "CAS_MOD";
@@ -13,22 +15,17 @@ public class CassetteModel {
     String title;
     String description;
     GregorianCalendar date;
-    int numberOfRecordings = 0;
     List<RecordingModel> recordingList = new LinkedList<>();
-
-    public CassetteModel(int id, String title, String description, GregorianCalendar date, int numberOfRecordings) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.date = date;
-        this.numberOfRecordings = numberOfRecordings;
-    }
 
     public CassetteModel(int id, String title, String description, GregorianCalendar date) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.date = date;
+    }
+
+    public CassetteModel(int id, String title, String description) {
+        this(id, title, description, new GregorianCalendar());
     }
 
     public int getTotalDuration(){
@@ -41,6 +38,7 @@ public class CassetteModel {
         return sumOfDurationsInSeconds;
     }
 
+    //region Getters
     public int getId() {
         return id;
     }
@@ -58,12 +56,27 @@ public class CassetteModel {
     }
 
     public int getNumberOfRecordings() {
-        return numberOfRecordings;
+        if (recordingList == null){
+            return 0;
+        }
+        return recordingList.size();
+    }
+
+    /**
+     * Returns humanly readable descriptor of this Cassette.
+     * @return Humanly readable descriptor of this Cassette.
+     */
+    public CassetteModelDescriptor getDescriptor(){
+        return new CassetteModelDescriptor(this);
     }
 
     public List<RecordingModel> getRecordingList() {
         return recordingList;
     }
+
+    //endregion Getters
+
+    //region Setters
 
     public void setTitle(String title) {
         this.title = title;
@@ -73,15 +86,41 @@ public class CassetteModel {
         this.description = description;
     }
 
-    public void setNumberOfRecordings(int numberOfRecordings) {
-        this.numberOfRecordings = numberOfRecordings;
-    }
+    //endregion Setters
 
+    //region Methods
+
+    /**
+     * Substitutes the title and description of this Model with these of provided
+     * Model. Useful in updates.
+     */
     public void update(CassetteModel cassetteModel){
         this.title = cassetteModel.getTitle();
         this.description = cassetteModel.getDescription();
-        this.numberOfRecordings = cassetteModel.numberOfRecordings;
     }
+
+    /**
+     * Returns GregorianCalendar of the newest Recording.
+     * If no recordings are present, null is returned.
+     * @return GregorianCalendar of the newest Recording.
+     */
+    public GregorianCalendar getNewestRecordingDate(){
+        if(recordingList == null || recordingList.size() == 0){
+            return null;
+        }
+        GregorianCalendar result = recordingList.get(0).dateRecorded;
+
+        for (int i = 1; i < recordingList.size(); i++) {
+            GregorianCalendar currentRecordingsDate = recordingList.get(i).dateRecorded;
+            if (result.compareTo(currentRecordingsDate) > 0){
+                result = currentRecordingsDate;
+            }
+        }
+
+        return result;
+    }
+
+    //endregion Methods
 
     @Override
     public String toString() {
@@ -89,9 +128,10 @@ public class CassetteModel {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", numberOfRecordings=" + numberOfRecordings +
                 '}';
     }
+
+    //region Static Methods
 
     public static List<CassetteModel> getListOfCassettes(int numberOfCassettes, int recordingsPerCassette){
 
@@ -99,8 +139,9 @@ public class CassetteModel {
 
         int currentStartingIndexOfNewRecordings = 0;
         for (int i = 1; i <= numberOfCassettes; i++) {
-            CassetteModel cassette = new CassetteModel(i, "Cassette #" + i, "Lorem ipsum good stuff", new GregorianCalendar(), recordingsPerCassette);
-            RecordingModel.populateCassetteWithRecordings(cassette, currentStartingIndexOfNewRecordings, recordingsPerCassette - 1);
+            CassetteModel cassette = new CassetteModel(i, "Cassette #" + i, "Lorem ipsum good stuff", new GregorianCalendar());
+            RecordingModel.populateCassetteWithRecordings(cassette, currentStartingIndexOfNewRecordings, currentStartingIndexOfNewRecordings + recordingsPerCassette);
+            Log.d(TAG, "getListOfCassettes: recording in currrent cassette: " + cassette.getNumberOfRecordings());
             resultList.add(cassette);
             currentStartingIndexOfNewRecordings += recordingsPerCassette;
         }
@@ -108,4 +149,6 @@ public class CassetteModel {
         Log.d(TAG, "getListOfCassettes: number of cassettes:" + resultList.size());
         return resultList;
     }
+
+    //endregion Static Methods
 }
