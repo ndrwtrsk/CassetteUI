@@ -23,6 +23,7 @@ import nd.rw.cassetteui.app.presenter.DetailUpdateCassettePresenter;
 import nd.rw.cassetteui.app.view.DetailCassetteView;
 import nd.rw.cassetteui.app.view.adapter.RecordingLayoutManager;
 import nd.rw.cassetteui.app.view.adapter.RecordingListViewAdapter;
+import nd.rw.cassetteui.app.view.adapter.RecordingSwipeAdapter;
 import nd.rw.cassetteui.app.view.decoration.DividerItemDecoration;
 
 public class DetailsCassetteFragment extends BaseFragment implements DetailCassetteView{
@@ -50,6 +51,8 @@ public class DetailsCassetteFragment extends BaseFragment implements DetailCasse
     private DetailUpdateCassettePresenter detailPresenter;
 
     private RecordingListViewAdapter recordingsAdapter;
+
+    private RecordingSwipeAdapter recordingSwipeAdapter;
 
     private RecordingLayoutManager recordingLayoutManager;
 
@@ -91,6 +94,7 @@ public class DetailsCassetteFragment extends BaseFragment implements DetailCasse
         this.tv_creationDate.setText(descriptor.dateCreated);
         this.tv_numberOfRecordings.setText(descriptor.numberOfRecordings);
         this.recordingsAdapter.setRecordingList(cassetteModel.getRecordingList());
+        this.recordingSwipeAdapter.setRecordingList(cassetteModel.getRecordingList());
     }
 
     @Override
@@ -107,7 +111,8 @@ public class DetailsCassetteFragment extends BaseFragment implements DetailCasse
         this.recordingLayoutManager = new RecordingLayoutManager(this.getContext());
         this.rv_recordings.setLayoutManager(recordingLayoutManager);
         this.recordingsAdapter = new RecordingListViewAdapter(new ArrayList<RecordingModel>());
-        this.rv_recordings.setAdapter(recordingsAdapter);
+        this.recordingSwipeAdapter = new RecordingSwipeAdapter(new ArrayList<RecordingModel>());
+        this.rv_recordings.setAdapter(recordingSwipeAdapter);
         this.rv_recordings.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
     }
 
@@ -175,6 +180,8 @@ public class DetailsCassetteFragment extends BaseFragment implements DetailCasse
         return fragment;
     }
 
+    //endregion Static Methods
+
     //region LoadDataView Methods
 
     @Override
@@ -203,7 +210,5 @@ public class DetailsCassetteFragment extends BaseFragment implements DetailCasse
     }
 
     //endregion LoadDataView Methods
-
-    //endregion Static Methods
 
 }

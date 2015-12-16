@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.daimajia.swipe.SwipeLayout
+    android:id="@+id/swipe_layout_recording"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/two_line_list_item_height"
+    android:gravity="center"
+    swipe:rightEdgeSwipeOffset="line_list_item_left_right_padding"
+    swipe:leftEdgeSwipeOffset="line_list_item_left_right_padding"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:swipe="http://schemas.android.com/tools">
+    <!-- Bottom View Start-->
+    <LinearLayout
+        android:id="@+id/bottom_wrapper"
+        android:layout_width="@dimen/line_list_item_text_left_padding"
+        android:layout_height="match_parent">
+        <ImageButton
+            android:id="@+id/swipe_button_delete_recording"
+            android:layout_width="@dimen/line_list_item_text_left_padding"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:src="@drawable/ic_delete_24dp"
+            android:background="@color/divider"
+            />
+    </LinearLayout>
+    <!-- Bottom View End-->
+
+    <!-- Surface View Start -->
+    <RelativeLayout
+        android:id="@+id/list_view_recording_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/two_line_list_item_height"
+        android:gravity="center"
+        android:paddingLeft="@dimen/line_list_item_left_right_padding"
+        android:paddingRight="@dimen/line_list_item_left_right_padding">
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true">
+            <TableRow>
+                <TextView
+                    android:id="@+id/list_view_recording_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Recording title"
+                    android:textColor="@color/primary_text"
+                    android:textSize="@dimen/font_large"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:id="@+id/list_view_recording_recorded"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="15:15 15th December 2015"
+                    android:textAlignment="textStart"/>
+            </TableRow>
+        </TableLayout>
+
+        <TextView
+            android:id="@+id/list_view_recording_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:text="2 min 21 sec"
+            android:textAlignment="textEnd"
+            android:textSize="@dimen/font_larger" />
+
+
+        <!--<TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true">
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </TableRow>
+            <TableRow>
+                <TextView />
+            </TableRow>
+
+        </TableLayout>-->
+
+
+    </RelativeLayout>
+    <!-- Surface View End -->
+</com.daimajia.swipe.SwipeLayout>
