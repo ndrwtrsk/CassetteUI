@@ -1,7 +1,27 @@
 package nd.rw.cassetteui.data.repository.datasource;
 
-/**
- * Created by andrew on 17.12.2015.
- */
+import java.util.List;
+
+import nd.rw.cassetteui.data.entity.CassetteEntity;
+
 public interface CassetteDataStore {
+
+    List<CassetteEntity> getAll();
+
+    CassetteEntity get(final int id);
+
+    CassetteEntity create(CassetteEntity cassetteEntity);
+
+    boolean update(CassetteEntity cassetteEntity);
+
+    boolean update(final int id, final String title, final String description);
+
+    boolean delete(CassetteEntity cassetteEntity);
+
+    boolean delete(final int id);
+
+    long count();
+
+    int getNewPkValue();
+    
 }

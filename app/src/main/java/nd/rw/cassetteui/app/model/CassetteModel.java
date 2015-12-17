@@ -28,6 +28,12 @@ public class CassetteModel {
         this(id, title, description, new GregorianCalendar());
     }
 
+    public CassetteModel(String title, String description) {
+        this.title = title;
+        this.description = description;
+        this.date = new GregorianCalendar();
+    }
+
     public int getTotalDuration(){
         int sumOfDurationsInSeconds = 0;
         for (RecordingModel recording :
@@ -84,6 +90,10 @@ public class CassetteModel {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setRecordingList(List<RecordingModel> recordingList) {
+        this.recordingList = recordingList;
     }
 
     //endregion Setters

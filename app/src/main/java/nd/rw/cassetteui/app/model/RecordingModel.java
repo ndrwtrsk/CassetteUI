@@ -31,6 +31,18 @@ public class RecordingModel {
         this.cassette.recordingList.add(this);
     }
 
+    public RecordingModel(int id, String title, String transcription,
+                          GregorianCalendar dateRecorded,
+                          int durationInMs, String path, CassetteModel cassette) {
+        this.id = id;
+        this.title = title;
+        this.transcription = transcription;
+        this.dateRecorded = dateRecorded;
+        this.durationInMs = durationInMs;
+        this.path = path;
+        this.cassette = cassette;
+    }
+
     public String getFormattedDate(){
         SimpleDateFormat fmt = new SimpleDateFormat("HH:mm:ss dd MMMM yyyy");
         fmt.setCalendar(dateRecorded);
