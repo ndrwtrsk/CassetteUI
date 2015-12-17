@@ -19,7 +19,6 @@ public class RecordingEntity extends RealmObject{
     private int durationInMs;
     @Required
     private String path;
-    @Required
     private CassetteEntity cassette;
 
     //endregion Fields

@@ -104,6 +104,6 @@ public class RealmCassetteDataStore implements CassetteDataStore {
 
     @Override
     public int getNewPkValue() {
-        return mRealm.where(CassetteEntity.class).max("id").intValue();
+        return mRealm.where(CassetteEntity.class).max("id").intValue() + 1;
     }
 }

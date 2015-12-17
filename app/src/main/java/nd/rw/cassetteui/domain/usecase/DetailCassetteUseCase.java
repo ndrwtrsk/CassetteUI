@@ -1,18 +1,16 @@
 package nd.rw.cassetteui.domain.usecase;
 
 import nd.rw.cassetteui.app.model.CassetteModel;
+import nd.rw.cassetteui.data.repository.CassetteDataRepository;
+import nd.rw.cassetteui.data.repository.datasource.DataSourceFactory;
+import nd.rw.cassetteui.domain.repository.CassetteRepository;
 
 public class DetailCassetteUseCase extends AbstractUseCase{
 
-    public CassetteModel getCassetteById(int id){
-        for (CassetteModel cassetteModel :
-                CassetteModelList) {
-            if (id == cassetteModel.getId()){
-                return cassetteModel;
-            }
-        }
+    private CassetteRepository repository = new CassetteDataRepository(DataSourceFactory.getRealmCassetteDataStore());
 
-        return null;
+    public CassetteModel getCassetteById(int id){
+        return repository.get(id);
     }
 
 }

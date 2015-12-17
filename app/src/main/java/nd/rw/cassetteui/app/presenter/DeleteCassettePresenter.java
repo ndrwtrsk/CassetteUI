@@ -8,10 +8,10 @@ public class DeleteCassettePresenter {
     private DeleteCassetteUseCase useCase = new DeleteCassetteUseCase();
 
     public boolean deleteCassette(int id){
-        return useCase.deleteCassetteModel(id) != null;
+        return useCase.deleteCassetteModel(id);
     }
 
     public boolean deleteCassette(CassetteModel cassetteModel) {
-        return cassetteModel != null && this.deleteCassette(cassetteModel.getId());
+        return this.deleteCassette(cassetteModel.getId());
     }
 }

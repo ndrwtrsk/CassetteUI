@@ -14,7 +14,7 @@ public final class NiceDateFormatter {
      */
     public static String getNiceDate(GregorianCalendar date){
         if (date == null) {
-            return "Date was null";
+            return null;
         }
         GregorianCalendar yesterday = new GregorianCalendar();
         yesterday.add(Calendar.DAY_OF_YEAR, -1);

@@ -35,12 +35,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/card_view_and_details_cassette_title"
-            android:layout_marginTop="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_small"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:text="@string/samuel_l_ipsum_placeholder"
             android:textColor="@color/secondary_text"
             android:textSize="@dimen/font_normal"
-            android:text="@string/samuel_l_ipsum_placeholder"
+            android:hint="Your description"
             android:background="@android:color/transparent"/>
 
         <TextView

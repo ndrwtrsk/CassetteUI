@@ -106,7 +106,13 @@ public class CassettesListViewAdapter extends RecyclerView.Adapter<CassettesList
 
             this.tv_title.setText(descriptor.title);
             this.tv_description.setText(descriptor.description);
-            this.tv_numberOfRecordings.setText(descriptor.dateOfLastRecording);
+            String dateLastRecorded;
+            if (descriptor.dateOfLastRecording == null) {
+                dateLastRecorded = "No recordings";
+            } else {
+                dateLastRecorded = descriptor.dateOfLastRecording;
+            }
+            this.tv_numberOfRecordings.setText(dateLastRecorded);
             this.tv_totalDuration.setText(descriptor.totalDurationOfAllRecordings);
         }
 

@@ -3,11 +3,16 @@ package nd.rw.cassetteui.domain.usecase;
 import java.util.List;
 
 import nd.rw.cassetteui.app.model.CassetteModel;
+import nd.rw.cassetteui.data.repository.CassetteDataRepository;
+import nd.rw.cassetteui.data.repository.datasource.DataSourceFactory;
+import nd.rw.cassetteui.domain.repository.CassetteRepository;
 
 public class ListCassettesUseCase extends AbstractUseCase {
 
+    private CassetteRepository repository = new CassetteDataRepository(DataSourceFactory.getRealmCassetteDataStore());
+
     public List<CassetteModel> getCassettes(){
-        return CassetteModelList;
+        return repository.getAll();
     }
 
 }

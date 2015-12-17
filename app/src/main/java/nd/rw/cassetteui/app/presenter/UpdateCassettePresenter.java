@@ -7,7 +7,7 @@ public class UpdateCassettePresenter implements Presenter{
 
     private UpdateCassetteUseCase useCase = new UpdateCassetteUseCase();
 
-    public CassetteModel updateCassette(CassetteModel cassetteModel){
+    public boolean updateCassette(CassetteModel cassetteModel){
         return this.useCase.updateCassette(cassetteModel);
     }
 

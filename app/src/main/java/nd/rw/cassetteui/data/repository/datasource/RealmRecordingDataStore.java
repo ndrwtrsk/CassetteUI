@@ -118,7 +118,7 @@ public class RealmRecordingDataStore implements RecordingDataStore{
 
     @Override
     public int getNextPkValue() {
-        return mRealm.where(RecordingEntity.class).max("id").intValue();
+        return mRealm.where(RecordingEntity.class).max("id").intValue() + 1;
     }
 
     private boolean exists(final int id){
