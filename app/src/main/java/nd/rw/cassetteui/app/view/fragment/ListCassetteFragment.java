@@ -17,7 +17,6 @@ import java.util.Collection;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import nd.rw.cassetteui.R;
-import nd.rw.cassetteui.app.listeners.CassetteListEventHandler;
 import nd.rw.cassetteui.app.listeners.OnCassetteClickedHandler;
 import nd.rw.cassetteui.app.model.CassetteModel;
 import nd.rw.cassetteui.app.presenter.ListCassettePresenter;
@@ -174,10 +173,10 @@ public class ListCassetteFragment
         boolean areCodesCorrectAndWasNewCassetteAdded =
                                 (requestCode == LIST_FRAGMENT_ADD_ACTIVITY_REQUEST_CODE) &&
                                 (resultCode == AddCassetteActivity.ADD_ACTIVITY_LIST_FRAGMENT_RESULT_CODE) &&
-                                (data.getBooleanExtra(AddCassetteActivity.EXTRA_BUNDLE_PARAM_BOOLEAN_WAS_ADDED, false));
+                                (data.getBooleanExtra(AddCassetteActivity.INTENT_EXTRA_PARAM__WAS_ADDED, false));
 
         if (areCodesCorrectAndWasNewCassetteAdded){
-            int newCassetteId = data.getIntExtra(AddCassetteActivity.EXTRA_BUNDLE_PARAM_NEW_CASSETTE_ID, -1);
+            int newCassetteId = data.getIntExtra(AddCassetteActivity.INTENT_EXTRA_PARAM_NEW_CASSETTE_ID, -1);
             this.presenter.queryForNewlyAddedCassette(newCassetteId);
         }
     }
