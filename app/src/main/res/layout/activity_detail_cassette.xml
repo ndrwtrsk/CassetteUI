@@ -56,6 +56,8 @@
                 android:textSize="@dimen/font_great"
                 android:transitionName="@string/cassette_card_view_to_details_transition"
                 android:background="@android:color/transparent"
+                android:imeOptions="actionDone"
+                android:inputType="textAutoCorrect"
                 />
 
             <EditText
@@ -70,7 +72,9 @@
                 android:textColor="@color/secondary_text"
                 android:textSize="@dimen/font_normal"
                 android:hint="Your description"
-                android:background="@android:color/transparent"/>
+                android:background="@android:color/transparent"
+                android:imeOptions="actionDone"
+                android:inputType="textAutoCorrect"/>
 
             <TextView
                 android:id="@+id/cassette_details_created_on_label"

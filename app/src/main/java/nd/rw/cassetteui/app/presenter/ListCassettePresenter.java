@@ -49,6 +49,10 @@ public class ListCassettePresenter implements Presenter{
         this.view.onAddedCassette(this.detailsUseCase.getCassetteById(cassetteId));
     }
 
+    public void queryForNewlyUpdatedCassette(int cassetteId){
+        this.view.onUpdatedCassette(this.detailsUseCase.getCassetteById(cassetteId));
+    }
+
     //endregion Methods
 
     //region Presenter implemented methods

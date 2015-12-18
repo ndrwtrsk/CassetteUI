@@ -7,11 +7,14 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -41,6 +44,7 @@ public class DetailCassetteActivity
 
     public static final String INTENT_EXTRA_PARAM_CASSETTE_ID = "andrewtorski.cassette.INTENT_PARAM_CASSETTE_ID";
     public static final String INSTANCE_STATE_PARAM_CASSETTE_ID = "andrewtorski.cassette.STATE_PARAM_CASSETTE_ID";
+    public static final int DETAIL_ACTIVITY_UPDATE_RESULT_CODE = 2;
     public static final int DETAIL_ACTIVITY_DELETE_RESULT_CODE = 3;
 
     @Bind(R.id.toolbar)
@@ -57,11 +61,11 @@ public class DetailCassetteActivity
     public RecyclerView rv_recordings;
 
     private RecordingSwipeAdapter recordingSwipeAdapter;
-    private RecordingLayoutManager recordingLayoutManager;
 
     private int cassetteId;
     private DeleteCassettePresenter presenter = new DeleteCassettePresenter();
     private DetailUpdateCassettePresenter detailPresenter;
+    private boolean wasCassetteUpdated = false;
 
     //endregion Fields
 
@@ -82,6 +86,8 @@ public class DetailCassetteActivity
         this.toolbar.setNavigationOnClickListener(homeButtonClickListener);
         this.et_title.setOnFocusChangeListener(titleFocusListener);
         this.et_description.setOnFocusChangeListener(descriptionFocusListener);
+        this.et_title.setOnEditorActionListener(editTextOnEditorListener);
+        this.et_description.setOnEditorActionListener(editTextOnEditorListener);
         this.setUpRecyclerView();
         this.initializeActivity(savedInstanceState);
     }
@@ -194,7 +200,7 @@ public class DetailCassetteActivity
 
     private void setUpRecyclerView(){
         Log.i(TAG, "setUpRecyclerView beginning");
-        this.recordingLayoutManager = new RecordingLayoutManager(this);
+        RecordingLayoutManager recordingLayoutManager = new RecordingLayoutManager(this);
         this.rv_recordings.setLayoutManager(recordingLayoutManager);
         this.recordingSwipeAdapter = new RecordingSwipeAdapter(new ArrayList<RecordingModel>());
         this.rv_recordings.setAdapter(recordingSwipeAdapter);
@@ -224,7 +230,8 @@ public class DetailCassetteActivity
     private void updateCassette(){
         String  title = et_title.getText().toString(),
                 description = et_description.getText().toString();
-        detailPresenter.updateCassette(title, description);
+        wasCassetteUpdated = detailPresenter.updateCassette(title, description);
+        Log.d(TAG, "updateCassette() wasCassetteUpdate = [" + wasCassetteUpdated +"]");
     }
 
     //endregion Private Methods
@@ -252,7 +259,12 @@ public class DetailCassetteActivity
     public View.OnClickListener homeButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            DetailCassetteActivity.this.finish();
+            if (wasCassetteUpdated) {
+                Intent intent = new Intent();
+                intent.putExtra(INTENT_EXTRA_PARAM_CASSETTE_ID, cassetteId);
+                setResult(DETAIL_ACTIVITY_UPDATE_RESULT_CODE, intent);
+            }
+            finish();
         }
     };
 
@@ -275,6 +287,21 @@ public class DetailCassetteActivity
             if (!hasFocus) {
                 updateCassette();
             }
+        }
+    };
+
+    private EditText.OnEditorActionListener editTextOnEditorListener = new TextView.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            boolean handled = false;
+            if(actionId == EditorInfo.IME_ACTION_DONE){
+                Log.d(TAG, "onEditorAction: ime_action_done");
+                v.clearFocus();
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                handled = true;
+            }
+            return handled;
         }
     };
 

@@ -44,17 +44,20 @@ public class DetailUpdateCassettePresenter implements Presenter{
         this.view = view;
     }
 
-    public void updateCassette(String title, String description){
+    public boolean updateCassette(String title, String description){
         String oldTitle = cassetteModel.getTitle();
         String oldDesc = cassetteModel.getDescription();
-
         this.cassetteModel.setTitle(title);
         this.cassetteModel.setDescription(description);
-        if(!this.updateUseCase.updateCassette(cassetteModel)){
+
+        boolean updateWasSuccessful = this.updateUseCase.updateCassette(cassetteModel);
+
+        if(!updateWasSuccessful){
             this.cassetteModel.setTitle(oldTitle);
             this.cassetteModel.setDescription(oldDesc);
         }
         this.view.refreshTitleAndDescription(this.cassetteModel);
+        return updateWasSuccessful;
     }
 
     public void refreshTitleAndDescriptionInView(){

@@ -182,6 +182,10 @@ public class ListCassetteFragment
                 Log.d(TAG, "onActivityResult: Received result for deleted cassette");
                 int deleteCassetteId = data.getIntExtra(DetailCassetteActivity.INTENT_EXTRA_PARAM_CASSETTE_ID, -1);
                 this.cassettesAdapter.deleteCassette(deleteCassetteId);
+            } else if (resultCode == DetailCassetteActivity.DETAIL_ACTIVITY_UPDATE_RESULT_CODE){
+                Log.d(TAG, "onActivityResult: Received result for updated cassette");
+                int updatedCassetteId = data.getIntExtra(DetailCassetteActivity.INTENT_EXTRA_PARAM_CASSETTE_ID, -1);
+                presenter.queryForNewlyUpdatedCassette(updatedCassetteId);
             }
         }
     }

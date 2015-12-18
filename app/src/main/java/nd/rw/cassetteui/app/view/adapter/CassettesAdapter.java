@@ -36,7 +36,6 @@ public class CassettesAdapter extends RecyclerView.Adapter<CassettesAdapter.Cass
     //region Methods
 
     public void setCassetteModelList(Collection<CassetteModel> cassetteModelList) {
-//        Log.d(TAG, "setCassetteModelList");
         this.cassetteModelList = (List<CassetteModel>) cassetteModelList;
     }
 
@@ -108,8 +107,6 @@ public class CassettesAdapter extends RecyclerView.Adapter<CassettesAdapter.Cass
 
     @Override
     public int getItemCount() {
-//        Log.d(TAG, "count: " + this.cassetteModelList.size());
-
         return this.cassetteModelList.size();
     }
 
