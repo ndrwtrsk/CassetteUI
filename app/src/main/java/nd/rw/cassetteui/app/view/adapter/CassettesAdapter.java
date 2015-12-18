@@ -17,20 +17,18 @@ import nd.rw.cassetteui.app.listeners.OnCassetteClickedHandler;
 import nd.rw.cassetteui.app.model.CassetteModel;
 import nd.rw.cassetteui.app.model.descriptors.CassetteModelDescriptor;
 
-public class CassettesListViewAdapter extends RecyclerView.Adapter<CassettesListViewAdapter.CassetteViewHolder>{
-
-    private static final String TAG = "CAS_ADAPT";
+public class CassettesAdapter extends RecyclerView.Adapter<CassettesAdapter.CassetteViewHolder>{
 
     //region Fields
+    private static final String TAG = "CassettesAdapter";
 
     private List<CassetteModel> cassetteModelList;
-
     private OnCassetteClickedHandler onCassetteClickedHandler;
 
     //endregion Fields
 
-    public CassettesListViewAdapter(List<CassetteModel> cassetteModelList,
-                                    OnCassetteClickedHandler onCassetteClickedHandler) {
+    public CassettesAdapter(List<CassetteModel> cassetteModelList,
+                            OnCassetteClickedHandler onCassetteClickedHandler) {
         this.cassetteModelList = cassetteModelList;
         this.onCassetteClickedHandler = onCassetteClickedHandler;
     }
@@ -46,7 +44,11 @@ public class CassettesListViewAdapter extends RecyclerView.Adapter<CassettesList
         if (cassetteModelList == null || cassetteModel == null) {
             return;
         }
-        cassetteModelList.add(0, cassetteModel);
+        if (cassetteModelList.size() == 0){
+            cassetteModelList.add(cassetteModel);
+        } else {
+            cassetteModelList.add(0, cassetteModel);
+        }
         notifyItemInserted(0);
     }
 
@@ -142,10 +144,6 @@ public class CassettesListViewAdapter extends RecyclerView.Adapter<CassettesList
             if (cassetteModel == null) {
                 return;
             }
-            //  ALWAYS always use Integer.toString(...) when working with integers.
-            //  If you try to set integer as text, you call method setText(int resID)
-            //  and application try to set as text some string resource with this resID.
-
             CassetteModelDescriptor descriptor = cassetteModel.getDescriptor();
 
             this.tv_title.setText(descriptor.title);

@@ -24,7 +24,7 @@ import nd.rw.cassetteui.app.view.ListCassettesView;
 import nd.rw.cassetteui.app.view.activity.AddCassetteActivity;
 import nd.rw.cassetteui.app.view.activity.DetailCassetteActivity;
 import nd.rw.cassetteui.app.view.adapter.CassetteLayoutManager;
-import nd.rw.cassetteui.app.view.adapter.CassettesListViewAdapter;
+import nd.rw.cassetteui.app.view.adapter.CassettesAdapter;
 import nd.rw.cassetteui.app.view.decoration.DividerItemDecoration;
 
 public class ListCassetteFragment
@@ -39,16 +39,14 @@ public class ListCassetteFragment
 
     @Bind(R.id.rv_cassettes)
     public RecyclerView rv_cassettes;
-
     @Bind(R.id.layout_cassettes)
     public CoordinatorLayout cl_layout;
-
     @Bind(R.id.fab_addCassette)
     public FloatingActionButton fab_addCassette;
 
     public ListCassettePresenter presenter;
 
-    private CassettesListViewAdapter cassettesAdapter;
+    private CassettesAdapter cassettesAdapter;
 
     private CassetteLayoutManager layoutManager;
 
@@ -71,7 +69,7 @@ public class ListCassetteFragment
         this.layoutManager = new CassetteLayoutManager(this.getContext());
         this.rv_cassettes.setLayoutManager(layoutManager);
         this.onCassetteClickedHandler = this;
-        this.cassettesAdapter = new CassettesListViewAdapter(new ArrayList<CassetteModel>(), onCassetteClickedHandler);
+        this.cassettesAdapter = new CassettesAdapter(new ArrayList<CassetteModel>(), onCassetteClickedHandler);
         this.rv_cassettes.setAdapter(cassettesAdapter);
         this.fab_addCassette.setOnClickListener(fabAddListener);
         this.rv_cassettes.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
@@ -214,6 +212,7 @@ public class ListCassetteFragment
 
     @Override
     public void onCassetteClicked(CassetteModel cassetteModel, View cassetteViewForTransition) {
+        Log.i(TAG, "onCassetteClicked");
         Intent intent = DetailCassetteActivity.getCallingIntent(this.getContext(), cassetteModel.getId());
         startActivityForResult(intent, LIST_FRAGMENT_ADD_ACTIVITY_REQUEST_CODE);
     }
