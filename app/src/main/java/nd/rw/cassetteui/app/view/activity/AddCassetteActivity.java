@@ -6,22 +6,24 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import nd.rw.cassetteui.R;
+import nd.rw.cassetteui.app.model.CassetteModel;
 import nd.rw.cassetteui.app.presenter.AddCassettePresenter;
 import nd.rw.cassetteui.app.view.AddCassetteView;
 
 public class AddCassetteActivity extends BaseActivity implements AddCassetteView {
-    private static final String TAG = "ADD_CAS_ACT";
 
     //region Fields
+    private static final String TAG = "ADD_CAS_ACT";
+    public static final String EXTRA_BUNDLE_PARAM_BOOLEAN_WAS_ADDED = "WasOrWasNot";
+    public static final String EXTRA_BUNDLE_PARAM_NEW_CASSETTE_ID = "nd.rw.cassetteui.app.view.activity.AddCassetteActivity.NEW_CASSETTE_ID";
+    public static final int ADD_ACTIVITY_LIST_FRAGMENT_RESULT_CODE = 1;
 
     private AddCassettePresenter presenter;
 
@@ -69,13 +71,19 @@ public class AddCassetteActivity extends BaseActivity implements AddCassetteView
 
     /** AddCassetteView Method */
     @Override
-    public void notifyPresenter() {
+    public void addCassette() {
         this.title = et_title.getText().toString();
         this.description = et_description.getText().toString();
-        presenter.addCassette(title, description);
-        this.finish();
+        CassetteModel cassetteModel = presenter.addCassette(title, description);
+        Intent intent = new Intent();
+        boolean wasAdded = cassetteModel != null;
+        intent.putExtra(EXTRA_BUNDLE_PARAM_BOOLEAN_WAS_ADDED, wasAdded);
+        if (cassetteModel != null) {
+            intent.putExtra(EXTRA_BUNDLE_PARAM_NEW_CASSETTE_ID, cassetteModel.getId());
+        }
+        setResult(ADD_ACTIVITY_LIST_FRAGMENT_RESULT_CODE, intent);
+        finish();
     }
-
 
     //endregion Methods
 
@@ -84,7 +92,7 @@ public class AddCassetteActivity extends BaseActivity implements AddCassetteView
     private View.OnClickListener addCassetteButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            notifyPresenter();
+            addCassette();
         }
     };
 

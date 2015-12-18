@@ -9,5 +9,7 @@ public interface ListCassettesView extends LoadDataView {
     void renderCassetteList(Collection<CassetteModel> cassetteModelCollection);
     void viewCassette(CassetteModel cassetteModel);
     void setOnCassetteClicked(OnCassetteClickedHandler onCassetteClickedHandlerListener);
-    void addCassette();
+    void onAddedCassette(CassetteModel cassetteModel);
+    void onUpdatedCassette(CassetteModel cassetteModel);
+    void onDeleteCassette(int cassetteId);
 }

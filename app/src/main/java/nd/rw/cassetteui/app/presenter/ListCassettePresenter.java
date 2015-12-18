@@ -4,7 +4,9 @@ package nd.rw.cassetteui.app.presenter;
 import java.util.List;
 
 import nd.rw.cassetteui.app.model.CassetteModel;
+import nd.rw.cassetteui.app.view.DetailCassetteView;
 import nd.rw.cassetteui.app.view.ListCassettesView;
+import nd.rw.cassetteui.domain.usecase.DetailCassetteUseCase;
 import nd.rw.cassetteui.domain.usecase.ListCassettesUseCase;
 
 public class ListCassettePresenter implements Presenter{
@@ -13,7 +15,7 @@ public class ListCassettePresenter implements Presenter{
     //region Field
 
     private ListCassettesUseCase useCase = new ListCassettesUseCase();
-
+    private DetailCassetteUseCase detailsUseCase = new DetailCassetteUseCase();
     private ListCassettesView view;
 
     //endregion Field
@@ -41,6 +43,10 @@ public class ListCassettePresenter implements Presenter{
 
     public void onCassetteClicked(CassetteModel cassetteModel){
         this.view.viewCassette(cassetteModel);
+    }
+
+    public void queryForNewlyAddedCassette(int cassetteId){
+        this.view.onAddedCassette(this.detailsUseCase.getCassetteById(cassetteId));
     }
 
     //endregion Methods

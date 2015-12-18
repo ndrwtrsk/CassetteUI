@@ -1,6 +1,7 @@
 package nd.rw.cassetteui.app.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,44 @@ public class CassettesListViewAdapter extends RecyclerView.Adapter<CassettesList
     public void setCassetteModelList(Collection<CassetteModel> cassetteModelList) {
 //        Log.d(TAG, "setCassetteModelList");
         this.cassetteModelList = (List<CassetteModel>) cassetteModelList;
+    }
+
+    public void addCassetteToTop(CassetteModel cassetteModel){
+        if (cassetteModelList == null || cassetteModel == null) {
+            return;
+        }
+        cassetteModelList.add(0, cassetteModel);
+        notifyItemInserted(0);
+    }
+
+    public void updateCassette(CassetteModel cassetteModel){
+        if (cassetteModelList == null || cassetteModel == null) {
+            return;
+        }
+
+        for (int i = 0; i < cassetteModelList.size(); i++) {
+            if (cassetteModelList.get(i).getId() == cassetteModel.getId()){
+                cassetteModelList.set(i, cassetteModel);
+                notifyItemChanged(i);
+                return;
+            }
+        }
+        Log.d(TAG, "updateCassette: No Cassette was updated.");
+    }
+
+    public void deleteCassette(CassetteModel cassetteModel){
+        if (cassetteModelList == null || cassetteModel == null) {
+            return;
+        }
+
+        for (int i = 0; i < cassetteModelList.size(); i++) {
+            if (cassetteModelList.get(i).getId() == cassetteModel.getId()){
+                cassetteModelList.remove(i);
+                notifyItemRemoved(i);
+                return;
+            }
+        }
+        Log.d(TAG, "deleteCassette: No Cassette was removed.");
     }
 
     //endregion Methods
