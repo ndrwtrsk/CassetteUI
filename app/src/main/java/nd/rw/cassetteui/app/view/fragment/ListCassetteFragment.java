@@ -22,13 +22,14 @@ import nd.rw.cassetteui.app.model.CassetteModel;
 import nd.rw.cassetteui.app.presenter.ListCassettePresenter;
 import nd.rw.cassetteui.app.view.ListCassettesView;
 import nd.rw.cassetteui.app.view.activity.AddCassetteActivity;
+import nd.rw.cassetteui.app.view.activity.DetailCassetteActivity;
 import nd.rw.cassetteui.app.view.adapter.CassetteLayoutManager;
 import nd.rw.cassetteui.app.view.adapter.CassettesListViewAdapter;
 import nd.rw.cassetteui.app.view.decoration.DividerItemDecoration;
 
 public class ListCassetteFragment
         extends BaseFragment
-        implements ListCassettesView{
+        implements ListCassettesView, OnCassetteClickedHandler{
 
     //region Fields
 
@@ -69,6 +70,7 @@ public class ListCassetteFragment
     private void setupUI(){
         this.layoutManager = new CassetteLayoutManager(this.getContext());
         this.rv_cassettes.setLayoutManager(layoutManager);
+        this.onCassetteClickedHandler = this;
         this.cassettesAdapter = new CassettesListViewAdapter(new ArrayList<CassetteModel>(), onCassetteClickedHandler);
         this.rv_cassettes.setAdapter(cassettesAdapter);
         this.fab_addCassette.setOnClickListener(fabAddListener);
@@ -94,7 +96,7 @@ public class ListCassetteFragment
 
     @Override
     public void setOnCassetteClicked(OnCassetteClickedHandler onCassetteClickedHandler) {
-        this.onCassetteClickedHandler = onCassetteClickedHandler;
+        this.onCassetteClickedHandler = this;
     }
 
     @Override
@@ -169,15 +171,20 @@ public class ListCassetteFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult() called with: " + "requestCode = [" + requestCode + "], resultCode = [" + resultCode + "], data = [" + data + "]");
+        // FIXME: 18.12.2015 Clean this mess
+        if (requestCode == LIST_FRAGMENT_ADD_ACTIVITY_REQUEST_CODE){
 
-        boolean areCodesCorrectAndWasNewCassetteAdded =
-                                (requestCode == LIST_FRAGMENT_ADD_ACTIVITY_REQUEST_CODE) &&
-                                (resultCode == AddCassetteActivity.ADD_ACTIVITY_LIST_FRAGMENT_RESULT_CODE) &&
-                                (data.getBooleanExtra(AddCassetteActivity.INTENT_EXTRA_PARAM__WAS_ADDED, false));
-
-        if (areCodesCorrectAndWasNewCassetteAdded){
-            int newCassetteId = data.getIntExtra(AddCassetteActivity.INTENT_EXTRA_PARAM_NEW_CASSETTE_ID, -1);
-            this.presenter.queryForNewlyAddedCassette(newCassetteId);
+            if ((resultCode == AddCassetteActivity.ADD_ACTIVITY_LIST_FRAGMENT_RESULT_CODE) &&
+                    (data.getBooleanExtra(AddCassetteActivity.INTENT_EXTRA_PARAM__WAS_ADDED, false))){
+                Log.d(TAG, "onActivityResult: Recevieved result for added cassette");
+                int newCassetteId = data.getIntExtra(AddCassetteActivity.INTENT_EXTRA_PARAM_NEW_CASSETTE_ID, -1);
+                this.presenter.queryForNewlyAddedCassette(newCassetteId);
+            } else if (resultCode == DetailCassetteActivity.DETAIL_ACTIVITY_DELETE_RESULT_CODE){
+                Log.d(TAG, "onActivityResult: Received result for deleted cassette");
+                int deleteCassetteId = data.getIntExtra(DetailCassetteActivity.INTENT_EXTRA_PARAM_CASSETTE_ID, -1);
+                this.cassettesAdapter.deleteCassette(deleteCassetteId);
+            }
         }
     }
 
@@ -203,6 +210,12 @@ public class ListCassetteFragment
         ListCassetteFragment fragment = new ListCassetteFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCassetteClicked(CassetteModel cassetteModel, View cassetteViewForTransition) {
+        Intent intent = DetailCassetteActivity.getCallingIntent(this.getContext(), cassetteModel.getId());
+        startActivityForResult(intent, LIST_FRAGMENT_ADD_ACTIVITY_REQUEST_CODE);
     }
 
     //endregion Static Methods

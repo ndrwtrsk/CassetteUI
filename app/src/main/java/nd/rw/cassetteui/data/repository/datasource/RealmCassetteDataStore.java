@@ -84,7 +84,7 @@ public class RealmCassetteDataStore implements CassetteDataStore {
         cassetteEntity.removeFromRealm();
         mRealm.commitTransaction();
 
-        return exists(id);
+        return !exists(id); //CHECK THAT IT DOESN'T EXIST!
     }
 
     @Override

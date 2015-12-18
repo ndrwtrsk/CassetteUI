@@ -25,9 +25,11 @@ public class DetailCassetteActivity
 
     //region Fields
 
-    private static final String INTENT_EXTRA_PARAM_CASSETTE_ID = "andrewtorski.cassette.INTENT_PARAM_CASSETTE_ID";
-    private static final String INSTANCE_STATE_PARAM_CASSETTE_ID = "andrewtorski.cassette.STATE_PARAM_CASSETTE_ID";
     private static final String TAG = "DET_CAS_ACT";
+
+    public static final String INTENT_EXTRA_PARAM_CASSETTE_ID = "andrewtorski.cassette.INTENT_PARAM_CASSETTE_ID";
+    public static final String INSTANCE_STATE_PARAM_CASSETTE_ID = "andrewtorski.cassette.STATE_PARAM_CASSETTE_ID";
+    public static final int DETAIL_ACTIVITY_DELETE_RESULT_CODE = 3;
 
     @Bind(R.id.toolbar)
     public Toolbar toolbar;
@@ -105,7 +107,13 @@ public class DetailCassetteActivity
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         Log.d(TAG, "onDialogPositiveClick: POSITIVE");
-        this.presenter.deleteCassette(this.cassetteId);
+        boolean deleteWasSuccessful = this.presenter.deleteCassette(this.cassetteId);
+        Intent intent = new Intent();
+        if (deleteWasSuccessful) {
+            Log.d(TAG, "onDialogPositiveClick: Delete was successful");
+            intent.putExtra(INTENT_EXTRA_PARAM_CASSETTE_ID, cassetteId);
+        }
+        setResult(DETAIL_ACTIVITY_DELETE_RESULT_CODE, intent);
         this.finish();
     }
 

@@ -30,8 +30,7 @@ import nd.rw.cassetteui.app.view.fragment.RecordingFragment;
 import nd.rw.cassetteui.app.view.ui.MainViewPager;
 
 public class MainActivity
-        extends BaseActivity
-        implements OnCassetteClickedHandler{
+        extends BaseActivity {
 
     //region Fields
 
@@ -66,7 +65,6 @@ public class MainActivity
 
         recordingFragment = RecordingFragment.newInstance();
         listCassetteFragment = ListCassetteFragment.newInstance();
-        listCassetteFragment.setOnCassetteClicked(this);
         mViewPager.setMotionBlocker(recordingFragment);
     }
 
@@ -105,25 +103,6 @@ public class MainActivity
             return super.onKeyDown(keyCode, event);
         else
             return recordingFragment.processKeyEvent(false, keyCode, event);
-    }
-
-    @Override
-    public void onCassetteClicked(CassetteModel cassetteModel, View cassetteViewForTransition) {
-//        Log.d(TAG, "onCassetteClicked: cassetteModel.Id: " + cassetteModel.getId());
-//        Log.d(TAG, "onCassetteClicked: cassetteViewForTransition == null?: " + (cassetteViewForTransition == null));
-//        String transitionName = cassetteViewForTransition.getTransitionName();
-//        Log.d(TAG, "onCassetteClicked: transitionName: " + transitionName);
-//        Pair participants = new Pair<>(cassetteViewForTransition, transitionName);
-
-//        ActivityOptionsCompat transitionActivityOptions =
-//                ActivityOptionsCompat.makeSceneTransitionAnimation(
-//                        MainActivity.this, participants);
-
-        Intent intent = DetailCassetteActivity.getCallingIntent(this, cassetteModel.getId());
-
-//        ActivityCompat.startActivity(MainActivity.this, intent, transitionActivityOptions.toBundle());
-
-        this.startActivity(intent);
     }
 
     //endregion Listeners and events

@@ -70,8 +70,13 @@ public class CassettesListViewAdapter extends RecyclerView.Adapter<CassettesList
             return;
         }
 
+        this.deleteCassette(cassetteModel.getId());
+
+    }
+
+    public void deleteCassette(int cassetteId){
         for (int i = 0; i < cassetteModelList.size(); i++) {
-            if (cassetteModelList.get(i).getId() == cassetteModel.getId()){
+            if (cassetteModelList.get(i).getId() == cassetteId){
                 cassetteModelList.remove(i);
                 notifyItemRemoved(i);
                 return;
