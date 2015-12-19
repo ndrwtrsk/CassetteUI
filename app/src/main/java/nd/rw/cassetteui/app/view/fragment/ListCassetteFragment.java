@@ -181,6 +181,8 @@ public class ListCassetteFragment
             } else if (resultCode == DetailCassetteActivity.DETAIL_ACTIVITY_DELETE_RESULT_CODE){
                 Log.d(TAG, "onActivityResult: Received result for deleted cassette");
                 int deleteCassetteId = data.getIntExtra(DetailCassetteActivity.INTENT_EXTRA_PARAM_CASSETTE_ID, -1);
+                // TODO: 18.12.2015 Be consistent and provide the id to the presenter and then
+                //                  have the presenter call the View to remove the cassette?
                 this.cassettesAdapter.deleteCassette(deleteCassetteId);
             } else if (resultCode == DetailCassetteActivity.DETAIL_ACTIVITY_UPDATE_RESULT_CODE){
                 Log.d(TAG, "onActivityResult: Received result for updated cassette");

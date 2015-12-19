@@ -68,7 +68,6 @@ public class AddCassetteActivity extends BaseActivity implements AddCassetteView
 
     //region Methods
 
-
     /** AddCassetteView Method */
     @Override
     public void addCassette() {
