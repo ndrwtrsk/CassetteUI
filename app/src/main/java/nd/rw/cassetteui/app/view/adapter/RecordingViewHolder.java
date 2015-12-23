@@ -1,6 +1,7 @@
 package nd.rw.cassetteui.app.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -44,7 +45,7 @@ public class RecordingViewHolder extends RecyclerView.ViewHolder{
 
         RecordingModelDescriptor descriptor = recording.getDescriptor();
 
-        String title = descriptor.title.isEmpty() ? "Recording" : descriptor.title;
+        String title = TextUtils.isEmpty(descriptor.title) ? "Recording" : descriptor.title;
         String date = descriptor.dateRecorded;
         String duration = descriptor.duration;
 
