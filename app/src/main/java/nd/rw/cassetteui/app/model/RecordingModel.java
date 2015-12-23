@@ -43,6 +43,14 @@ public class RecordingModel {
         this.cassette = cassette;
     }
 
+    public RecordingModel(GregorianCalendar dateRecorded, int durationInMs,
+                          String path, CassetteModel cassette) {
+        this.dateRecorded = dateRecorded;
+        this.durationInMs = durationInMs;
+        this.path = path;
+        this.cassette = cassette;
+    }
+
     public String getFormattedDate(){
         SimpleDateFormat fmt = new SimpleDateFormat("HH:mm:ss dd MMMM yyyy");
         fmt.setCalendar(dateRecorded);

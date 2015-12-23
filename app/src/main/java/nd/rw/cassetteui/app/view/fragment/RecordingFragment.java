@@ -16,20 +16,33 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
+
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.ButterKnife;
 import nd.rw.cassetteui.R;
 import nd.rw.cassetteui.app.listeners.MainViewPagerMotionBlocker;
+import nd.rw.cassetteui.app.listeners.OnCassetteClickedHandler;
+import nd.rw.cassetteui.app.model.CassetteModel;
+import nd.rw.cassetteui.app.presenter.ListCassettePresenter;
 import nd.rw.cassetteui.app.utils.AudioPlayer;
+import nd.rw.cassetteui.app.utils.RecordingAssistant;
 import nd.rw.cassetteui.app.utils.VoiceRecorder;
+import nd.rw.cassetteui.app.view.ListCassettesView;
+import nd.rw.cassetteui.app.view.adapter.CassetteSpinnerAdapter;
 
 public class RecordingFragment
         extends Fragment
-        implements MainViewPagerMotionBlocker{
+        implements MainViewPagerMotionBlocker,
+        ListCassettesView{
 
     enum ActivationMethod{
         ScreenButtonActivated,
@@ -45,8 +58,8 @@ public class RecordingFragment
     @Bind(R.id.recording_main_button)
     public Button b_recording;
 
-    @Bind(R.id.play_button)
-    public Button b_play;
+    /*@Bind(R.id.play_button)
+    public Button b_play;*/
 
     @Bind(R.id.recording_layout)
     public RelativeLayout layout;
@@ -59,6 +72,12 @@ public class RecordingFragment
     @BindColor(R.color.primary)
     public int c_primaryIndigo;
 
+    @Bind(R.id.cassette_spinner)
+    public Spinner sp_cassettesToChoose;
+    private CassetteSpinnerAdapter cassetteSpinnerAdapter;
+    private ListCassettePresenter presenter;
+    private RecordingAssistant recordingAssistant;
+
     private boolean isRecording;
     private String fileName;
 
@@ -66,6 +85,7 @@ public class RecordingFragment
 
     private VoiceRecorder voiceRecorder = new VoiceRecorder();
     private AudioPlayer audioPlayer = new AudioPlayer();
+
 
     //endregion Fields
 
@@ -77,22 +97,98 @@ public class RecordingFragment
         View rootView = inflater.inflate(R.layout.fragment_section_recording, container, false);
         ButterKnife.bind(this, rootView);
         this.setUpListeners();
+        this.cassetteSpinnerAdapter = new CassetteSpinnerAdapter(new LinkedList<CassetteModel>());
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        this.presenter = new ListCassettePresenter(this);
+        this.presenter.initialize();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        fileName = context.getFilesDir() + "/audio";
+        String internalSotrageDirectoryRoot
+                = context.getFilesDir()+ "/";
+        recordingAssistant = new RecordingAssistant(internalSotrageDirectoryRoot);
     }
 
     //endregion Fragment overridden methods
 
+    //region ListCassetteView Methods
+
+    @Override
+    public void renderCassetteList(Collection<CassetteModel> cassetteModelCollection) {
+        if (cassetteModelCollection == null) {
+            throw new RuntimeException("Cassete model collection should not be null.");
+        }
+        this.cassetteSpinnerAdapter.setCassetteModelList((List<CassetteModel>)cassetteModelCollection);
+        this.sp_cassettesToChoose.setAdapter(cassetteSpinnerAdapter);
+    }
+
+    @Override
+    public void viewCassette(CassetteModel cassetteModel) {
+
+    }
+
+    @Override
+    public void setOnCassetteClicked(OnCassetteClickedHandler onCassetteClickedHandlerListener) {
+
+    }
+
+    @Override
+    public void onAddedCassette(CassetteModel cassetteModel) {
+
+    }
+
+    @Override
+    public void onUpdatedCassette(CassetteModel cassetteModel) {
+
+    }
+
+    @Override
+    public void onDeleteCassette(int cassetteId) {
+
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void showRetry() {
+
+    }
+
+    @Override
+    public void hideRetry() {
+
+    }
+
+    @Override
+    public void showError(String message) {
+
+    }
+
+    //endregion ListCassetteView Methods
+
     //region Helper methods
+
+    //region Recording Helper Methods
 
     private void setUpListeners(){
         b_recording.setOnTouchListener(speakTouchListener);
-        b_play.setOnClickListener(playButtonListener);
+//        b_play.setOnClickListener(playButtonListener);
+        sp_cassettesToChoose.setOnItemSelectedListener(cassetteSpinnerSelectionListener);
     }
 
     private void stopRecording(){
@@ -101,9 +197,8 @@ public class RecordingFragment
             setButtonToIdle();
             vibrateEnd();
             isRecording = !isRecording;
-            voiceRecorder.stopRecording();
+            recordingAssistant.stopRecording();
         }
-
     }
 
     private void startRecording(){
@@ -112,7 +207,7 @@ public class RecordingFragment
             setButtonToActive();
             vibrateBegin();
             isRecording = !isRecording;
-            voiceRecorder.startRecording(fileName);
+            recordingAssistant.startRecording();
         }
     }
 
@@ -144,9 +239,26 @@ public class RecordingFragment
         transition.reverseTransition(25);
     }
 
+    //endregion Recording Helper Methods
+
     //endregion Helper methods
 
     //region Listeners and events
+
+    private AdapterView.OnItemSelectedListener cassetteSpinnerSelectionListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            CassetteModel cassetteAtPosition = (CassetteModel)cassetteSpinnerAdapter.getItem(position);
+            recordingAssistant.changeCassette(cassetteAtPosition);
+            Log.d(TAG, "onItemSelected: RecordingAssistant current cassette title: "
+                    + recordingAssistant.getSelectedCassetteTitle());
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
 
     private View.OnTouchListener speakTouchListener = new View.OnTouchListener() {
 
@@ -170,7 +282,7 @@ public class RecordingFragment
 
     private boolean isPlaying = false;
 
-    private View.OnClickListener playButtonListener = new View.OnClickListener() {
+    /*private View.OnClickListener playButtonListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (!isPlaying){
@@ -180,7 +292,7 @@ public class RecordingFragment
             }
             isPlaying = !isPlaying;
         }
-    };
+    };*/
 
     /*
         Returning true from the two following methods will prevent the event from being propagated further

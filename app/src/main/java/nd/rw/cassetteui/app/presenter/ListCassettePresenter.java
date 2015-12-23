@@ -4,7 +4,6 @@ package nd.rw.cassetteui.app.presenter;
 import java.util.List;
 
 import nd.rw.cassetteui.app.model.CassetteModel;
-import nd.rw.cassetteui.app.view.DetailCassetteView;
 import nd.rw.cassetteui.app.view.ListCassettesView;
 import nd.rw.cassetteui.domain.usecase.DetailCassetteUseCase;
 import nd.rw.cassetteui.domain.usecase.ListCassettesUseCase;

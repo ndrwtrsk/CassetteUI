@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dense_line_list_item_height">
+
+    <TextView
+        android:id="@+id/cassette_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="Cassette #1"
+        android:textColor="@color/primary_text"
+        android:textSize="@dimen/font_normal" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider"
+        android:layout_below="@id/cassette_title"/>
+
+</RelativeLayout>

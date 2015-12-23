@@ -20,11 +20,23 @@
         android:background="@drawable/button_recording_transition"
         />
 
+    <Spinner
+        android:id="@+id/cassette_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/recording_main_button"
+        android:dropDownWidth="match_parent"
+        android:spinnerMode="dropdown"
+        android:background="@color/primary_light"
+        android:dropDownSelector="@android:drawable/arrow_up_float">
+
+    </Spinner>
+
     <Button
         android:id="@+id/play_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/recording_main_button"
+        android:layout_below="@+id/cassette_spinner"
         android:layout_centerHorizontal="true"
         android:text="Play"
         />

@@ -1,5 +1,7 @@
 package nd.rw.cassetteui.data.repository;
 
+import android.util.Log;
+
 import java.util.Date;
 import java.util.List;
 
@@ -11,6 +13,7 @@ import nd.rw.cassetteui.domain.repository.RecordingRepository;
 
 public class RecordingDataRepository implements RecordingRepository {
 
+    private static final String TAG = "RecDataRepo";
     private RecordingDataStore dataStore;
 
     public RecordingDataRepository(RecordingDataStore dataStore) {
@@ -42,6 +45,7 @@ public class RecordingDataRepository implements RecordingRepository {
 
     @Override
     public RecordingModel create(RecordingModel recordingModel) {
+        Log.d(TAG, "create() called with: " + "recordingModel = [" + recordingModel + "]");
         if (recordingModel == null) {
             return null;
         }
