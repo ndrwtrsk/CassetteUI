@@ -1,5 +1,7 @@
 package nd.rw.cassetteui.data.repository.datasource;
 
+import android.util.Log;
+
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +12,7 @@ import nd.rw.cassetteui.data.entity.RecordingEntity;
 
 public class RealmRecordingDataStore implements RecordingDataStore{
 
+    private static final String TAG = "RealmRecDataStore";
     private Realm mRealm;
 
     public RealmRecordingDataStore() {
@@ -51,18 +54,29 @@ public class RealmRecordingDataStore implements RecordingDataStore{
 
     @Override
     public RecordingEntity create(String path, int durationInMs, Date date, int cassetteId) {
+        Log.d(TAG, "create() called with: " + "path = [" + path + "], durationInMs = [" + durationInMs + "], date = [" + date + "], cassetteId = [" + cassetteId + "]");
         CassetteEntity cassetteEntity = mRealm.where(CassetteEntity.class).equalTo("id", cassetteId).findFirst();
         if (cassetteEntity == null) {
+            Log.e(TAG, "create: CassetteEntity was null!");
             return null;
         }
+        mRealm.beginTransaction();
         RecordingEntity recordingEntity = mRealm.createObject(RecordingEntity.class);
         recordingEntity.setId(this.getNextPkValue());
         recordingEntity.setPath(path);
         recordingEntity.setDurationInMs(durationInMs);
         recordingEntity.setDateRecorded(date);
         recordingEntity.setCassette(cassetteEntity);
-        mRealm.beginTransaction();
         recordingEntity = mRealm.copyToRealm(recordingEntity);
+        /**
+         * Newly created Recording has to be added to the parent object in order for it's
+         * relation ship to parent to be recognized by the database, hence below call
+         * to get CassetteEntity's list of recordings and subsequent addition of newly
+         * created recording.
+         *
+         * Simple and nice.
+         */
+        cassetteEntity.getRecordingEntities().add(recordingEntity);
         mRealm.commitTransaction();
         return recordingEntity;
     }
