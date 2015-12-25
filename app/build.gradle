@@ -59,4 +59,5 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'io.realm:realm-android:0.86.1'
     compile "com.daimajia.swipelayout:library:1.2.0@aar"
+    compile 'com.annimon:stream:1.0.5'
 }
