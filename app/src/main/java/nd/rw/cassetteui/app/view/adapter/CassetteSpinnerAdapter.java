@@ -1,6 +1,7 @@
 package nd.rw.cassetteui.app.view.adapter;
 
 import android.database.DataSetObserver;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,11 @@ import butterknife.ButterKnife;
 import nd.rw.cassetteui.R;
 import nd.rw.cassetteui.app.model.CassetteModel;
 
+// TODO: 25.12.2015 Extract an abstract class from CassetteSpinnerAdapter and CassetteAdapter
+// there is some code that may be reused and that can be written just once.
+// Nice.
 public class CassetteSpinnerAdapter implements SpinnerAdapter {
+    private static final String TAG = "CassSpinnerAdapter";
     List<CassetteModel> cassetteModelList;
 
     public CassetteSpinnerAdapter(List<CassetteModel> cassetteModelList) {
@@ -23,6 +28,58 @@ public class CassetteSpinnerAdapter implements SpinnerAdapter {
     public void setCassetteModelList(List<CassetteModel> cassetteModelList) {
         this.cassetteModelList = cassetteModelList;
     }
+
+    //region Methods
+
+    public void addCassette(CassetteModel cassetteModel){
+        if (cassetteModelList == null || cassetteModel == null) {
+            return;
+        }
+        if (cassetteModelList.size() == 0){
+            cassetteModelList.add(cassetteModel);
+        } else {
+            cassetteModelList.add(0, cassetteModel);
+        }
+
+    }
+
+    public void updateCassette(CassetteModel cassetteModel){
+        if (cassetteModelList == null || cassetteModel == null) {
+            return;
+        }
+
+        for (int i = 0; i < cassetteModelList.size(); i++) {
+            if (cassetteModelList.get(i).getId() == cassetteModel.getId()){
+                cassetteModelList.set(i, cassetteModel);
+                return;
+            }
+        }
+        Log.d(TAG, "updateCassette: No Cassette was updated.");
+    }
+
+    public void deleteCassette(CassetteModel cassetteModel){
+        if (cassetteModelList == null || cassetteModel == null) {
+            return;
+        }
+
+        this.deleteCassette(cassetteModel.getId());
+
+    }
+
+    public void deleteCassette(int cassetteId){
+        for (int i = 0; i < cassetteModelList.size(); i++) {
+            if (cassetteModelList.get(i).getId() == cassetteId){
+                cassetteModelList.remove(i);
+                return;
+            }
+        }
+        Log.d(TAG, "deleteCassette: No Cassette was removed.");
+    }
+
+
+    //endregion Methods
+
+    //region SpinnerAdapter Methods
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
@@ -110,4 +167,7 @@ public class CassetteSpinnerAdapter implements SpinnerAdapter {
         else
             return cassetteModelList.isEmpty();
     }
+
+    //endregion SpinnerAdapter Methods
+
 }

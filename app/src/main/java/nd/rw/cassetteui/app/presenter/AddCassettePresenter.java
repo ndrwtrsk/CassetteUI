@@ -1,6 +1,7 @@
 package nd.rw.cassetteui.app.presenter;
 
 import nd.rw.cassetteui.app.model.CassetteModel;
+import nd.rw.cassetteui.app.presenter.dp.ListCassettePresenterSubject;
 import nd.rw.cassetteui.app.view.AddCassetteView;
 import nd.rw.cassetteui.domain.usecase.AddCassetteUseCase;
 
@@ -17,7 +18,9 @@ public class AddCassettePresenter implements Presenter{
     //region Methods
 
     public CassetteModel addCassette(String title, String description){
-        return useCase.addCassetteModel(title, description);
+        CassetteModel newCassette = useCase.addCassetteModel(title, description);
+        ListCassettePresenterSubject.getInstance().notifyAboutAddedCassette(newCassette);
+        return newCassette;
     }
 
     //endregion Methods

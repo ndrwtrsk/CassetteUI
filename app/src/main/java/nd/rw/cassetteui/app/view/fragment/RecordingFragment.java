@@ -125,7 +125,7 @@ public class RecordingFragment
         if (cassetteModelCollection == null) {
             throw new RuntimeException("Cassete model collection should not be null.");
         }
-        this.cassetteSpinnerAdapter.setCassetteModelList((List<CassetteModel>)cassetteModelCollection);
+        this.cassetteSpinnerAdapter.setCassetteModelList((List<CassetteModel>) cassetteModelCollection);
         this.sp_cassettesToChoose.setAdapter(cassetteSpinnerAdapter);
     }
 
@@ -141,17 +141,31 @@ public class RecordingFragment
 
     @Override
     public void onAddedCassette(CassetteModel cassetteModel) {
-
+        cassetteSpinnerAdapter.addCassette(cassetteModel);
+        refreshSpinner();
     }
 
     @Override
     public void onUpdatedCassette(CassetteModel cassetteModel) {
-
+        cassetteSpinnerAdapter.updateCassette(cassetteModel);
+        refreshSpinner();
     }
 
     @Override
     public void onDeleteCassette(int cassetteId) {
+        cassetteSpinnerAdapter.deleteCassette(cassetteId);
+        refreshSpinner();
+    }
 
+    @Override
+    public void onDeleteCassette(CassetteModel cassette) {
+        cassetteSpinnerAdapter.deleteCassette(cassette);
+        refreshSpinner();
+    }
+
+    private void refreshSpinner(){
+        sp_cassettesToChoose.setAdapter(cassetteSpinnerAdapter);
+        sp_cassettesToChoose.postInvalidate();
     }
 
     @Override

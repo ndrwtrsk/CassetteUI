@@ -1,7 +1,9 @@
 package nd.rw.cassetteui.app.presenter;
 
 import nd.rw.cassetteui.app.model.CassetteModel;
+import nd.rw.cassetteui.app.presenter.dp.ListCassettePresenterSubject;
 import nd.rw.cassetteui.app.view.DetailCassetteView;
+import nd.rw.cassetteui.domain.usecase.DeleteCassetteUseCase;
 import nd.rw.cassetteui.domain.usecase.DetailCassetteUseCase;
 import nd.rw.cassetteui.domain.usecase.UpdateCassetteUseCase;
 
@@ -11,6 +13,7 @@ public class DetailUpdateCassettePresenter implements Presenter{
 
     private DetailCassetteUseCase detailCassetteUseCase = new DetailCassetteUseCase();
     private UpdateCassetteUseCase updateUseCase = new UpdateCassetteUseCase();
+    private DeleteCassetteUseCase deleteUseCase = new DeleteCassetteUseCase();
     private DetailCassetteView view;
 
     private int cassetteId;
@@ -55,9 +58,23 @@ public class DetailUpdateCassettePresenter implements Presenter{
         if(!updateWasSuccessful){
             this.cassetteModel.setTitle(oldTitle);
             this.cassetteModel.setDescription(oldDesc);
+        } else {
+            ListCassettePresenterSubject.getInstance().notifyAboutUpdateCassette(cassetteModel);
         }
         this.view.refreshTitleAndDescription(this.cassetteModel);
         return updateWasSuccessful;
+    }
+
+    /**
+     *  Deletes Cassette associated with this Presenter.
+     *  @return Success of this operation.
+     */
+    public boolean deleteCassette(){
+        boolean deleteWasSuccessful = deleteUseCase.deleteCassetteModel(cassetteId);
+        if (deleteWasSuccessful){
+            ListCassettePresenterSubject.getInstance().notifyAboutDeletedCassete(cassetteModel);
+        }
+        return deleteWasSuccessful;
     }
 
     public void refreshTitleAndDescriptionInView(){

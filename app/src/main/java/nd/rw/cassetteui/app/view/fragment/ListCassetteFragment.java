@@ -34,8 +34,6 @@ public class ListCassetteFragment
     //region Fields
 
     public static final String TAG = "LI_CAS_FRAG";
-    public static final int LIST_FRAGMENT_ADD_ACTIVITY_REQUEST_CODE = 1;
-
 
     @Bind(R.id.rv_cassettes)
     public RecyclerView rv_cassettes;
@@ -99,17 +97,25 @@ public class ListCassetteFragment
 
     @Override
     public void onAddedCassette(CassetteModel cassetteModel) {
+        Log.d(TAG, "onAddedCassette");
         this.cassettesAdapter.addCassetteToTop(cassetteModel);
     }
 
     @Override
     public void onUpdatedCassette(CassetteModel cassetteModel) {
+        Log.d(TAG, "onUpdatedCassette");
         this.cassettesAdapter.updateCassette(cassetteModel);
     }
 
     @Override
     public void onDeleteCassette(int cassetteId) {
 
+    }
+
+    @Override
+    public void onDeleteCassette(CassetteModel cassette) {
+        Log.d(TAG, "onDeleteCassette");
+        this.cassettesAdapter.deleteCassette(cassette);
     }
 
     //endregion ListCassetteView implemented methods
@@ -166,32 +172,6 @@ public class ListCassetteFragment
         this.presenter.initialize();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "onActivityResult() called with: " + "requestCode = [" + requestCode + "], resultCode = [" + resultCode + "], data = [" + data + "]");
-        // FIXME: 18.12.2015 Clean this mess
-        if (requestCode == LIST_FRAGMENT_ADD_ACTIVITY_REQUEST_CODE){
-
-            if ((resultCode == AddCassetteActivity.ADD_ACTIVITY_LIST_FRAGMENT_RESULT_CODE) &&
-                    (data.getBooleanExtra(AddCassetteActivity.INTENT_EXTRA_PARAM__WAS_ADDED, false))){
-                Log.d(TAG, "onActivityResult: Recevieved result for added cassette");
-                int newCassetteId = data.getIntExtra(AddCassetteActivity.INTENT_EXTRA_PARAM_NEW_CASSETTE_ID, -1);
-                this.presenter.queryForNewlyAddedCassette(newCassetteId);
-            } else if (resultCode == DetailCassetteActivity.DETAIL_ACTIVITY_DELETE_RESULT_CODE){
-                Log.d(TAG, "onActivityResult: Received result for deleted cassette");
-                int deleteCassetteId = data.getIntExtra(DetailCassetteActivity.INTENT_EXTRA_PARAM_CASSETTE_ID, -1);
-                // TODO: 18.12.2015 Be consistent and provide the id to the presenter and then
-                //                  have the presenter call the View to remove the cassette?
-                this.cassettesAdapter.deleteCassette(deleteCassetteId);
-            } else if (resultCode == DetailCassetteActivity.DETAIL_ACTIVITY_UPDATE_RESULT_CODE){
-                Log.d(TAG, "onActivityResult: Received result for updated cassette");
-                int updatedCassetteId = data.getIntExtra(DetailCassetteActivity.INTENT_EXTRA_PARAM_CASSETTE_ID, -1);
-                presenter.queryForNewlyUpdatedCassette(updatedCassetteId);
-            }
-        }
-    }
-
     //endregion Fragment overridden methods
 
     //region Listeners and Events
@@ -200,7 +180,7 @@ public class ListCassetteFragment
         @Override
         public void onClick(View view) {
             Intent intent = AddCassetteActivity.getCallingIntent(ListCassetteFragment.this.getContext());
-            startActivityForResult(intent, LIST_FRAGMENT_ADD_ACTIVITY_REQUEST_CODE);
+            startActivity(intent);
         }
     };
 
@@ -220,7 +200,7 @@ public class ListCassetteFragment
     public void onCassetteClicked(CassetteModel cassetteModel, View cassetteViewForTransition) {
         Log.i(TAG, "onCassetteClicked");
         Intent intent = DetailCassetteActivity.getCallingIntent(this.getContext(), cassetteModel.getId());
-        startActivityForResult(intent, LIST_FRAGMENT_ADD_ACTIVITY_REQUEST_CODE);
+        startActivity(intent);
     }
 
     //endregion Static Methods

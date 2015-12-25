@@ -44,8 +44,6 @@ public class DetailCassetteActivity
 
     public static final String INTENT_EXTRA_PARAM_CASSETTE_ID = "andrewtorski.cassette.INTENT_PARAM_CASSETTE_ID";
     public static final String INSTANCE_STATE_PARAM_CASSETTE_ID = "andrewtorski.cassette.STATE_PARAM_CASSETTE_ID";
-    public static final int DETAIL_ACTIVITY_UPDATE_RESULT_CODE = 2;
-    public static final int DETAIL_ACTIVITY_DELETE_RESULT_CODE = 3;
 
     @Bind(R.id.toolbar)
     public Toolbar toolbar;
@@ -63,7 +61,6 @@ public class DetailCassetteActivity
     private RecordingSwipeAdapter recordingSwipeAdapter;
 
     private int cassetteId;
-    private DeleteCassettePresenter presenter = new DeleteCassettePresenter();
     private DetailUpdateCassettePresenter detailPresenter;
     private boolean wasCassetteUpdated = false;
 
@@ -246,24 +243,16 @@ public class DetailCassetteActivity
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         Log.d(TAG, "onDialogPositiveClick: POSITIVE");
-        boolean deleteWasSuccessful = this.presenter.deleteCassette(this.cassetteId);
-        Intent intent = new Intent();
+        boolean deleteWasSuccessful = this.detailPresenter.deleteCassette();
         if (deleteWasSuccessful) {
-            Log.d(TAG, "onDialogPositiveClick: Delete was successful");
-            intent.putExtra(INTENT_EXTRA_PARAM_CASSETTE_ID, cassetteId);
+            // TODO: 25.12.2015 notify about delete not being successful?
         }
-        setResult(DETAIL_ACTIVITY_DELETE_RESULT_CODE, intent);
         this.finish();
     }
 
     public View.OnClickListener homeButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (wasCassetteUpdated) {
-                Intent intent = new Intent();
-                intent.putExtra(INTENT_EXTRA_PARAM_CASSETTE_ID, cassetteId);
-                setResult(DETAIL_ACTIVITY_UPDATE_RESULT_CODE, intent);
-            }
             finish();
         }
     };

@@ -21,9 +21,6 @@ public class AddCassetteActivity extends BaseActivity implements AddCassetteView
 
     //region Fields
     private static final String TAG = "ADD_CAS_ACT";
-    public static final String INTENT_EXTRA_PARAM__WAS_ADDED = "nd.rw.cassetteui.INTENT_PARAM_WAS_ADDED";
-    public static final String INTENT_EXTRA_PARAM_NEW_CASSETTE_ID = "nd.rw.cassetteui.INTENT_PARAM_NEW_CASSETTE_ID";
-    public static final int ADD_ACTIVITY_LIST_FRAGMENT_RESULT_CODE = 1;
 
     private AddCassettePresenter presenter;
 
@@ -74,13 +71,7 @@ public class AddCassetteActivity extends BaseActivity implements AddCassetteView
         this.title = et_title.getText().toString();
         this.description = et_description.getText().toString();
         CassetteModel cassetteModel = presenter.addCassette(title, description);
-        Intent intent = new Intent();
-        boolean wasAdded = cassetteModel != null;
-        intent.putExtra(INTENT_EXTRA_PARAM__WAS_ADDED, wasAdded);
-        if (cassetteModel != null) {
-            intent.putExtra(INTENT_EXTRA_PARAM_NEW_CASSETTE_ID, cassetteModel.getId());
-        }
-        setResult(ADD_ACTIVITY_LIST_FRAGMENT_RESULT_CODE, intent);
+        // TODO: 25.12.2015 Notify is add operation was not successful; i.e. returend cassette is null
         finish();
     }
 

@@ -1,9 +1,12 @@
 package nd.rw.cassetteui.app.presenter;
 
 
+import android.util.Log;
+
 import java.util.List;
 
 import nd.rw.cassetteui.app.model.CassetteModel;
+import nd.rw.cassetteui.app.presenter.dp.ListCassettePresenterSubject;
 import nd.rw.cassetteui.app.view.ListCassettesView;
 import nd.rw.cassetteui.domain.usecase.DetailCassetteUseCase;
 import nd.rw.cassetteui.domain.usecase.ListCassettesUseCase;
@@ -13,18 +16,25 @@ public class ListCassettePresenter implements Presenter{
 
     //region Field
 
+    // TODO: 25.12.2015 Merge List and Details UseCase into one?
     private ListCassettesUseCase useCase = new ListCassettesUseCase();
     private DetailCassetteUseCase detailsUseCase = new DetailCassetteUseCase();
     private ListCassettesView view;
 
     //endregion Field
 
+    //region Constructors
+
     public ListCassettePresenter(ListCassettesView view) {
+        this();
         this.view = view;
     }
 
     public ListCassettePresenter() {
+        ListCassettePresenterSubject.getInstance().attach(this);
     }
+
+    //endregion Constructors
 
     //region Methods
 
@@ -52,6 +62,33 @@ public class ListCassettePresenter implements Presenter{
         this.view.onUpdatedCassette(this.detailsUseCase.getCassetteById(cassetteId));
     }
 
+    /**
+     * Refresh this Presenter's associated View.
+     * This method takes part in Observer design part.
+     */
+    public void onAddCassette(CassetteModel cassette){
+        Log.d(TAG, "onAddCassette:");
+        this.view.onAddedCassette(cassette);
+    }
+
+    /**
+     * Refresh this Presenter's associated View.
+     * This method takes part in Observer design part.
+     */
+    public void onUpdateCassette(CassetteModel cassette){
+        Log.d(TAG, "onUpdateCassette");
+        this.view.onUpdatedCassette(cassette);
+    }
+
+    /**
+     * Refresh this Presenter's associated View.
+     * This method takes part in Observer design part.
+     */
+    public void onDeleteCassette(CassetteModel cassette){
+        Log.d(TAG, "onDeleteCassette");
+        this.view.onDeleteCassette(cassette);
+    }
+
     //endregion Methods
 
     //region Presenter implemented methods
@@ -68,7 +105,7 @@ public class ListCassettePresenter implements Presenter{
 
     @Override
     public void destroy() {
-
+        ListCassettePresenterSubject.getInstance().detach(this);
     }
 
     //endregion Presenter implemented methods
