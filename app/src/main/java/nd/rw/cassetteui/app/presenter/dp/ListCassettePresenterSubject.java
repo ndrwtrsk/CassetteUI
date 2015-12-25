@@ -42,8 +42,8 @@ public class ListCassettePresenterSubject {
         Stream.of(listPresenters).forEach(presenter -> presenter.onAddCassette(cassette));
     }
 
-    public void notifyAboutUpdateCassette(CassetteModel cassette){
-        Log.d(TAG, "notifyAboutUpdateCassette");
+    public void notifyAboutUpdatedCassette(CassetteModel cassette){
+        Log.d(TAG, "notifyAboutUpdatedCassette");
         Stream.of(listPresenters).forEach(presenter -> presenter.onUpdateCassette(cassette));
     }
 

@@ -59,7 +59,7 @@ public class DetailUpdateCassettePresenter implements Presenter{
             this.cassetteModel.setTitle(oldTitle);
             this.cassetteModel.setDescription(oldDesc);
         } else {
-            ListCassettePresenterSubject.getInstance().notifyAboutUpdateCassette(cassetteModel);
+            ListCassettePresenterSubject.getInstance().notifyAboutUpdatedCassette(cassetteModel);
         }
         this.view.refreshTitleAndDescription(this.cassetteModel);
         return updateWasSuccessful;
