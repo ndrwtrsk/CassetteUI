@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'me.tatarka.retrolambda'
 android {
     compileSdkVersion 23
     buildToolsVersion "21.1.2"
@@ -17,6 +18,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    //  retrolambda stuff
+    //  vvv
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     /*
     below packagingOptions solves following error:
     Error:Execution failed for task ':app:transformResourcesWithMergeJavaResForDebug'.
@@ -29,7 +36,7 @@ android {
     }
 }
 
-apply plugin: 'com.neenbedankt.android-apt'
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])

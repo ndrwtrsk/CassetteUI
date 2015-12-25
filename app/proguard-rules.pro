@@ -23,3 +23,6 @@
 -keep @io.realm.internal.Keep class * { *; }
 -dontwarn javax.**
 -dontwarn io.realm.**
+
+#retrolambda config
+-dontwarn java.lang.invoke.*
