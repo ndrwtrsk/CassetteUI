@@ -77,7 +77,9 @@ public class ListCassettePresenter implements Presenter{
      */
     public void onUpdateCassette(CassetteModel cassette){
         Log.d(TAG, "onUpdateCassette");
-        this.view.onUpdatedCassette(cassette);
+        CassetteModel updatedCassette = this.detailsUseCase.getCassetteById(cassette.getId());
+        //  old cassette doesn't have it's recordings updated, hence the call to get the new one
+        this.view.onUpdatedCassette(updatedCassette);
     }
 
     /**

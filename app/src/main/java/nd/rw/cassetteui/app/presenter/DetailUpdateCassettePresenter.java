@@ -72,7 +72,7 @@ public class DetailUpdateCassettePresenter implements Presenter{
     public boolean deleteCassette(){
         boolean deleteWasSuccessful = deleteUseCase.deleteCassetteModel(cassetteId);
         if (deleteWasSuccessful){
-            ListCassettePresenterSubject.getInstance().notifyAboutDeletedCassete(cassetteModel);
+            ListCassettePresenterSubject.getInstance().notifyAboutDeletedCassette(cassetteModel);
         }
         return deleteWasSuccessful;
     }

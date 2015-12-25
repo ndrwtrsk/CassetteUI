@@ -47,8 +47,8 @@ public class ListCassettePresenterSubject {
         Stream.of(listPresenters).forEach(presenter -> presenter.onUpdateCassette(cassette));
     }
 
-    public void notifyAboutDeletedCassete(CassetteModel cassetteModel){
-        Log.d(TAG, "notifyAboutDeletedCassete");
+    public void notifyAboutDeletedCassette(CassetteModel cassetteModel){
+        Log.d(TAG, "notifyAboutDeletedCassette");
         Stream.of(listPresenters).forEach(presenter -> presenter.onDeleteCassette(cassetteModel));
     }
 
