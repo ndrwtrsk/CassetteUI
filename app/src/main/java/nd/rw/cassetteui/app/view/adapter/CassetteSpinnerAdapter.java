@@ -141,11 +141,11 @@ public class CassetteSpinnerAdapter implements SpinnerAdapter {
 
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            convertView = inflater.inflate(R.layout.cassette_spinner_listed_item, parent, false);
+            convertView = inflater.inflate(R.layout.cassette_spinner_selected_item, parent, false);
         }
 
         TextView tv_cassetteTitle = (TextView) convertView.findViewById(R.id.cassette_title);
-        tv_cassetteTitle.setText("WHERE DO I GO? " + cassetteModel.getTitle());
+        tv_cassetteTitle.setText(cassetteModel.getTitle());
 
         return convertView;
     }

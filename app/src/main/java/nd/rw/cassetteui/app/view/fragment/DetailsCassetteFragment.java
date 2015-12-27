@@ -111,7 +111,7 @@ public class DetailsCassetteFragment extends BaseFragment implements DetailCasse
         this.recordingLayoutManager = new RecordingLayoutManager(this.getContext());
         this.rv_recordings.setLayoutManager(recordingLayoutManager);
         this.recordingsAdapter = new RecordingListViewAdapter(new ArrayList<RecordingModel>());
-        this.recordingSwipeAdapter = new RecordingSwipeAdapter(new ArrayList<RecordingModel>());
+//        this.recordingSwipeAdapter = new RecordingSwipeAdapter(new ArrayList<RecordingModel>());
         this.rv_recordings.setAdapter(recordingSwipeAdapter);
         this.rv_recordings.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
     }

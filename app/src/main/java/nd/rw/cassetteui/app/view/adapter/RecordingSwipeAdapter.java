@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.daimajia.swipe.SwipeLayout;
@@ -14,14 +15,19 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import nd.rw.cassetteui.R;
+import nd.rw.cassetteui.app.listeners.OnRecordingClickedHandler;
 import nd.rw.cassetteui.app.model.RecordingModel;
 
-public class RecordingSwipeAdapter extends RecyclerSwipeAdapter<RecordingSwipeAdapter.RecordingSwipeViewHolder>{
+public class RecordingSwipeAdapter
+        extends RecyclerSwipeAdapter<RecordingSwipeAdapter.RecordingSwipeViewHolder>{
 
     private List<RecordingModel> recordingList;
+    private OnRecordingClickedHandler recordingClickedHandler;
 
-    public RecordingSwipeAdapter(List<RecordingModel> recordingModelList) {
+
+    public RecordingSwipeAdapter(List<RecordingModel> recordingModelList, OnRecordingClickedHandler handler) {
         this.recordingList = recordingModelList;
+        this.recordingClickedHandler = handler;
     }
 
     @Override
@@ -35,7 +41,7 @@ public class RecordingSwipeAdapter extends RecyclerSwipeAdapter<RecordingSwipeAd
     public void onBindViewHolder(RecordingSwipeViewHolder viewHolder, int position) {
         RecordingModel recording = recordingList.get(position);
         viewHolder.bind(recording);
-
+        viewHolder.bindListener(recording, this.recordingClickedHandler);
         viewHolder.swipeLayout.addDrag(SwipeLayout.DragEdge.Left, viewHolder.ll_bottomWrapper);
     }
 
@@ -87,7 +93,13 @@ public class RecordingSwipeAdapter extends RecyclerSwipeAdapter<RecordingSwipeAd
 
     public static class RecordingSwipeViewHolder extends RecyclerView.ViewHolder{
 
+        /**
+         * Reutilize previous version of RecoridngViewHolder.
+         */
         private RecordingViewHolder recordingViewHolder;
+
+        @Bind(R.id.play_stop_button)
+        public ImageButton ib_play_stop_button;
 
         @Bind(R.id.bottom_wrapper)
         public LinearLayout ll_bottomWrapper;
@@ -103,6 +115,10 @@ public class RecordingSwipeAdapter extends RecyclerSwipeAdapter<RecordingSwipeAd
 
         public void bind(RecordingModel recording){
             recordingViewHolder.bind(recording);
+        }
+
+        public void bindListener(RecordingModel recording, OnRecordingClickedHandler handler){
+            ib_play_stop_button.setOnClickListener(v -> handler.onRecordingClickedHandler(recording));
         }
     }
 }

@@ -29,7 +29,8 @@ import nd.rw.cassetteui.app.view.decoration.DividerItemDecoration;
 
 public class ListCassetteFragment
         extends BaseFragment
-        implements ListCassettesView, OnCassetteClickedHandler{
+        implements ListCassettesView,
+        OnCassetteClickedHandler{
 
     //region Fields
 
@@ -176,12 +177,9 @@ public class ListCassetteFragment
 
     //region Listeners and Events
 
-    private View.OnClickListener fabAddListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent intent = AddCassetteActivity.getCallingIntent(ListCassetteFragment.this.getContext());
-            startActivity(intent);
-        }
+    private View.OnClickListener fabAddListener = view -> {
+        Intent intent = AddCassetteActivity.getCallingIntent(ListCassetteFragment.this.getContext());
+        startActivity(intent);
     };
 
     //endregion Listeners and Events

@@ -3,6 +3,8 @@ package nd.rw.cassetteui.app.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -18,16 +20,19 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import nd.rw.cassetteui.R;
+import nd.rw.cassetteui.app.listeners.OnRecordingClickedHandler;
 import nd.rw.cassetteui.app.model.CassetteModel;
 import nd.rw.cassetteui.app.model.RecordingModel;
 import nd.rw.cassetteui.app.model.descriptors.CassetteModelDescriptor;
 import nd.rw.cassetteui.app.presenter.DeleteCassettePresenter;
 import nd.rw.cassetteui.app.presenter.DetailUpdateCassettePresenter;
+import nd.rw.cassetteui.app.utils.RecordingPlayer;
 import nd.rw.cassetteui.app.view.DetailCassetteView;
 import nd.rw.cassetteui.app.view.adapter.RecordingLayoutManager;
 import nd.rw.cassetteui.app.view.adapter.RecordingSwipeAdapter;
@@ -36,7 +41,8 @@ import nd.rw.cassetteui.app.view.fragment.DeleteCassetteDialogFragment;
 
 public class DetailCassetteActivity
         extends BaseActivity
-        implements DeleteCassetteDialogFragment.DeleteCassetteNoticeListener, DetailCassetteView{
+        implements DetailCassetteView, DeleteCassetteDialogFragment.DeleteCassetteNoticeListener,
+        OnRecordingClickedHandler{
 
     //region Fields
 
@@ -57,8 +63,11 @@ public class DetailCassetteActivity
     public TextView tv_creationDate;
     @Bind(R.id.rv_recordings)
     public RecyclerView rv_recordings;
+    @Bind(R.id.coordinator_layout)
+    public CoordinatorLayout cl_layout;
 
     private RecordingSwipeAdapter recordingSwipeAdapter;
+    private RecordingPlayer recordingPlayer = new RecordingPlayer();
 
     private int cassetteId;
     private DetailUpdateCassettePresenter detailPresenter;
@@ -113,6 +122,12 @@ public class DetailCassetteActivity
         super.onSaveInstanceState(outState);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        this.recordingPlayer.dispose();
+    }
+
     //endregion AppCompatActivity
 
     //region DetailCassetteView Methods
@@ -138,6 +153,20 @@ public class DetailCassetteActivity
     }
 
     //endregion DetailCassetteView Methods
+
+    //region OnRecordingClickedHandler Method
+
+    @Override
+    public void onRecordingClickedHandler(RecordingModel recording) {
+        try {
+            this.recordingPlayer.playRecording(recording);
+        } catch (IOException e) {
+            this.showError("Something went wrong while playing the recording.");
+        }
+    }
+
+
+    //endregion OnRecordingClickedHandler Method
 
     //region LoadDataView Methods
 
@@ -180,7 +209,7 @@ public class DetailCassetteActivity
      */
     @Override
     public void showError(String message) {
-
+        Snackbar.make(cl_layout, message, Snackbar.LENGTH_LONG).show();
     }
 
     /**
@@ -199,7 +228,7 @@ public class DetailCassetteActivity
         Log.i(TAG, "setUpRecyclerView beginning");
         RecordingLayoutManager recordingLayoutManager = new RecordingLayoutManager(this);
         this.rv_recordings.setLayoutManager(recordingLayoutManager);
-        this.recordingSwipeAdapter = new RecordingSwipeAdapter(new ArrayList<RecordingModel>());
+        this.recordingSwipeAdapter = new RecordingSwipeAdapter(new ArrayList<RecordingModel>(), this);
         this.rv_recordings.setAdapter(recordingSwipeAdapter);
         this.rv_recordings.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
         Log.i(TAG, "setUpRecyclerView ending");

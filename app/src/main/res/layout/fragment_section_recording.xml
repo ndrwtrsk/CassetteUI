@@ -4,42 +4,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".app.view.activity.MainActivity$RecordingActivity"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Button
         android:id="@+id/recording_main_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        android:layout_marginTop="@dimen/spacing_huge"
         android:background="@drawable/button_recording_transition"
+        android:elevation="8dp"
         />
 
-    <Spinner
-        android:id="@+id/cassette_spinner"
+
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/recording_main_button"
-        android:dropDownWidth="match_parent"
-        android:spinnerMode="dropdown"
-        android:background="@color/primary_light"
-        android:dropDownSelector="@android:drawable/arrow_up_float">
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        app:cardCornerRadius="4dp">
+        <Spinner
+            android:id="@+id/cassette_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dropDownWidth="match_parent"
+            android:spinnerMode="dropdown"
+            android:background="@color/background"
+            android:dropDownSelector="@android:drawable/arrow_up_float">
 
-    </Spinner>
-
-    <Button
-        android:id="@+id/play_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cassette_spinner"
-        android:layout_centerHorizontal="true"
-        android:text="Play"
-        />
-
+        </Spinner>
+    </android.support.v7.widget.CardView>
 
 </RelativeLayout>

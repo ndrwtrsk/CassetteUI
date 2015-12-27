@@ -58,9 +58,6 @@ public class RecordingFragment
     @Bind(R.id.recording_main_button)
     public Button b_recording;
 
-    /*@Bind(R.id.play_button)
-    public Button b_play;*/
-
     @Bind(R.id.recording_layout)
     public RelativeLayout layout;
 
@@ -79,13 +76,8 @@ public class RecordingFragment
     private RecordingAssistant recordingAssistant;
 
     private boolean isRecording;
-    private String fileName;
 
     private ActivationMethod howWasRecordingActivated;
-
-    private VoiceRecorder voiceRecorder = new VoiceRecorder();
-    private AudioPlayer audioPlayer = new AudioPlayer();
-
 
     //endregion Fields
 
@@ -123,7 +115,7 @@ public class RecordingFragment
     @Override
     public void renderCassetteList(Collection<CassetteModel> cassetteModelCollection) {
         if (cassetteModelCollection == null) {
-            throw new RuntimeException("Cassete model collection should not be null.");
+            throw new RuntimeException("Cassette model collection should not be null.");
         }
         this.cassetteSpinnerAdapter.setCassetteModelList((List<CassetteModel>) cassetteModelCollection);
         this.sp_cassettesToChoose.setAdapter(cassetteSpinnerAdapter);
@@ -201,7 +193,6 @@ public class RecordingFragment
 
     private void setUpListeners(){
         b_recording.setOnTouchListener(speakTouchListener);
-//        b_play.setOnClickListener(playButtonListener);
         sp_cassettesToChoose.setOnItemSelectedListener(cassetteSpinnerSelectionListener);
     }
 
@@ -293,20 +284,6 @@ public class RecordingFragment
             return false;
         }
     };
-
-    private boolean isPlaying = false;
-
-    /*private View.OnClickListener playButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (!isPlaying){
-                audioPlayer.startPlaybackFile(fileName);
-            }else{
-                audioPlayer.stopPlayback();
-            }
-            isPlaying = !isPlaying;
-        }
-    };*/
 
     /*
         Returning true from the two following methods will prevent the event from being propagated further
