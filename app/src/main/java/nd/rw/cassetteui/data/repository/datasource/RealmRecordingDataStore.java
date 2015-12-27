@@ -117,7 +117,7 @@ public class RealmRecordingDataStore implements RecordingDataStore{
         mRealm.beginTransaction();
         recordingEntity.removeFromRealm();
         mRealm.commitTransaction();
-        return exists(id);
+        return !exists(id); //CHECK THAT IT _DOESN'T_ EXIST!!!
     }
 
     @Override

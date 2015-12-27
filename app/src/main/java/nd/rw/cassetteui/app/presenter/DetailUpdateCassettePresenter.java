@@ -1,9 +1,13 @@
 package nd.rw.cassetteui.app.presenter;
 
+import android.util.Log;
+
 import nd.rw.cassetteui.app.model.CassetteModel;
+import nd.rw.cassetteui.app.model.RecordingModel;
 import nd.rw.cassetteui.app.presenter.dp.ListCassettePresenterSubject;
 import nd.rw.cassetteui.app.view.DetailCassetteView;
 import nd.rw.cassetteui.domain.usecase.DeleteCassetteUseCase;
+import nd.rw.cassetteui.domain.usecase.DeleteRecordingUseCase;
 import nd.rw.cassetteui.domain.usecase.DetailCassetteUseCase;
 import nd.rw.cassetteui.domain.usecase.UpdateCassetteUseCase;
 
@@ -11,9 +15,11 @@ public class DetailUpdateCassettePresenter implements Presenter{
 
     //region Fields
 
+    private static final String TAG = "DetCasPres";
     private DetailCassetteUseCase detailCassetteUseCase = new DetailCassetteUseCase();
     private UpdateCassetteUseCase updateUseCase = new UpdateCassetteUseCase();
     private DeleteCassetteUseCase deleteUseCase = new DeleteCassetteUseCase();
+    private DeleteRecordingUseCase deleteRecordingUseCase = new DeleteRecordingUseCase();
     private DetailCassetteView view;
 
     private int cassetteId;
@@ -75,6 +81,16 @@ public class DetailUpdateCassettePresenter implements Presenter{
             ListCassettePresenterSubject.getInstance().notifyAboutDeletedCassette(cassetteModel);
         }
         return deleteWasSuccessful;
+    }
+
+    public boolean deleteRecording(RecordingModel recording){
+        boolean recordingWasDeleted = deleteRecordingUseCase.deleteRecording(recording);
+        if (recordingWasDeleted){
+            Log.i(TAG, "deleteRecording: Delete was successful.");
+            ListCassettePresenterSubject.getInstance().notifyAboutUpdatedCassette(this.cassetteModel);
+            //  So that cassette list updates itself accordingly.
+        }
+        return recordingWasDeleted;
     }
 
     public void refreshTitleAndDescriptionInView(){

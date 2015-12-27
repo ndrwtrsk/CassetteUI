@@ -27,6 +27,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import nd.rw.cassetteui.R;
 import nd.rw.cassetteui.app.listeners.OnRecordingClickedHandler;
+import nd.rw.cassetteui.app.listeners.OnRecordingDeleteClickedHandler;
+import nd.rw.cassetteui.app.listeners.bundles.RecordingListenerBundle;
 import nd.rw.cassetteui.app.model.CassetteModel;
 import nd.rw.cassetteui.app.model.RecordingModel;
 import nd.rw.cassetteui.app.model.descriptors.CassetteModelDescriptor;
@@ -42,7 +44,7 @@ import nd.rw.cassetteui.app.view.fragment.DeleteCassetteDialogFragment;
 public class DetailCassetteActivity
         extends BaseActivity
         implements DetailCassetteView, DeleteCassetteDialogFragment.DeleteCassetteNoticeListener,
-        OnRecordingClickedHandler{
+        OnRecordingClickedHandler, OnRecordingDeleteClickedHandler{
 
     //region Fields
 
@@ -154,10 +156,10 @@ public class DetailCassetteActivity
 
     //endregion DetailCassetteView Methods
 
-    //region OnRecordingClickedHandler Method
+    //region OnRecording{...} handlers
 
     @Override
-    public void onRecordingClickedHandler(RecordingModel recording) {
+    public void onRecordingClicked(RecordingModel recording) {
         try {
             this.recordingPlayer.playRecording(recording);
         } catch (IOException e) {
@@ -165,8 +167,17 @@ public class DetailCassetteActivity
         }
     }
 
+    @Override
+    public void onRecordingDeleteClicked(RecordingModel recording) {
+        Log.i(TAG, "onRecordingDeleteClicked: id = [" + recording.id + "]");
+        if (this.detailPresenter.deleteRecording(recording)){
+            Log.i(TAG, "onRecordingDeleteClicked: Delete was successful.");
+            this.recordingSwipeAdapter.deleteRecording(recording);
+        }
+        //// TODO: 27.12.2015 UNDO?!
+    }
 
-    //endregion OnRecordingClickedHandler Method
+    //endregion OnRecording{...} handlers
 
     //region LoadDataView Methods
 
@@ -224,11 +235,15 @@ public class DetailCassetteActivity
 
     //region Private Methods
 
+    private RecordingListenerBundle produceListenerBundle(){
+        return new RecordingListenerBundle(this, this);
+    }
+
     private void setUpRecyclerView(){
         Log.i(TAG, "setUpRecyclerView beginning");
         RecordingLayoutManager recordingLayoutManager = new RecordingLayoutManager(this);
         this.rv_recordings.setLayoutManager(recordingLayoutManager);
-        this.recordingSwipeAdapter = new RecordingSwipeAdapter(new ArrayList<RecordingModel>(), this);
+        this.recordingSwipeAdapter = new RecordingSwipeAdapter(new ArrayList<RecordingModel>(), this.produceListenerBundle());
         this.rv_recordings.setAdapter(recordingSwipeAdapter);
         this.rv_recordings.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
         Log.i(TAG, "setUpRecyclerView ending");

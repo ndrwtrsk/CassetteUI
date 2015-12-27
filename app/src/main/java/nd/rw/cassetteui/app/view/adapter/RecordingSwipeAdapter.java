@@ -1,6 +1,7 @@
 package nd.rw.cassetteui.app.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,19 +16,19 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import nd.rw.cassetteui.R;
-import nd.rw.cassetteui.app.listeners.OnRecordingClickedHandler;
+import nd.rw.cassetteui.app.listeners.bundles.RecordingListenerBundle;
 import nd.rw.cassetteui.app.model.RecordingModel;
 
 public class RecordingSwipeAdapter
         extends RecyclerSwipeAdapter<RecordingSwipeAdapter.RecordingSwipeViewHolder>{
 
+    private static final String TAG = "RecordingSwipeAdapter";
     private List<RecordingModel> recordingList;
-    private OnRecordingClickedHandler recordingClickedHandler;
+    private RecordingListenerBundle recordingListenerBundle;
 
-
-    public RecordingSwipeAdapter(List<RecordingModel> recordingModelList, OnRecordingClickedHandler handler) {
+    public RecordingSwipeAdapter(List<RecordingModel> recordingModelList, RecordingListenerBundle listenerBundle) {
         this.recordingList = recordingModelList;
-        this.recordingClickedHandler = handler;
+        this.recordingListenerBundle = listenerBundle;
     }
 
     @Override
@@ -41,8 +42,9 @@ public class RecordingSwipeAdapter
     public void onBindViewHolder(RecordingSwipeViewHolder viewHolder, int position) {
         RecordingModel recording = recordingList.get(position);
         viewHolder.bind(recording);
-        viewHolder.bindListener(recording, this.recordingClickedHandler);
-        viewHolder.swipeLayout.addDrag(SwipeLayout.DragEdge.Left, viewHolder.ll_bottomWrapper);
+        viewHolder.bindListeners(recording, this.recordingListenerBundle);
+        viewHolder.sl_Layout.setShowMode(SwipeLayout.ShowMode.PullOut);
+        viewHolder.sl_Layout.addDrag(SwipeLayout.DragEdge.Right, viewHolder.ll_bottom_wrapper);
     }
 
     @Override
@@ -57,6 +59,22 @@ public class RecordingSwipeAdapter
 
     public void setRecordingList(List<RecordingModel> recordingList) {
         this.recordingList = recordingList;
+    }
+
+    public void deleteRecording(RecordingModel recording){
+        for (int i = 0; i < recordingList.size(); i++) {
+            RecordingModel currentRecording = recordingList.get(i);
+            if (currentRecording.id == recording.id){
+                recordingList.remove(i);
+                notifyItemRemoved(i);
+                return;
+            }
+        }
+        Log.i(TAG, "deleteRecording: No recording was removed.");
+    }
+
+    public void updateRecording(RecordingModel recording){
+
     }
 
     private SwipeLayout.SwipeListener swipeListener = new SwipeLayout.SwipeListener() {
@@ -94,7 +112,7 @@ public class RecordingSwipeAdapter
     public static class RecordingSwipeViewHolder extends RecyclerView.ViewHolder{
 
         /**
-         * Reutilize previous version of RecoridngViewHolder.
+         * Reutilize previous version of RecordingViewHolder.
          */
         private RecordingViewHolder recordingViewHolder;
 
@@ -102,10 +120,13 @@ public class RecordingSwipeAdapter
         public ImageButton ib_play_stop_button;
 
         @Bind(R.id.bottom_wrapper)
-        public LinearLayout ll_bottomWrapper;
+        public LinearLayout ll_bottom_wrapper;
+
+        @Bind(R.id.swipe_button_delete_recording)
+        public ImageButton ib_delete_recording;
 
         @Bind(R.id.swipe_layout_recording)
-        public  SwipeLayout swipeLayout;
+        public  SwipeLayout sl_Layout;
 
         public RecordingSwipeViewHolder(View itemView) {
             super(itemView);
@@ -117,8 +138,11 @@ public class RecordingSwipeAdapter
             recordingViewHolder.bind(recording);
         }
 
-        public void bindListener(RecordingModel recording, OnRecordingClickedHandler handler){
-            ib_play_stop_button.setOnClickListener(v -> handler.onRecordingClickedHandler(recording));
+        public void bindListeners(RecordingModel recording, RecordingListenerBundle bundle){
+            this.ib_play_stop_button.setOnClickListener(v ->
+                    bundle.getOnRecordingClickedHandler().onRecordingClicked(recording));
+            ib_delete_recording.setOnClickListener(v ->
+                    bundle.getOnRecordingDeleteClickedHandler().onRecordingDeleteClicked(recording));
         }
     }
 }
