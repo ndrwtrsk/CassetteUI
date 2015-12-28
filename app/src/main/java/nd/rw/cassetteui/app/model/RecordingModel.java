@@ -5,7 +5,9 @@ import java.util.GregorianCalendar;
 
 import nd.rw.cassetteui.app.model.descriptors.RecordingModelDescriptor;
 
-public class RecordingModel {
+public class RecordingModel implements Comparable<RecordingModel>{
+
+    //region Fields
 
     public int id;
     public String title;
@@ -15,10 +17,10 @@ public class RecordingModel {
     public String path;
     public CassetteModel cassette;
 
+    //endregion Fields
 
-    public int getDurationInSeconds(){
-        return durationInMs/1000;
-    }
+
+    //region Constructors
 
     public RecordingModel(int id, String title, GregorianCalendar dateRecorded,
                           int durationInMs, String path, CassetteModel cassette) {
@@ -51,6 +53,10 @@ public class RecordingModel {
         this.cassette = cassette;
     }
 
+    //endregion Constructors
+
+    //region Methods
+
     public String getFormattedDate(){
         SimpleDateFormat fmt = new SimpleDateFormat("HH:mm:ss dd MMMM yyyy");
         fmt.setCalendar(dateRecorded);
@@ -62,10 +68,40 @@ public class RecordingModel {
         return new RecordingModelDescriptor(this);
     }
 
+    public int getDurationInSeconds(){
+        return durationInMs/1000;
+    }
+
+    /**
+     * Compares this Recording to another Recording. This Recording is considered greater, if it's
+     * recording date is newer than the another one's.
+     *
+     * @param another the object to compare to this instance.
+     * @return a negative integer if this instance is less than {@code another};
+     * a positive integer if this instance is greater than
+     * {@code another}; 0 if this instance has the same order as
+     * {@code another}.
+     * @throws ClassCastException if {@code another} cannot be converted into something
+     *                            comparable to {@code this} instance.
+     */
+    @Override
+    public int compareTo(RecordingModel another) {
+        if (another == null) {
+            return 1;
+        }
+        return this.dateRecorded.compareTo(another.dateRecorded);
+    }
+
+    //endregion Methods
+
+    //region Static Methods
+
     public static void populateCassetteWithRecordings(CassetteModel cassette, int startingIndex, int endingIndex){
         for (int i = startingIndex; i < endingIndex; i++) {
             new RecordingModel(i, "Recording " + i, new GregorianCalendar(), 21230, "/path", cassette);
         }
     }
+
+    //endregion Static Methods
 
 }

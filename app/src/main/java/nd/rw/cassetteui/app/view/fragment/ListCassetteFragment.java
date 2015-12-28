@@ -68,7 +68,7 @@ public class ListCassetteFragment
         this.layoutManager = new CassetteLayoutManager(this.getContext());
         this.rv_cassettes.setLayoutManager(layoutManager);
         this.onCassetteClickedHandler = this;
-        this.cassettesAdapter = new CassettesAdapter(new ArrayList<CassetteModel>(), onCassetteClickedHandler);
+        this.cassettesAdapter = new CassettesAdapter(onCassetteClickedHandler);
         this.rv_cassettes.setAdapter(cassettesAdapter);
         this.fab_addCassette.setOnClickListener(fabAddListener);
         this.rv_cassettes.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
@@ -84,7 +84,7 @@ public class ListCassetteFragment
         if (cassetteModelCollection == null) {
             throw new RuntimeException("Cassette model collection should not be null.");
         }
-        this.cassettesAdapter.setCassetteModelList(cassetteModelCollection);
+        this.cassettesAdapter.initializeAdapterList(cassetteModelCollection);
     }
 
     @Override

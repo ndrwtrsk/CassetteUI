@@ -11,11 +11,10 @@ import nd.rw.cassetteui.app.view.ListCassettesView;
 import nd.rw.cassetteui.domain.usecase.ListCassettesUseCase;
 
 public class ListCassettePresenter implements Presenter{
-    private static final String TAG = "LI_CAS_PRE";
 
     //region Field
 
-    // TODO: 25.12.2015 Merge List and Details UseCase into one?
+    private static final String TAG = "ListCasPresenter";
     private ListCassettesUseCase useCase = new ListCassettesUseCase();
     private ListCassettesView view;
 
@@ -53,7 +52,6 @@ public class ListCassettePresenter implements Presenter{
      * This method takes part in Observer design part.
      */
     public void onAddCassette(CassetteModel cassette){
-        Log.d(TAG, "onAddCassette:");
         this.view.onAddedCassette(cassette);
     }
 
@@ -62,7 +60,6 @@ public class ListCassettePresenter implements Presenter{
      * This method takes part in Observer design part.
      */
     public void onUpdateCassette(CassetteModel cassette){
-        Log.d(TAG, "onUpdateCassette");
         CassetteModel updatedCassette = this.useCase.getCassetteById(cassette.getId());
         //  old cassette doesn't have it's recordings updated, hence the call to get the new one
         this.view.onUpdatedCassette(updatedCassette);
@@ -73,7 +70,6 @@ public class ListCassettePresenter implements Presenter{
      * This method takes part in Observer design part.
      */
     public void onDeleteCassette(CassetteModel cassette){
-        Log.d(TAG, "onDeleteCassette");
         this.view.onDeleteCassette(cassette);
     }
 

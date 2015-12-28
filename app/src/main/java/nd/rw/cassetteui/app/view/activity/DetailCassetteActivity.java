@@ -293,12 +293,7 @@ public class DetailCassetteActivity
         this.finish();
     }
 
-    public View.OnClickListener homeButtonClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            finish();
-        }
-    };
+    public View.OnClickListener homeButtonClickListener = view -> finish();
 
     private View.OnFocusChangeListener titleFocusListener = new View.OnFocusChangeListener() {
         @Override
@@ -322,7 +317,6 @@ public class DetailCassetteActivity
     private EditText.OnEditorActionListener editTextOnEditorListener = (v, actionId, event) -> {
         boolean handled = false;
         if(actionId == EditorInfo.IME_ACTION_DONE){
-            Log.d(TAG, "onEditorAction: ime_action_done");
             v.clearFocus();
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
