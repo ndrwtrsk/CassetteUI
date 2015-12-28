@@ -2,24 +2,20 @@ package nd.rw.cassetteui.domain.usecase;
 
 import android.util.Log;
 
-import java.util.GregorianCalendar;
-
 import nd.rw.cassetteui.app.model.CassetteModel;
-import nd.rw.cassetteui.data.repository.CassetteDataRepository;
-import nd.rw.cassetteui.data.repository.datasource.DataSourceFactory;
-import nd.rw.cassetteui.domain.repository.CassetteRepository;
 
 public class AddCassetteUseCase extends AbstractUseCase{
-    //region Fields
-    private static final String TAG = "AD_CAS_UC";
 
-    private CassetteRepository repository = new CassetteDataRepository(DataSourceFactory.getRealmCassetteDataStore());
+    //region Fields
+
+    private static final String TAG = "AddCasUseCase";
 
     //endregion Fields
 
     //region Methods
+
     public CassetteModel addCassetteModel(CassetteModel cassetteModel){
-        CassetteModel result = repository.create(cassetteModel);
+        CassetteModel result = cassetteRepository.create(cassetteModel);
         return result;
     }
 

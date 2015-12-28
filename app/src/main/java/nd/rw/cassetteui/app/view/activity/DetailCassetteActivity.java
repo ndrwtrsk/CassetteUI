@@ -32,8 +32,7 @@ import nd.rw.cassetteui.app.listeners.bundles.RecordingListenerBundle;
 import nd.rw.cassetteui.app.model.CassetteModel;
 import nd.rw.cassetteui.app.model.RecordingModel;
 import nd.rw.cassetteui.app.model.descriptors.CassetteModelDescriptor;
-import nd.rw.cassetteui.app.presenter.DeleteCassettePresenter;
-import nd.rw.cassetteui.app.presenter.DetailUpdateCassettePresenter;
+import nd.rw.cassetteui.app.presenter.ViewCassettePresenter;
 import nd.rw.cassetteui.app.utils.RecordingPlayer;
 import nd.rw.cassetteui.app.view.DetailCassetteView;
 import nd.rw.cassetteui.app.view.adapter.RecordingLayoutManager;
@@ -72,7 +71,7 @@ public class DetailCassetteActivity
     private RecordingPlayer recordingPlayer = new RecordingPlayer();
 
     private int cassetteId;
-    private DetailUpdateCassettePresenter detailPresenter;
+    private ViewCassettePresenter detailPresenter;
     private boolean wasCassetteUpdated = false;
 
     //endregion Fields
@@ -256,7 +255,7 @@ public class DetailCassetteActivity
         } else {
             this.cassetteId = savedInstanceState.getInt(INSTANCE_STATE_PARAM_CASSETTE_ID);
         }
-        this.detailPresenter = new DetailUpdateCassettePresenter(this);
+        this.detailPresenter = new ViewCassettePresenter(this);
         this.detailPresenter.initialize(cassetteId);
     }
 
@@ -314,28 +313,22 @@ public class DetailCassetteActivity
         }
     };
 
-    private View.OnFocusChangeListener descriptionFocusListener = new View.OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            if (!hasFocus) {
-                updateCassette();
-            }
+    private View.OnFocusChangeListener descriptionFocusListener = (v, hasFocus) -> {
+        if (!hasFocus) {
+            updateCassette();
         }
     };
 
-    private EditText.OnEditorActionListener editTextOnEditorListener = new TextView.OnEditorActionListener() {
-        @Override
-        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-            boolean handled = false;
-            if(actionId == EditorInfo.IME_ACTION_DONE){
-                Log.d(TAG, "onEditorAction: ime_action_done");
-                v.clearFocus();
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                handled = true;
-            }
-            return handled;
+    private EditText.OnEditorActionListener editTextOnEditorListener = (v, actionId, event) -> {
+        boolean handled = false;
+        if(actionId == EditorInfo.IME_ACTION_DONE){
+            Log.d(TAG, "onEditorAction: ime_action_done");
+            v.clearFocus();
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            handled = true;
         }
+        return handled;
     };
 
     //endregion Listeners and Events

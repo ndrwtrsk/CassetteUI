@@ -6,20 +6,14 @@ import nd.rw.cassetteui.app.model.CassetteModel;
 import nd.rw.cassetteui.app.model.RecordingModel;
 import nd.rw.cassetteui.app.presenter.dp.ListCassettePresenterSubject;
 import nd.rw.cassetteui.app.view.DetailCassetteView;
-import nd.rw.cassetteui.domain.usecase.DeleteCassetteUseCase;
-import nd.rw.cassetteui.domain.usecase.DeleteRecordingUseCase;
-import nd.rw.cassetteui.domain.usecase.DetailCassetteUseCase;
-import nd.rw.cassetteui.domain.usecase.UpdateCassetteUseCase;
+import nd.rw.cassetteui.domain.usecase.ViewCassetteUseCase;
 
-public class DetailUpdateCassettePresenter implements Presenter{
+public class ViewCassettePresenter implements Presenter{
 
     //region Fields
 
-    private static final String TAG = "DetCasPres";
-    private DetailCassetteUseCase detailCassetteUseCase = new DetailCassetteUseCase();
-    private UpdateCassetteUseCase updateUseCase = new UpdateCassetteUseCase();
-    private DeleteCassetteUseCase deleteUseCase = new DeleteCassetteUseCase();
-    private DeleteRecordingUseCase deleteRecordingUseCase = new DeleteRecordingUseCase();
+    private static final String TAG = "ViewCasPres";
+    private ViewCassetteUseCase useCase = new ViewCassetteUseCase();
     private DetailCassetteView view;
 
     private int cassetteId;
@@ -29,11 +23,11 @@ public class DetailUpdateCassettePresenter implements Presenter{
 
     //region Constructors
 
-    public DetailUpdateCassettePresenter(DetailCassetteView view) {
+    public ViewCassettePresenter(DetailCassetteView view) {
         this.view = view;
     }
 
-    public DetailUpdateCassettePresenter() {
+    public ViewCassettePresenter() {
     }
 
     //endregion Constructors
@@ -42,7 +36,7 @@ public class DetailUpdateCassettePresenter implements Presenter{
 
     public void initialize(int cassetteId){
         this.cassetteId = cassetteId;
-        this.cassetteModel = detailCassetteUseCase.getCassetteById(this.cassetteId);
+        this.cassetteModel = useCase.getCassetteById(this.cassetteId);
         this.view.renderCassetteAndRecordings(this.cassetteModel);
     }
 
@@ -59,7 +53,7 @@ public class DetailUpdateCassettePresenter implements Presenter{
         this.cassetteModel.setTitle(title);
         this.cassetteModel.setDescription(description);
 
-        boolean updateWasSuccessful = this.updateUseCase.updateCassette(cassetteModel);
+        boolean updateWasSuccessful = this.useCase.updateCassette(cassetteModel);
 
         if(!updateWasSuccessful){
             this.cassetteModel.setTitle(oldTitle);
@@ -76,7 +70,7 @@ public class DetailUpdateCassettePresenter implements Presenter{
      *  @return Success of this operation.
      */
     public boolean deleteCassette(){
-        boolean deleteWasSuccessful = deleteUseCase.deleteCassetteModel(cassetteId);
+        boolean deleteWasSuccessful = useCase.deleteCassette(cassetteId);
         if (deleteWasSuccessful){
             ListCassettePresenterSubject.getInstance().notifyAboutDeletedCassette(cassetteModel);
         }
@@ -84,7 +78,7 @@ public class DetailUpdateCassettePresenter implements Presenter{
     }
 
     public boolean deleteRecording(RecordingModel recording){
-        boolean recordingWasDeleted = deleteRecordingUseCase.deleteRecording(recording);
+        boolean recordingWasDeleted = useCase.deleteRecording(recording);
         if (recordingWasDeleted){
             Log.i(TAG, "deleteRecording: Delete was successful.");
             ListCassettePresenterSubject.getInstance().notifyAboutUpdatedCassette(this.cassetteModel);

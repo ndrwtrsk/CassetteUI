@@ -14,5 +14,8 @@ public class ListCassettesUseCase extends AbstractUseCase {
     public List<CassetteModel> getCassettes(){
         return repository.getAll();
     }
+    public CassetteModel getCassetteById(int id){
+        return repository.get(id);
+    }
 
 }

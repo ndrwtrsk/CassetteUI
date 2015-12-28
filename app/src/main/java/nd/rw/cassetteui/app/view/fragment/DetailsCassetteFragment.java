@@ -19,7 +19,7 @@ import nd.rw.cassetteui.R;
 import nd.rw.cassetteui.app.model.CassetteModel;
 import nd.rw.cassetteui.app.model.RecordingModel;
 import nd.rw.cassetteui.app.model.descriptors.CassetteModelDescriptor;
-import nd.rw.cassetteui.app.presenter.DetailUpdateCassettePresenter;
+import nd.rw.cassetteui.app.presenter.ViewCassettePresenter;
 import nd.rw.cassetteui.app.view.DetailCassetteView;
 import nd.rw.cassetteui.app.view.adapter.RecordingLayoutManager;
 import nd.rw.cassetteui.app.view.adapter.RecordingListViewAdapter;
@@ -48,7 +48,7 @@ public class DetailsCassetteFragment extends BaseFragment implements DetailCasse
     @Bind(R.id.rv_recordings)
     public RecyclerView rv_recordings;
 
-    private DetailUpdateCassettePresenter detailPresenter;
+    private ViewCassettePresenter detailPresenter;
 
     private RecordingListViewAdapter recordingsAdapter;
 
@@ -120,7 +120,7 @@ public class DetailsCassetteFragment extends BaseFragment implements DetailCasse
         Bundle args = this.getArguments();
         int cassetteId = args.getInt(ARGUMENT_KEY_CASSETTE_ID);
         Log.d(TAG, "initialize: cassetteId: " + cassetteId);
-        this.detailPresenter = new DetailUpdateCassettePresenter(this);
+        this.detailPresenter = new ViewCassettePresenter(this);
         this.detailPresenter.initialize(cassetteId);
     }
 

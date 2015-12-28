@@ -8,7 +8,6 @@ import java.util.List;
 import nd.rw.cassetteui.app.model.CassetteModel;
 import nd.rw.cassetteui.app.presenter.dp.ListCassettePresenterSubject;
 import nd.rw.cassetteui.app.view.ListCassettesView;
-import nd.rw.cassetteui.domain.usecase.DetailCassetteUseCase;
 import nd.rw.cassetteui.domain.usecase.ListCassettesUseCase;
 
 public class ListCassettePresenter implements Presenter{
@@ -18,7 +17,6 @@ public class ListCassettePresenter implements Presenter{
 
     // TODO: 25.12.2015 Merge List and Details UseCase into one?
     private ListCassettesUseCase useCase = new ListCassettesUseCase();
-    private DetailCassetteUseCase detailsUseCase = new DetailCassetteUseCase();
     private ListCassettesView view;
 
     //endregion Field
@@ -50,18 +48,6 @@ public class ListCassettePresenter implements Presenter{
         this.view.renderCassetteList(list);
     }
 
-    public void onCassetteClicked(CassetteModel cassetteModel){
-        this.view.viewCassette(cassetteModel);
-    }
-
-    public void queryForNewlyAddedCassette(int cassetteId){
-        this.view.onAddedCassette(this.detailsUseCase.getCassetteById(cassetteId));
-    }
-
-    public void queryForNewlyUpdatedCassette(int cassetteId){
-        this.view.onUpdatedCassette(this.detailsUseCase.getCassetteById(cassetteId));
-    }
-
     /**
      * Refresh this Presenter's associated View.
      * This method takes part in Observer design part.
@@ -77,7 +63,7 @@ public class ListCassettePresenter implements Presenter{
      */
     public void onUpdateCassette(CassetteModel cassette){
         Log.d(TAG, "onUpdateCassette");
-        CassetteModel updatedCassette = this.detailsUseCase.getCassetteById(cassette.getId());
+        CassetteModel updatedCassette = this.useCase.getCassetteById(cassette.getId());
         //  old cassette doesn't have it's recordings updated, hence the call to get the new one
         this.view.onUpdatedCassette(updatedCassette);
     }
