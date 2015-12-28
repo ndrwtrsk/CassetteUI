@@ -18,4 +18,7 @@ public class ListCassettesUseCase extends AbstractUseCase {
         return repository.get(id);
     }
 
+    public boolean deleteCassette(CassetteModel cassetteToBeDeleted) {
+        return repository.delete(cassetteToBeDeleted);
+    }
 }

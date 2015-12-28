@@ -52,6 +52,8 @@ public class DetailCassetteActivity
     public static final String INTENT_EXTRA_PARAM_CASSETTE_ID = "andrewtorski.cassette.INTENT_PARAM_CASSETTE_ID";
     public static final String INSTANCE_STATE_PARAM_CASSETTE_ID = "andrewtorski.cassette.STATE_PARAM_CASSETTE_ID";
 
+    public static final int DETAILS_TO_LIST_RESULT_CODE = 1;
+
     @Bind(R.id.toolbar)
     public Toolbar toolbar;
     @Bind(R.id.card_view_and_details_cassette_title)
@@ -286,10 +288,12 @@ public class DetailCassetteActivity
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         Log.d(TAG, "onDialogPositiveClick: POSITIVE");
-        boolean deleteWasSuccessful = this.detailPresenter.deleteCassette();
+        /*boolean deleteWasSuccessful = this.detailPresenter.deleteCassette();
         if (deleteWasSuccessful) {
-            // TODO: 25.12.2015 notify about delete not being successful?
-        }
+        }*/
+        Intent data = new Intent();
+        data.putExtra(INTENT_EXTRA_PARAM_CASSETTE_ID, cassetteId);
+        setResult(DETAILS_TO_LIST_RESULT_CODE, data);
         this.finish();
     }
 

@@ -17,6 +17,7 @@ public class ListCassettePresenter implements Presenter{
     private static final String TAG = "ListCasPresenter";
     private ListCassettesUseCase useCase = new ListCassettesUseCase();
     private ListCassettesView view;
+    private CassetteModel cassetteToBeDeleted;
 
     //endregion Field
 
@@ -70,7 +71,29 @@ public class ListCassettePresenter implements Presenter{
      * This method takes part in Observer design part.
      */
     public void onDeleteCassette(CassetteModel cassette){
+        Log.d(TAG, "onDeleteCassette() called with: " + "cassette = [" + cassette + "]");
         this.view.onDeleteCassette(cassette);
+    }
+
+    public void setUpCassetteToBeDeleted(int cassetteId){
+        Log.d(TAG, "setUpCassetteToBeDeleted() called with: " + "cassetteId = [" + cassetteId + "]");
+        cassetteToBeDeleted = useCase.getCassetteById(cassetteId);
+        ListCassettePresenterSubject.getInstance().notifyAboutDeletedCassette(cassetteToBeDeleted);
+        //onDeleteCassette(cassetteToBeDeleted);
+    }
+
+    public void actuallyDeleteCassette(){
+        Log.d(TAG, "actuallyDeleteCassette:");
+        if (cassetteToBeDeleted == null) {
+            Log.d(TAG, "actuallyDeleteCassette: Cassette to be deleted is null.");
+            return;
+        }
+        useCase.deleteCassette(cassetteToBeDeleted);
+    }
+
+    public void undoDelete(){
+        ListCassettePresenterSubject.getInstance().notifyAboutAddedCassette(cassetteToBeDeleted);
+        cassetteToBeDeleted = null;
     }
 
     //endregion Methods
