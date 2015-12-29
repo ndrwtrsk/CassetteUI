@@ -23,7 +23,7 @@ import nd.rw.cassetteui.app.presenter.ListCassettePresenter;
 import nd.rw.cassetteui.app.view.ListCassettesView;
 import nd.rw.cassetteui.app.view.activity.AddCassetteActivity;
 import nd.rw.cassetteui.app.view.activity.DetailCassetteActivity;
-import nd.rw.cassetteui.app.view.adapter.CassetteLayoutManager;
+import nd.rw.cassetteui.app.view.adapter.layoutmanagers.CassetteLayoutManager;
 import nd.rw.cassetteui.app.view.adapter.CassettesAdapter;
 import nd.rw.cassetteui.app.view.decoration.DividerItemDecoration;
 

@@ -9,8 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.annimon.stream.Stream;
-
 import java.util.Collection;
 
 import butterknife.Bind;
@@ -87,7 +85,7 @@ public class CassettesAdapter extends RecyclerView.Adapter<CassettesAdapter.Cass
     public CassetteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view =
                 LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.card_view_cassette, parent, false);
+                .inflate(R.layout.list_cassette_item, parent, false);
         return new CassetteViewHolder(view);
     }
 

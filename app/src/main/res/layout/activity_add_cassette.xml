@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -33,8 +32,7 @@
                 android:enabled="false"
                 android:text="Add"
                 android:textAllCaps="true"
-                android:textSize="@dimen/font_normal"
-                 />
+                android:textSize="@dimen/font_normal" />
 
         </android.support.v7.widget.Toolbar>
 
@@ -51,10 +49,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:textSize="@dimen/font_great"
-            android:inputType="textAutoComplete"
             android:hint="Title"
-            />
+            android:inputType="textAutoComplete"
+            android:textSize="@dimen/font_great" />
 
         <EditText
             android:id="@+id/add_cassette_description"
@@ -62,10 +59,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/add_cassette_title"
             android:layout_marginTop="@dimen/spacing_normal"
-            android:textSize="@dimen/font_normal"
-            android:inputType="textAutoComplete"
             android:hint="Description"
-            />
+            android:inputType="textAutoComplete"
+            android:textSize="@dimen/font_normal" />
 
     </RelativeLayout>
 

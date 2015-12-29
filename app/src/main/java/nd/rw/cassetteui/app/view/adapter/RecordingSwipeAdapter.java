@@ -1,12 +1,14 @@
 package nd.rw.cassetteui.app.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
@@ -18,6 +20,7 @@ import butterknife.ButterKnife;
 import nd.rw.cassetteui.R;
 import nd.rw.cassetteui.app.listeners.bundles.RecordingListenerBundle;
 import nd.rw.cassetteui.app.model.RecordingModel;
+import nd.rw.cassetteui.app.model.descriptors.RecordingModelDescriptor;
 
 public class RecordingSwipeAdapter
         extends RecyclerSwipeAdapter<RecordingSwipeAdapter.RecordingSwipeViewHolder>{
@@ -34,7 +37,7 @@ public class RecordingSwipeAdapter
     @Override
     public RecordingSwipeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view  = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.swipe_layout_list_recording_item, parent, false);
+                .inflate(R.layout.list_recording_item, parent, false);
         return new RecordingSwipeViewHolder(view);
     }
 
@@ -111,10 +114,15 @@ public class RecordingSwipeAdapter
 
     public static class RecordingSwipeViewHolder extends RecyclerView.ViewHolder{
 
-        /**
-         * Reutilize previous version of RecordingViewHolder.
-         */
-        private RecordingViewHolder recordingViewHolder;
+        private static final String TAG = "RecordingViewHolder";
+        @Bind(R.id.list_view_recording_title)
+        public TextView tv_title;
+
+        @Bind(R.id.list_view_recording_duration)
+        public TextView tv_duration;
+
+        @Bind(R.id.list_view_recording_recorded)
+        public TextView tv_recordedOn;
 
         @Bind(R.id.play_stop_button)
         public ImageButton ib_play_stop_button;
@@ -131,11 +139,22 @@ public class RecordingSwipeAdapter
         public RecordingSwipeViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            recordingViewHolder = new RecordingViewHolder(itemView);
         }
 
         public void bind(RecordingModel recording){
-            recordingViewHolder.bind(recording);
+            if (recording == null) {
+                Log.e(TAG, "bind: Recording is null");
+            }
+
+            RecordingModelDescriptor descriptor = recording.getDescriptor();
+
+            String title = TextUtils.isEmpty(descriptor.title) ? "Recording" : descriptor.title;
+            String date = descriptor.dateRecorded;
+            String duration = descriptor.duration;
+
+            tv_title.setText(title);
+            tv_recordedOn.setText(date);
+            tv_duration.setText(duration);
         }
 
         public void bindListeners(RecordingModel recording, RecordingListenerBundle bundle){

@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import butterknife.ButterKnife;
 import nd.rw.cassetteui.R;
 import nd.rw.cassetteui.app.model.CassetteModel;
 
@@ -87,7 +86,7 @@ public class CassetteSpinnerAdapter implements SpinnerAdapter {
 
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            convertView = inflater.inflate(R.layout.cassette_spinner_listed_item, parent, false);
+            convertView = inflater.inflate(R.layout.spinner_cassette_listed_item, parent, false);
         }
 
         TextView tv_cassetteTitle = (TextView) convertView.findViewById(R.id.cassette_title);
@@ -141,7 +140,7 @@ public class CassetteSpinnerAdapter implements SpinnerAdapter {
 
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            convertView = inflater.inflate(R.layout.cassette_spinner_selected_item, parent, false);
+            convertView = inflater.inflate(R.layout.spinner_cassette_selected_item, parent, false);
         }
 
         TextView tv_cassetteTitle = (TextView) convertView.findViewById(R.id.cassette_title);
