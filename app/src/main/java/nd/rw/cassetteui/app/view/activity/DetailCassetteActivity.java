@@ -3,11 +3,12 @@ package nd.rw.cassetteui.app.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,25 +19,30 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import nd.rw.cassetteui.R;
+import nd.rw.cassetteui.app.listeners.OnRecordingClickedHandler;
+import nd.rw.cassetteui.app.listeners.OnRecordingDeleteClickedHandler;
+import nd.rw.cassetteui.app.listeners.bundles.RecordingListenerBundle;
 import nd.rw.cassetteui.app.model.CassetteModel;
 import nd.rw.cassetteui.app.model.RecordingModel;
 import nd.rw.cassetteui.app.model.descriptors.CassetteModelDescriptor;
-import nd.rw.cassetteui.app.presenter.DeleteCassettePresenter;
-import nd.rw.cassetteui.app.presenter.DetailUpdateCassettePresenter;
+import nd.rw.cassetteui.app.presenter.ViewCassettePresenter;
+import nd.rw.cassetteui.app.utils.RecordingPlayer;
 import nd.rw.cassetteui.app.view.DetailCassetteView;
-import nd.rw.cassetteui.app.view.adapter.RecordingLayoutManager;
+import nd.rw.cassetteui.app.view.adapter.layoutmanagers.RecordingLayoutManager;
 import nd.rw.cassetteui.app.view.adapter.RecordingSwipeAdapter;
 import nd.rw.cassetteui.app.view.decoration.DividerItemDecoration;
 import nd.rw.cassetteui.app.view.fragment.DeleteCassetteDialogFragment;
 
 public class DetailCassetteActivity
         extends BaseActivity
-        implements DeleteCassetteDialogFragment.DeleteCassetteNoticeListener, DetailCassetteView{
+        implements DetailCassetteView, DeleteCassetteDialogFragment.DeleteCassetteNoticeListener,
+        OnRecordingClickedHandler, OnRecordingDeleteClickedHandler{
 
     //region Fields
 
@@ -44,8 +50,8 @@ public class DetailCassetteActivity
 
     public static final String INTENT_EXTRA_PARAM_CASSETTE_ID = "andrewtorski.cassette.INTENT_PARAM_CASSETTE_ID";
     public static final String INSTANCE_STATE_PARAM_CASSETTE_ID = "andrewtorski.cassette.STATE_PARAM_CASSETTE_ID";
-    public static final int DETAIL_ACTIVITY_UPDATE_RESULT_CODE = 2;
-    public static final int DETAIL_ACTIVITY_DELETE_RESULT_CODE = 3;
+
+    public static final int DETAILS_TO_LIST_RESULT_CODE = 1;
 
     @Bind(R.id.toolbar)
     public Toolbar toolbar;
@@ -59,12 +65,14 @@ public class DetailCassetteActivity
     public TextView tv_creationDate;
     @Bind(R.id.rv_recordings)
     public RecyclerView rv_recordings;
+    @Bind(R.id.coordinator_layout)
+    public CoordinatorLayout cl_layout;
 
     private RecordingSwipeAdapter recordingSwipeAdapter;
+    private RecordingPlayer recordingPlayer = new RecordingPlayer();
 
     private int cassetteId;
-    private DeleteCassettePresenter presenter = new DeleteCassettePresenter();
-    private DetailUpdateCassettePresenter detailPresenter;
+    private ViewCassettePresenter detailPresenter;
     private boolean wasCassetteUpdated = false;
 
     //endregion Fields
@@ -116,6 +124,12 @@ public class DetailCassetteActivity
         super.onSaveInstanceState(outState);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        this.recordingPlayer.dispose();
+    }
+
     //endregion AppCompatActivity
 
     //region DetailCassetteView Methods
@@ -141,6 +155,29 @@ public class DetailCassetteActivity
     }
 
     //endregion DetailCassetteView Methods
+
+    //region OnRecording{...} handlers
+
+    @Override
+    public void onRecordingClicked(RecordingModel recording) {
+        try {
+            this.recordingPlayer.playRecording(recording);
+        } catch (IOException e) {
+            this.showError("Something went wrong while playing the recording.");
+        }
+    }
+
+    @Override
+    public void onRecordingDeleteClicked(RecordingModel recording) {
+        Log.i(TAG, "onRecordingDeleteClicked: id = [" + recording.id + "]");
+        if (this.detailPresenter.deleteRecording(recording)){
+            Log.i(TAG, "onRecordingDeleteClicked: Delete was successful.");
+            this.recordingSwipeAdapter.deleteRecording(recording);
+        }
+        //// TODO: 27.12.2015 UNDO?!
+    }
+
+    //endregion OnRecording{...} handlers
 
     //region LoadDataView Methods
 
@@ -183,7 +220,7 @@ public class DetailCassetteActivity
      */
     @Override
     public void showError(String message) {
-
+        Snackbar.make(cl_layout, message, Snackbar.LENGTH_LONG).show();
     }
 
     /**
@@ -198,11 +235,15 @@ public class DetailCassetteActivity
 
     //region Private Methods
 
+    private RecordingListenerBundle produceListenerBundle(){
+        return new RecordingListenerBundle(this, this);
+    }
+
     private void setUpRecyclerView(){
         Log.i(TAG, "setUpRecyclerView beginning");
         RecordingLayoutManager recordingLayoutManager = new RecordingLayoutManager(this);
         this.rv_recordings.setLayoutManager(recordingLayoutManager);
-        this.recordingSwipeAdapter = new RecordingSwipeAdapter(new ArrayList<RecordingModel>());
+        this.recordingSwipeAdapter = new RecordingSwipeAdapter(new ArrayList<RecordingModel>(), this.produceListenerBundle());
         this.rv_recordings.setAdapter(recordingSwipeAdapter);
         this.rv_recordings.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
         Log.i(TAG, "setUpRecyclerView ending");
@@ -215,7 +256,7 @@ public class DetailCassetteActivity
         } else {
             this.cassetteId = savedInstanceState.getInt(INSTANCE_STATE_PARAM_CASSETTE_ID);
         }
-        this.detailPresenter = new DetailUpdateCassettePresenter(this);
+        this.detailPresenter = new ViewCassettePresenter(this);
         this.detailPresenter.initialize(cassetteId);
     }
 
@@ -246,27 +287,16 @@ public class DetailCassetteActivity
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         Log.d(TAG, "onDialogPositiveClick: POSITIVE");
-        boolean deleteWasSuccessful = this.presenter.deleteCassette(this.cassetteId);
-        Intent intent = new Intent();
+        /*boolean deleteWasSuccessful = this.detailPresenter.deleteCassette();
         if (deleteWasSuccessful) {
-            Log.d(TAG, "onDialogPositiveClick: Delete was successful");
-            intent.putExtra(INTENT_EXTRA_PARAM_CASSETTE_ID, cassetteId);
-        }
-        setResult(DETAIL_ACTIVITY_DELETE_RESULT_CODE, intent);
+        }*/
+        Intent data = new Intent();
+        data.putExtra(INTENT_EXTRA_PARAM_CASSETTE_ID, cassetteId);
+        setResult(DETAILS_TO_LIST_RESULT_CODE, data);
         this.finish();
     }
 
-    public View.OnClickListener homeButtonClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (wasCassetteUpdated) {
-                Intent intent = new Intent();
-                intent.putExtra(INTENT_EXTRA_PARAM_CASSETTE_ID, cassetteId);
-                setResult(DETAIL_ACTIVITY_UPDATE_RESULT_CODE, intent);
-            }
-            finish();
-        }
-    };
+    public View.OnClickListener homeButtonClickListener = view -> finish();
 
     private View.OnFocusChangeListener titleFocusListener = new View.OnFocusChangeListener() {
         @Override
@@ -281,28 +311,21 @@ public class DetailCassetteActivity
         }
     };
 
-    private View.OnFocusChangeListener descriptionFocusListener = new View.OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            if (!hasFocus) {
-                updateCassette();
-            }
+    private View.OnFocusChangeListener descriptionFocusListener = (v, hasFocus) -> {
+        if (!hasFocus) {
+            updateCassette();
         }
     };
 
-    private EditText.OnEditorActionListener editTextOnEditorListener = new TextView.OnEditorActionListener() {
-        @Override
-        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-            boolean handled = false;
-            if(actionId == EditorInfo.IME_ACTION_DONE){
-                Log.d(TAG, "onEditorAction: ime_action_done");
-                v.clearFocus();
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                handled = true;
-            }
-            return handled;
+    private EditText.OnEditorActionListener editTextOnEditorListener = (v, actionId, event) -> {
+        boolean handled = false;
+        if(actionId == EditorInfo.IME_ACTION_DONE){
+            v.clearFocus();
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            handled = true;
         }
+        return handled;
     };
 
     //endregion Listeners and Events

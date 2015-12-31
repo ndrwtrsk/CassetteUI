@@ -1,30 +1,38 @@
 package nd.rw.cassetteui.app.presenter;
 
 
+import android.util.Log;
+
 import java.util.List;
 
 import nd.rw.cassetteui.app.model.CassetteModel;
+import nd.rw.cassetteui.app.presenter.dp.ListCassettePresenterSubject;
 import nd.rw.cassetteui.app.view.ListCassettesView;
-import nd.rw.cassetteui.domain.usecase.DetailCassetteUseCase;
 import nd.rw.cassetteui.domain.usecase.ListCassettesUseCase;
 
 public class ListCassettePresenter implements Presenter{
-    private static final String TAG = "LI_CAS_PRE";
 
     //region Field
 
+    private static final String TAG = "ListCasPresenter";
     private ListCassettesUseCase useCase = new ListCassettesUseCase();
-    private DetailCassetteUseCase detailsUseCase = new DetailCassetteUseCase();
     private ListCassettesView view;
+    private CassetteModel cassetteToBeDeleted;
 
     //endregion Field
 
+    //region Constructors
+
     public ListCassettePresenter(ListCassettesView view) {
+        this();
         this.view = view;
     }
 
     public ListCassettePresenter() {
+        ListCassettePresenterSubject.getInstance().attach(this);
     }
+
+    //endregion Constructors
 
     //region Methods
 
@@ -40,16 +48,52 @@ public class ListCassettePresenter implements Presenter{
         this.view.renderCassetteList(list);
     }
 
-    public void onCassetteClicked(CassetteModel cassetteModel){
-        this.view.viewCassette(cassetteModel);
+    /**
+     * Refresh this Presenter's associated View.
+     * This method takes part in Observer design part.
+     */
+    public void onAddCassette(CassetteModel cassette){
+        this.view.onAddedCassette(cassette);
     }
 
-    public void queryForNewlyAddedCassette(int cassetteId){
-        this.view.onAddedCassette(this.detailsUseCase.getCassetteById(cassetteId));
+    /**
+     * Refresh this Presenter's associated View.
+     * This method takes part in Observer design part.
+     */
+    public void onUpdateCassette(CassetteModel cassette){
+        CassetteModel updatedCassette = this.useCase.getCassetteById(cassette.getId());
+        //  old cassette doesn't have it's recordings updated, hence the call to get the new one
+        this.view.onUpdatedCassette(updatedCassette);
     }
 
-    public void queryForNewlyUpdatedCassette(int cassetteId){
-        this.view.onUpdatedCassette(this.detailsUseCase.getCassetteById(cassetteId));
+    /**
+     * Refresh this Presenter's associated View.
+     * This method takes part in Observer design part.
+     */
+    public void onDeleteCassette(CassetteModel cassette){
+        Log.d(TAG, "onDeleteCassette() called with: " + "cassette = [" + cassette + "]");
+        this.view.onDeleteCassette(cassette);
+    }
+
+    public void setUpCassetteToBeDeleted(int cassetteId){
+        Log.d(TAG, "setUpCassetteToBeDeleted() called with: " + "cassetteId = [" + cassetteId + "]");
+        cassetteToBeDeleted = useCase.getCassetteById(cassetteId);
+        ListCassettePresenterSubject.getInstance().notifyAboutDeletedCassette(cassetteToBeDeleted);
+        //onDeleteCassette(cassetteToBeDeleted);
+    }
+
+    public void actuallyDeleteCassette(){
+        Log.d(TAG, "actuallyDeleteCassette:");
+        if (cassetteToBeDeleted == null) {
+            Log.d(TAG, "actuallyDeleteCassette: Cassette to be deleted is null.");
+            return;
+        }
+        useCase.deleteCassette(cassetteToBeDeleted);
+    }
+
+    public void undoDelete(){
+        ListCassettePresenterSubject.getInstance().notifyAboutAddedCassette(cassetteToBeDeleted);
+        cassetteToBeDeleted = null;
     }
 
     //endregion Methods
@@ -68,7 +112,7 @@ public class ListCassettePresenter implements Presenter{
 
     @Override
     public void destroy() {
-
+        ListCassettePresenterSubject.getInstance().detach(this);
     }
 
     //endregion Presenter implemented methods

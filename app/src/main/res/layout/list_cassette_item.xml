@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/two_line_list_item_height"
     android:layout_gravity="center"
+    android:background="?android:selectableItemBackground"
     android:clickable="true"
     android:paddingLeft="@dimen/line_list_item_left_right_padding"
     android:paddingRight="@dimen/line_list_item_left_right_padding">
@@ -16,6 +17,7 @@
         android:layout_centerInParent="true">
 
         <TableRow>
+
             <TextView
                 android:id="@+id/card_view_and_details_cassette_title"
                 android:layout_width="wrap_content"
@@ -27,6 +29,7 @@
         </TableRow>
 
         <TableRow>
+
             <TextView
                 android:id="@+id/list_item_cassette_description"
                 android:layout_width="wrap_content"

@@ -1,6 +1,8 @@
 package nd.rw.cassetteui.app.view.adapter;
 
+import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.util.SortedListAdapterCallback;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.Collection;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -22,68 +23,58 @@ public class CassettesAdapter extends RecyclerView.Adapter<CassettesAdapter.Cass
     //region Fields
     private static final String TAG = "CassettesAdapter";
 
-    private List<CassetteModel> cassetteModelList;
+    private CassetteSortedListCallback cassetteSortedListCallback;
+    private SortedList<CassetteModel> cassetteSortedList;
     private OnCassetteClickedHandler onCassetteClickedHandler;
 
     //endregion Fields
 
-    public CassettesAdapter(List<CassetteModel> cassetteModelList,
-                            OnCassetteClickedHandler onCassetteClickedHandler) {
-        this.cassetteModelList = cassetteModelList;
+    public CassettesAdapter(OnCassetteClickedHandler onCassetteClickedHandler) {
+        cassetteSortedListCallback = new CassetteSortedListCallback(this);
+        cassetteSortedList = new SortedList<>(CassetteModel.class, cassetteSortedListCallback);
         this.onCassetteClickedHandler = onCassetteClickedHandler;
     }
 
     //region Methods
 
-    public void setCassetteModelList(Collection<CassetteModel> cassetteModelList) {
-        this.cassetteModelList = (List<CassetteModel>) cassetteModelList;
+    public void initializeAdapterList(Collection<CassetteModel> cassetteModelList) {
+        this.cassetteSortedList.addAll(cassetteModelList);
     }
 
-    public void addCassetteToTop(CassetteModel cassetteModel){
-        if (cassetteModelList == null || cassetteModel == null) {
-            return;
-        }
-        if (cassetteModelList.size() == 0){
-            cassetteModelList.add(cassetteModel);
-        } else {
-            cassetteModelList.add(0, cassetteModel);
-        }
-        notifyItemInserted(0);
-    }
-
-    public void updateCassette(CassetteModel cassetteModel){
-        if (cassetteModelList == null || cassetteModel == null) {
+    public void addCassetteToTop(CassetteModel cassette){
+        if (cassetteSortedList == null || cassette == null) {
             return;
         }
 
-        for (int i = 0; i < cassetteModelList.size(); i++) {
-            if (cassetteModelList.get(i).getId() == cassetteModel.getId()){
-                cassetteModelList.set(i, cassetteModel);
-                notifyItemChanged(i);
-                return;
+        cassetteSortedList.add(cassette);
+    }
+
+    public void updateCassette(CassetteModel cassette){
+        if (cassetteSortedList == null || cassette == null) {
+            return;
+        }
+
+        int foundCassetteIndex = this.cassetteSortedList.indexOf(cassette);
+        if (foundCassetteIndex == SortedList.INVALID_POSITION){
+            Log.d(TAG, "updateCassette: No Cassette was updated.");
+            return;
+        }
+        this.cassetteSortedList.updateItemAt(foundCassetteIndex, cassette);
+        Log.d(TAG, "updateCassette: Cassette was successfully updated.");
+    }
+
+    public void deleteCassette(CassetteModel cassette){
+        if (cassetteSortedList == null || cassette == null) {
+            return;
+        }
+        Log.d(TAG, "deleteCassette() called with: " + " searched cassette = [" + cassette + "]");
+
+        for (int i = 0; i < cassetteSortedList.size(); i++) {
+            if (cassetteSortedList.get(i).getId() == cassette.getId()) {
+                cassetteSortedList.removeItemAt(i);
+                break;
             }
         }
-        Log.d(TAG, "updateCassette: No Cassette was updated.");
-    }
-
-    public void deleteCassette(CassetteModel cassetteModel){
-        if (cassetteModelList == null || cassetteModel == null) {
-            return;
-        }
-
-        this.deleteCassette(cassetteModel.getId());
-
-    }
-
-    public void deleteCassette(int cassetteId){
-        for (int i = 0; i < cassetteModelList.size(); i++) {
-            if (cassetteModelList.get(i).getId() == cassetteId){
-                cassetteModelList.remove(i);
-                notifyItemRemoved(i);
-                return;
-            }
-        }
-        Log.d(TAG, "deleteCassette: No Cassette was removed.");
     }
 
     //endregion Methods
@@ -94,20 +85,20 @@ public class CassettesAdapter extends RecyclerView.Adapter<CassettesAdapter.Cass
     public CassetteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view =
                 LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.card_view_cassette, parent, false);
+                .inflate(R.layout.list_cassette_item, parent, false);
         return new CassetteViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(CassetteViewHolder holder, int position) {
-        CassetteModel cassetteAtPosition = this.cassetteModelList.get(position);
+        CassetteModel cassetteAtPosition = this.cassetteSortedList.get(position);
         holder.fill(cassetteAtPosition);
         holder.bindListener(cassetteAtPosition, onCassetteClickedHandler);
     }
 
     @Override
     public int getItemCount() {
-        return this.cassetteModelList.size();
+        return this.cassetteSortedList.size();
     }
 
     //endregion RecyclerView implemented methods
@@ -137,11 +128,11 @@ public class CassettesAdapter extends RecyclerView.Adapter<CassettesAdapter.Cass
             ButterKnife.bind(this, itemView);
         }
 
-        public void fill(CassetteModel cassetteModel){
-            if (cassetteModel == null) {
+        public void fill(CassetteModel cassette){
+            if (cassette == null) {
                 return;
             }
-            CassetteModelDescriptor descriptor = cassetteModel.getDescriptor();
+            CassetteModelDescriptor descriptor = cassette.getDescriptor();
 
             this.tv_title.setText(descriptor.title);
             this.tv_description.setText(descriptor.description);
@@ -156,14 +147,37 @@ public class CassettesAdapter extends RecyclerView.Adapter<CassettesAdapter.Cass
         }
 
         public void bindListener(final CassetteModel cassette, final OnCassetteClickedHandler handler){
-            this.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    handler.onCassetteClicked(cassette, CassetteViewHolder.this.tv_title);
-                }
-            });
+            this.itemView.setOnClickListener(view -> handler.onCassetteClicked(cassette, CassetteViewHolder.this.tv_title));
         }
     }
 
     //endregion CassetteViewHolder class
+
+    //region CassetteSortedListCallback class
+
+    private static class CassetteSortedListCallback extends SortedListAdapterCallback<CassetteModel>{
+
+        public CassetteSortedListCallback(RecyclerView.Adapter adapter) {
+            super(adapter);
+        }
+
+        @Override
+        public int compare(CassetteModel o1, CassetteModel o2) {
+            return o1.compareTo(o2);
+        }
+
+        @Override
+        public boolean areContentsTheSame(CassetteModel oldItem, CassetteModel newItem) {
+            return oldItem.getTitle().equalsIgnoreCase(newItem.getTitle())
+                    && oldItem.getDescription().equalsIgnoreCase(newItem.getDescription())
+                    && oldItem.getNumberOfRecordings() == newItem.getNumberOfRecordings();
+        }
+
+        @Override
+        public boolean areItemsTheSame(CassetteModel item1, CassetteModel item2) {
+            return item1.getId() == item2.getId();
+        }
+    }
+
+    //endregion CassetteSortedListCallback class
 }

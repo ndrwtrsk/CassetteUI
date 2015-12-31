@@ -12,4 +12,5 @@ public interface ListCassettesView extends LoadDataView {
     void onAddedCassette(CassetteModel cassetteModel);
     void onUpdatedCassette(CassetteModel cassetteModel);
     void onDeleteCassette(int cassetteId);
+    void onDeleteCassette(CassetteModel cassette);
 }

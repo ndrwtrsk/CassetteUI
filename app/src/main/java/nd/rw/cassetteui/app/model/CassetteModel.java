@@ -8,7 +8,7 @@ import java.util.List;
 
 import nd.rw.cassetteui.app.model.descriptors.CassetteModelDescriptor;
 
-public class CassetteModel {
+public class CassetteModel implements Comparable<CassetteModel>{
 
     private static final String TAG = "CAS_MOD";
     int id;
@@ -34,17 +34,8 @@ public class CassetteModel {
         this.date = new GregorianCalendar();
     }
 
-    public int getTotalDuration(){
-        int sumOfDurationsInSeconds = 0;
-        for (RecordingModel recording :
-                recordingList) {
-            sumOfDurationsInSeconds += recording.getDurationInSeconds();
-        }
-
-        return sumOfDurationsInSeconds;
-    }
-
     //region Getters
+
     public int getId() {
         return id;
     }
@@ -66,6 +57,16 @@ public class CassetteModel {
             return 0;
         }
         return recordingList.size();
+    }
+
+    public int getTotalDuration(){
+        int sumOfDurationsInSeconds = 0;
+        for (RecordingModel recording :
+                recordingList) {
+            sumOfDurationsInSeconds += recording.getDurationInSeconds();
+        }
+
+        return sumOfDurationsInSeconds;
     }
 
     /**
@@ -122,15 +123,13 @@ public class CassetteModel {
 
         for (int i = 1; i < recordingList.size(); i++) {
             GregorianCalendar currentRecordingsDate = recordingList.get(i).dateRecorded;
-            if (result.compareTo(currentRecordingsDate) > 0){
+            if (result.compareTo(currentRecordingsDate) < 0){
                 result = currentRecordingsDate;
             }
         }
 
         return result;
     }
-
-    //endregion Methods
 
     @Override
     public String toString() {
@@ -141,13 +140,47 @@ public class CassetteModel {
                 '}';
     }
 
+    /**
+     * Compares this Cassette to another cassette. This Cassette is considered greater, if it's newest
+     * recording date is newer than the another one's.
+     *
+     * However if their ID's are equal(meaning they are the same entity...) return 0.
+     *
+     * @param another the object to compare to this instance.
+     * @return a negative integer if this instance is less than {@code another};
+     * a positive integer if this instance is greater than
+     * {@code another}; 0 if this instance has the same order as
+     * {@code another}.
+     * @throws ClassCastException if {@code another} cannot be converted into something
+     *                            comparable to {@code this} instance.
+     */
+    @Override
+    public int compareTo(CassetteModel another) {
+        if (another == null) {
+            return 1;
+        }
+        if (getId() == another.getId()){
+            return 0;
+        }
+        if (this.getNewestRecordingDate() == null) {
+            return -1;
+        }
+        if (another.getNewestRecordingDate() == null) {
+            return 1;
+        }
+
+        return -this.getNewestRecordingDate().compareTo(another.getNewestRecordingDate());
+    }
+
+    //endregion Methods
+
     //region Static Methods
 
     public static List<CassetteModel> getListOfCassettes(int numberOfCassettes, int recordingsPerCassette){
 
         List<CassetteModel> resultList = new LinkedList<>();
 
-        int currentStartingIndexOfNewRecordings = 0;
+        /*int currentStartingIndexOfNewRecordings = 0;
         for (int i = 1; i <= numberOfCassettes; i++) {
             CassetteModel cassette = new CassetteModel(i, "Cassette #" + i, "Lorem ipsum good stuff", new GregorianCalendar());
             RecordingModel.populateCassetteWithRecordings(cassette, currentStartingIndexOfNewRecordings, currentStartingIndexOfNewRecordings + recordingsPerCassette);
@@ -156,7 +189,7 @@ public class CassetteModel {
             currentStartingIndexOfNewRecordings += recordingsPerCassette;
         }
 
-        Log.d(TAG, "getListOfCassettes: number of cassettes:" + resultList.size());
+        Log.d(TAG, "getListOfCassettes: number of cassettes:" + resultList.size());*/
         return resultList;
     }
 

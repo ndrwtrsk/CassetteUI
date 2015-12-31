@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -26,8 +27,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
@@ -50,39 +50,38 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:textColor="@color/primary_text"
-                android:textSize="@dimen/font_great"
-                android:transitionName="@string/cassette_card_view_to_details_transition"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:background="@android:color/transparent"
                 android:imeOptions="actionDone"
                 android:inputType="textAutoCorrect"
-                />
+                android:textColor="@color/primary_text"
+                android:textSize="@dimen/font_great"
+                android:transitionName="@string/cassette_card_view_to_details_transition" />
 
             <EditText
                 android:id="@+id/cassette_details_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/card_view_and_details_cassette_title"
-                android:layout_marginTop="@dimen/spacing_small"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:background="@android:color/transparent"
+                android:hint="Your description"
+                android:imeOptions="actionDone"
+                android:inputType="textAutoCorrect"
                 android:text="@string/samuel_l_ipsum_placeholder"
                 android:textColor="@color/secondary_text"
-                android:textSize="@dimen/font_normal"
-                android:hint="Your description"
-                android:background="@android:color/transparent"
-                android:imeOptions="actionDone"
-                android:inputType="textAutoCorrect"/>
+                android:textSize="@dimen/font_normal" />
 
             <TextView
                 android:id="@+id/cassette_details_created_on_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cassette_details_description"
-                android:layout_marginTop="@dimen/spacing_tiny"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/spacing_tiny"
                 android:text="Created on " />
 
             <TextView
@@ -90,31 +89,31 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cassette_details_description"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="@dimen/spacing_tiny"
                 android:layout_toRightOf="@id/cassette_details_created_on_label"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:text="@string/recorded_on_placeholder" />
 
             <Button
                 android:id="@+id/cassette_details_play_all"
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/spacing_normal"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/cassette_details_created_on_label"
-                android:text="Play all"
-                android:textColor="@color/primary_text_material_light"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/spacing_normal"
                 android:background="@color/accent"
-                android:foreground="?android:attr/selectableItemBackground" />
+                android:foreground="?android:attr/selectableItemBackground"
+                android:text="Play all"
+                android:textColor="@color/primary_text_material_light" />
 
             <TextView
                 android:id="@+id/cassette_details_no_of_recordings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:layout_below="@+id/cassette_details_play_all"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_marginTop="@dimen/spacing_normal"
                 android:text="@string/number_of_recordings_placeholder" />
 
@@ -122,10 +121,10 @@
                 android:id="@+id/rv_recordings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:isScrollContainer="false"
-                android:layout_below="@+id/cassette_details_no_of_recordings"
                 android:layout_alignParentStart="true"
-                android:paddingTop="@dimen/line_list_item_top_padding"/>
+                android:layout_below="@+id/cassette_details_no_of_recordings"
+                android:isScrollContainer="false"
+                android:paddingTop="@dimen/line_list_item_top_padding" />
 
         </RelativeLayout>
 

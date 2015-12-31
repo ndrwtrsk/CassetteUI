@@ -7,6 +7,7 @@ import java.util.GregorianCalendar;
 
 import nd.rw.cassetteui.app.model.CassetteModel;
 import nd.rw.cassetteui.app.model.RecordingModel;
+import nd.rw.cassetteui.app.presenter.dp.ListCassettePresenterSubject;
 import nd.rw.cassetteui.domain.usecase.RecordToCassetteUseCase;
 
 public class RecordPresenter implements Presenter{
@@ -30,7 +31,9 @@ public class RecordPresenter implements Presenter{
     public RecordingModel addNewRecording(String fileName, GregorianCalendar date, int duration){
         Log.d(TAG, "addNewRecording() called with: " + "fileName = [" + fileName + "], date = [" + date + "], duration = [" + duration + "]");
         RecordingModel newRecording = new RecordingModel(date, duration, fileName, selectedCassette);
-        return useCase.addRecording(newRecording);
+        newRecording = useCase.addRecording(newRecording);
+        ListCassettePresenterSubject.getInstance().notifyAboutUpdatedCassette(selectedCassette);
+        return newRecording;
     }
 
     //region Presenter Methods

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:card_view="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <RelativeLayout
+            android:padding="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/selected_cassette"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:text="Selected Cassette:"
+                android:textColor="@color/secondary_text"
+                android:textSize="@dimen/font_small"/>
+            <TextView
+                android:id="@+id/cassette_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_below="@id/selected_cassette"
+                android:gravity="center_vertical"
+                android:text="Cassette #1"
+                android:textColor="@color/primary_text"
+                android:textSize="@dimen/font_larger" />
+        </RelativeLayout>
+</RelativeLayout>

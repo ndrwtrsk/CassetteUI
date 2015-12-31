@@ -1,30 +1,17 @@
 package nd.rw.cassetteui.app.view.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.util.Pair;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 
-import butterknife.Bind;
 import nd.rw.cassetteui.R;
-import nd.rw.cassetteui.app.listeners.MainViewPagerMotionBlocker;
-import nd.rw.cassetteui.app.listeners.OnCassetteClickedHandler;
-import nd.rw.cassetteui.app.model.CassetteModel;
-import nd.rw.cassetteui.app.navigation.Navigator;
 import nd.rw.cassetteui.app.view.fragment.ListCassetteFragment;
 import nd.rw.cassetteui.app.view.fragment.RecordingFragment;
 import nd.rw.cassetteui.app.view.ui.MainViewPager;
