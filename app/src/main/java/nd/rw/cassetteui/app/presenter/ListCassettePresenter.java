@@ -7,6 +7,7 @@ import java.util.List;
 
 import nd.rw.cassetteui.app.model.CassetteModel;
 import nd.rw.cassetteui.app.presenter.dp.ListCassettePresenterSubject;
+import nd.rw.cassetteui.app.utils.CassetteAndRecordingDeleter;
 import nd.rw.cassetteui.app.view.ListCassettesView;
 import nd.rw.cassetteui.domain.usecase.ListCassettesUseCase;
 
@@ -82,15 +83,26 @@ public class ListCassettePresenter implements Presenter{
         //onDeleteCassette(cassetteToBeDeleted);
     }
 
-    public void actuallyDeleteCassette(){
+    /**
+     * Performs an actual delete of a Cassette. If delete was successful, this method will return a
+     * reference to the deleted Cassette.
+     * @return Reference to the recently deleted cassette if it was successful. Null otherwise.
+     */
+    public CassetteModel actuallyDeleteCassette(){
         Log.d(TAG, "actuallyDeleteCassette:");
         if (cassetteToBeDeleted == null) {
             Log.d(TAG, "actuallyDeleteCassette: Cassette to be deleted is null.");
-            return;
+            return null;
         }
-        useCase.deleteCassette(cassetteToBeDeleted);
+        if (useCase.deleteCassette(cassetteToBeDeleted)) {
+            return cassetteToBeDeleted;
+        }
+        return null;
     }
 
+    /**
+     * Revert the deletion in parallel list presenters.
+     */
     public void undoDelete(){
         ListCassettePresenterSubject.getInstance().notifyAboutAddedCassette(cassetteToBeDeleted);
         cassetteToBeDeleted = null;

@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +33,8 @@ import nd.rw.cassetteui.app.model.CassetteModel;
 import nd.rw.cassetteui.app.model.RecordingModel;
 import nd.rw.cassetteui.app.model.descriptors.CassetteModelDescriptor;
 import nd.rw.cassetteui.app.presenter.ViewCassettePresenter;
+import nd.rw.cassetteui.app.utils.AndroidFileUtils;
+import nd.rw.cassetteui.app.utils.CassetteAndRecordingDeleter;
 import nd.rw.cassetteui.app.utils.RecordingPlayer;
 import nd.rw.cassetteui.app.view.DetailCassetteView;
 import nd.rw.cassetteui.app.view.adapter.layoutmanagers.RecordingLayoutManager;
@@ -73,6 +76,7 @@ public class DetailCassetteActivity
 
     private int cassetteId;
     private ViewCassettePresenter detailPresenter;
+    private CassetteAndRecordingDeleter cassetteAndRecordingDeleter;
     private boolean wasCassetteUpdated = false;
 
     //endregion Fields
@@ -85,6 +89,8 @@ public class DetailCassetteActivity
         this.getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        this.getWindow().setEnterTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.slide_right));
+        this.getWindow().setExitTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.slide_left));
         this.setContentView(R.layout.activity_detail_cassette);
         ButterKnife.bind(this);
         this.setSupportActionBar(this.toolbar);
@@ -98,6 +104,8 @@ public class DetailCassetteActivity
         this.et_description.setOnEditorActionListener(editTextOnEditorListener);
         this.setUpRecyclerView();
         this.initializeActivity(savedInstanceState);
+        AndroidFileUtils androidFileUtils = new AndroidFileUtils(this);
+        this.cassetteAndRecordingDeleter = new CassetteAndRecordingDeleter(androidFileUtils);
     }
 
     @Override
@@ -172,6 +180,7 @@ public class DetailCassetteActivity
         Log.i(TAG, "onRecordingDeleteClicked: id = [" + recording.id + "]");
         if (this.detailPresenter.deleteRecording(recording)){
             Log.i(TAG, "onRecordingDeleteClicked: Delete was successful.");
+            this.cassetteAndRecordingDeleter.deleteRecordingContent(recording);
             this.recordingSwipeAdapter.deleteRecording(recording);
         }
         //// TODO: 27.12.2015 UNDO?!

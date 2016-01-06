@@ -20,11 +20,13 @@ import nd.rw.cassetteui.R;
 import nd.rw.cassetteui.app.listeners.OnCassetteClickedHandler;
 import nd.rw.cassetteui.app.model.CassetteModel;
 import nd.rw.cassetteui.app.presenter.ListCassettePresenter;
+import nd.rw.cassetteui.app.utils.AndroidFileUtils;
+import nd.rw.cassetteui.app.utils.CassetteAndRecordingDeleter;
 import nd.rw.cassetteui.app.view.ListCassettesView;
 import nd.rw.cassetteui.app.view.activity.AddCassetteActivity;
 import nd.rw.cassetteui.app.view.activity.DetailCassetteActivity;
-import nd.rw.cassetteui.app.view.adapter.layoutmanagers.CassetteLayoutManager;
 import nd.rw.cassetteui.app.view.adapter.CassettesAdapter;
+import nd.rw.cassetteui.app.view.adapter.layoutmanagers.CassetteLayoutManager;
 import nd.rw.cassetteui.app.view.decoration.DividerItemDecoration;
 
 public class ListCassetteFragment
@@ -34,7 +36,7 @@ public class ListCassetteFragment
 
     //region Fields
 
-    public static final String TAG = "LI_CAS_FRAG";
+    public static final String TAG = "ListCassetteFragment";
     public static final int LIST_TO_DETAILS_REQUEST_CODE = 1;
 
     @Bind(R.id.rv_cassettes)
@@ -45,13 +47,10 @@ public class ListCassetteFragment
     public FloatingActionButton fab_addCassette;
 
     public ListCassettePresenter presenter;
-
+    private CassetteAndRecordingDeleter cassetteAndRecordingDeleter;
     private CassettesAdapter cassettesAdapter;
 
-    private CassetteLayoutManager layoutManager;
-
     private OnCassetteClickedHandler onCassetteClickedHandler;
-
 
     //endregion Fields
 
@@ -66,7 +65,7 @@ public class ListCassetteFragment
     //region Private Methods
 
     private void setupUI() {
-        this.layoutManager = new CassetteLayoutManager(this.getContext());
+        CassetteLayoutManager layoutManager = new CassetteLayoutManager(this.getContext());
         this.rv_cassettes.setLayoutManager(layoutManager);
         this.onCassetteClickedHandler = this;
         this.cassettesAdapter = new CassettesAdapter(onCassetteClickedHandler);
@@ -187,7 +186,8 @@ public class ListCassetteFragment
     public void onActivityCreated(Bundle savedInstanceState) {
         Log.d(TAG, "OnActivityCreated");
         super.onActivityCreated(savedInstanceState);
-
+        AndroidFileUtils androidFileUtils = new AndroidFileUtils(getContext());
+        cassetteAndRecordingDeleter = new CassetteAndRecordingDeleter(androidFileUtils);
         //  why exactly is presenter instantiated here?
         //  could it be done elsewhere?
         this.presenter = new ListCassettePresenter(this);
@@ -210,11 +210,18 @@ public class ListCassetteFragment
     public void onCassetteClicked(CassetteModel cassetteModel, View cassetteViewForTransition) {
         Log.i(TAG, "onCassetteClicked");
         Intent intent = DetailCassetteActivity.getCallingIntent(this.getContext(), cassetteModel.getId());
+
+//        ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(getContext(),0,0);
+//        ActivityCompat.startActivityForResult(getActivity(), intent, LIST_TO_DETAILS_REQUEST_CODE, opts.toBundle());
         startActivityForResult(intent, LIST_TO_DETAILS_REQUEST_CODE);
     }
 
     //region Listeners, Callbacks and Events
 
+    /**
+     * Snackbar for handling undo events. If the snackbar was dismissed by either swiping, expiring
+     * after timeout or by being replaced by new snackbar - the cassette should be ACTUALLY deleted.
+     */
     private Snackbar.Callback undoDeleteCassetteSnackbarCallback = new Snackbar.Callback() {
         @Override
         public void onDismissed(Snackbar snackbar, int event) {
@@ -222,7 +229,10 @@ public class ListCassetteFragment
             if (event == DISMISS_EVENT_SWIPE
                     || event == DISMISS_EVENT_TIMEOUT
                     || event == DISMISS_EVENT_CONSECUTIVE) {
-                presenter.actuallyDeleteCassette();
+                CassetteModel deletedCassette = presenter.actuallyDeleteCassette();
+                if (deletedCassette != null) {
+                    cassetteAndRecordingDeleter.deleteCassetteContents(deletedCassette);
+                }
             }
         }
 

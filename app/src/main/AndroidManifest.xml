@@ -2,12 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="nd.rw.cassetteui">
 
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
-    <!-- It's essential to reference custom application class CassetteApplication-->
+    <!-- It's essential to reference custom application class CassetteApplication -->
     <application
         android:name=".app.CassetteApplication"
         android:allowBackup="true"
@@ -21,21 +21,27 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".app.view.activity.DetailCassetteActivity"
-            android:label="Cassette">
-        </activity>
+            android:label="Cassette"></activity>
         <activity
             android:name=".app.view.activity.AddCassetteActivity"
-            android:windowSoftInputMode="stateVisible"
-            android:label="New cassette">
-            <!--    android:windowSoftInputMode="stateVisible" will make the keyboard immediately visible
+            android:label="New cassette"
+            android:windowSoftInputMode="stateVisible">
+
+            <!--
+                    android:windowSoftInputMode="stateVisible" will make the keyboard immediately visible
                     as soon as the user sees the activity
             -->
         </activity>
+        <activity
+            android:name=".app.view.activity.DebugStorageActivity"
+            android:label="@string/title_activity_debug_storage"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
