@@ -162,6 +162,11 @@ public class DetailCassetteActivity
         this.et_description.setText(cassetteModel.getDescription());
     }
 
+    @Override
+    public void addUndidDeleteRecording(RecordingModel recordingModel) {
+        recordingSwipeAdapter.addRecording(recordingModel);
+    }
+
     //endregion DetailCassetteView Methods
 
     //region OnRecording{...} handlers
@@ -178,11 +183,21 @@ public class DetailCassetteActivity
     @Override
     public void onRecordingDeleteClicked(RecordingModel recording) {
         Log.i(TAG, "onRecordingDeleteClicked: id = [" + recording.id + "]");
-        if (this.detailPresenter.deleteRecording(recording)){
+        //  delete from adapter
+        recordingSwipeAdapter.deleteRecording(recording);
+        //  set up presenter
+        detailPresenter.setUpRecordingToBeDeleted(recording);
+        //  snack barrrr
+        Snackbar.make(cl_layout, "Recording deleted", Snackbar.LENGTH_LONG)
+                .setAction("Undo", v -> detailPresenter.undoDeleteRecording())
+                .setCallback(undoDeleteRecordingCallback)
+                .show();
+        //fuck off
+        /*if (this.detailPresenter.deleteRecording(recording)){
             Log.i(TAG, "onRecordingDeleteClicked: Delete was successful.");
             this.cassetteAndRecordingDeleter.deleteRecordingContent(recording);
             this.recordingSwipeAdapter.deleteRecording(recording);
-        }
+        }*/
         //// TODO: 27.12.2015 UNDO?!
     }
 
@@ -287,6 +302,21 @@ public class DetailCassetteActivity
     //endregion Private Methods
 
     //region Listeners and Events
+
+    private Snackbar.Callback undoDeleteRecordingCallback = new Snackbar.Callback() {
+        @Override
+        public void onDismissed(Snackbar snackbar, int event) {
+            if (event == DISMISS_EVENT_SWIPE
+                    || event == DISMISS_EVENT_TIMEOUT
+                    || event == DISMISS_EVENT_CONSECUTIVE) {
+                RecordingModel deletedRecording = detailPresenter.actuallyDeleteRecording();
+                if (deletedRecording != null) {
+                    cassetteAndRecordingDeleter.deleteRecordingContent(deletedRecording);
+//                    recordingSwipeAdapter.deleteRecording(deletedRecording);
+                }
+            }
+        }
+    };
 
     private void showDeleteDialog(){
         DialogFragment dialog = new DeleteCassetteDialogFragment();

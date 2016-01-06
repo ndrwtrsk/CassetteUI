@@ -76,41 +76,22 @@ public class RecordingSwipeAdapter
         Log.i(TAG, "deleteRecording: No recording was removed.");
     }
 
-    public void updateRecording(RecordingModel recording){
+    /**
+     * Adds to top.
+     */
+    public void addRecording(RecordingModel recording){
+        if (recordingList.size() == 0){
+            recordingList.add(recording);
+        } else {
+            recordingList.add(0, recording);
+        }
+        notifyItemInserted(0);
 
     }
 
-    private SwipeLayout.SwipeListener swipeListener = new SwipeLayout.SwipeListener() {
-        @Override
-        public void onStartOpen(SwipeLayout layout) {
+    public void updateRecording(RecordingModel recording){
 
-        }
-
-        @Override
-        public void onOpen(SwipeLayout layout) {
-
-        }
-
-        @Override
-        public void onStartClose(SwipeLayout layout) {
-
-        }
-
-        @Override
-        public void onClose(SwipeLayout layout) {
-
-        }
-
-        @Override
-        public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
-
-        }
-
-        @Override
-        public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
-
-        }
-    };
+    }
 
     public static class RecordingSwipeViewHolder extends RecyclerView.ViewHolder{
 

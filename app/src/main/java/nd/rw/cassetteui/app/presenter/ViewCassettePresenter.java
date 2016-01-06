@@ -18,6 +18,7 @@ public class ViewCassettePresenter implements Presenter{
 
     private int cassetteId;
     private CassetteModel cassetteModel;
+    private RecordingModel recordingToBeDeleted;
 
     //endregion Fields
 
@@ -75,6 +76,27 @@ public class ViewCassettePresenter implements Presenter{
             ListCassettePresenterSubject.getInstance().notifyAboutDeletedCassette(cassetteModel);
         }
         return deleteWasSuccessful;
+    }
+
+    public void setUpRecordingToBeDeleted(RecordingModel recordingToBeDeleted){
+        this.recordingToBeDeleted = recordingToBeDeleted;
+    }
+
+    public RecordingModel actuallyDeleteRecording(){
+        boolean recordingWasDeleted = deleteRecording(recordingToBeDeleted);
+        if (recordingWasDeleted) {
+            RecordingModel toReturn = recordingToBeDeleted;
+            recordingToBeDeleted = null;
+            return toReturn;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public void undoDeleteRecording(){
+        view.addUndidDeleteRecording(recordingToBeDeleted);
+        recordingToBeDeleted = null;
     }
 
     public boolean deleteRecording(RecordingModel recording){
