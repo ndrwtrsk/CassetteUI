@@ -6,11 +6,11 @@ public final class DurationFormatter {
         throw new AssertionError("No instances please!");
     }
 
-    public static String formatTimeInSeconds(final int durationInSeconds){
+    public static String formatTimeInSeconds(final int secs){
 
-        final int hours = durationInSeconds / 3600;
-        final int minutes = (durationInSeconds % 3600) / 60;
-        final int seconds = durationInSeconds % 60;
+        final int hours = secs / 3600;
+        final int minutes = (secs % 3600) / 60;
+        final int seconds = secs % 60;
 
         String result = "";
 
@@ -20,6 +20,10 @@ public final class DurationFormatter {
 
         result += String.format("%02d:%02d", minutes, seconds);
         return result;
+    }
+
+    public static String formatTimeInMilliseconds(final int msecs){
+        return formatTimeInSeconds(msecs/1000);
     }
 
 }

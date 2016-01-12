@@ -2,7 +2,9 @@ package nd.rw.cassetteui.app.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
@@ -18,6 +20,8 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -26,17 +30,17 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import nd.rw.cassetteui.R;
-import nd.rw.cassetteui.app.listeners.OnRecordingClickedHandler;
-import nd.rw.cassetteui.app.listeners.OnRecordingDeleteClickedHandler;
-import nd.rw.cassetteui.app.listeners.bundles.RecordingListenerBundle;
+import nd.rw.cassetteui.app.listeners.RecordingItemHandler;
 import nd.rw.cassetteui.app.model.CassetteModel;
 import nd.rw.cassetteui.app.model.RecordingModel;
 import nd.rw.cassetteui.app.model.descriptors.CassetteModelDescriptor;
+import nd.rw.cassetteui.app.model.descriptors.DurationFormatter;
 import nd.rw.cassetteui.app.presenter.ViewCassettePresenter;
 import nd.rw.cassetteui.app.utils.AndroidFileUtils;
 import nd.rw.cassetteui.app.utils.CassetteAndRecordingDeleter;
 import nd.rw.cassetteui.app.utils.RecordingPlayer;
 import nd.rw.cassetteui.app.view.DetailCassetteView;
+import nd.rw.cassetteui.app.listeners.RecordingRecyclerItemClickListener;
 import nd.rw.cassetteui.app.view.adapter.layoutmanagers.RecordingLayoutManager;
 import nd.rw.cassetteui.app.view.adapter.RecordingSwipeAdapter;
 import nd.rw.cassetteui.app.view.decoration.DividerItemDecoration;
@@ -45,7 +49,9 @@ import nd.rw.cassetteui.app.view.fragment.DeleteCassetteDialogFragment;
 public class DetailCassetteActivity
         extends BaseActivity
         implements DetailCassetteView, DeleteCassetteDialogFragment.DeleteCassetteNoticeListener,
-        OnRecordingClickedHandler, OnRecordingDeleteClickedHandler{
+        RecordingItemHandler,
+        SeekBar.OnSeekBarChangeListener,
+        MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
 
     //region Fields
 
@@ -71,8 +77,14 @@ public class DetailCassetteActivity
     @Bind(R.id.coordinator_layout)
     public CoordinatorLayout cl_layout;
 
+    private SeekBar sb_playback;
+    private TextView tv_currentPlaybackProgress;
+    private TextView tv_durationLeft;
+    private ImageButton ib_playPause;
+
     private RecordingSwipeAdapter recordingSwipeAdapter;
-    private RecordingPlayer recordingPlayer = new RecordingPlayer();
+    public RecordingPlayer recordingPlayer = new RecordingPlayer();
+    private Handler playbackHandler = new Handler();
 
     private int cassetteId;
     private ViewCassettePresenter detailPresenter;
@@ -85,27 +97,39 @@ public class DetailCassetteActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i(TAG, "onCreate");
-        this.getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        this.getWindow().setEnterTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.slide_right));
-        this.getWindow().setExitTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.slide_left));
-        this.setContentView(R.layout.activity_detail_cassette);
+        setUpWindowParams();
+        setContentView(R.layout.activity_detail_cassette);
         ButterKnife.bind(this);
-        this.setSupportActionBar(this.toolbar);
-        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        this.getSupportActionBar().setDisplayShowHomeEnabled(true);
-        this.toolbar.setTitle("New Cassette");
+        setUpActionBar();
+        setUpListeners();
+        setUpRecyclerView();
+        initializeActivity(savedInstanceState);
+        AndroidFileUtils androidFileUtils = new AndroidFileUtils(this);
+        cassetteAndRecordingDeleter = new CassetteAndRecordingDeleter(androidFileUtils);
+        recordingPlayer.setOnCompletionListener(this);
+    }
+
+    private void setUpListeners() {
         this.toolbar.setNavigationOnClickListener(homeButtonClickListener);
         this.et_title.setOnFocusChangeListener(titleFocusListener);
         this.et_description.setOnFocusChangeListener(descriptionFocusListener);
         this.et_title.setOnEditorActionListener(editTextOnEditorListener);
         this.et_description.setOnEditorActionListener(editTextOnEditorListener);
-        this.setUpRecyclerView();
-        this.initializeActivity(savedInstanceState);
-        AndroidFileUtils androidFileUtils = new AndroidFileUtils(this);
-        this.cassetteAndRecordingDeleter = new CassetteAndRecordingDeleter(androidFileUtils);
+    }
+
+    private void setUpActionBar() {
+        this.setSupportActionBar(this.toolbar);
+        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        this.getSupportActionBar().setDisplayShowHomeEnabled(true);
+        this.toolbar.setTitle("New Cassette");
+    }
+
+    private void setUpWindowParams() {
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        this.getWindow().setEnterTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.slide_right));
+        this.getWindow().setExitTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.slide_left));
     }
 
     @Override
@@ -118,7 +142,7 @@ public class DetailCassetteActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_delete_cassette) {
-            this.showDeleteDialog();
+            showDeleteDialog();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -135,7 +159,7 @@ public class DetailCassetteActivity
     @Override
     protected void onPause() {
         super.onPause();
-        this.recordingPlayer.dispose();
+        recordingPlayer.dispose();
     }
 
     //endregion AppCompatActivity
@@ -172,36 +196,112 @@ public class DetailCassetteActivity
     //region OnRecording{...} handlers
 
     @Override
-    public void onRecordingClicked(RecordingModel recording) {
-        try {
-            this.recordingPlayer.playRecording(recording);
-        } catch (IOException e) {
-            this.showError("Something went wrong while playing the recording.");
+    public void recordingItemClicked(RecordingModel recording, RecordingSwipeAdapter.RecordingSwipeViewHolder viewHolder) {
+        if (!recordingPlayer.isPlaying()) {
+            sb_playback = viewHolder.sb_progress;
+            sb_playback.setOnSeekBarChangeListener(this);
+            tv_currentPlaybackProgress = viewHolder.tv_currentProgress;
+            tv_durationLeft = viewHolder.tv_duration;
+            ib_playPause = viewHolder.ib_play_stop_button;
+            try {
+                recordingPlayer.preparePlayback(recording);
+            } catch (IOException e) {
+                this.showError("Something went wrong while playing the recording.");
+            }
+            runOnUiThread(seekBarMediaPlayerUpdater);
+            sb_playback.setMax(recordingPlayer.getDuration());
+        } else {
+            this.ib_playPause.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
+            this.recordingPlayer.pausePlayback();
         }
     }
 
     @Override
-    public void onRecordingDeleteClicked(RecordingModel recording) {
-        Log.i(TAG, "onRecordingDeleteClicked: id = [" + recording.id + "]");
-        //  delete from adapter
+    public void playClicked(RecordingModel recordingModel) {
+        if (!recordingPlayer.isPlaying()) {
+            this.ib_playPause.setBackgroundResource(R.drawable.ic_pause_black_24dp);
+            this.recordingPlayer.startPlayback();
+            runOnUiThread(seekBarMediaPlayerUpdater);
+        } else {
+            this.ib_playPause.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
+            this.recordingPlayer.pausePlayback();
+        }
+    }
+
+    @Override
+    public void deleteClicked(RecordingModel recording) {
         recordingSwipeAdapter.deleteRecording(recording);
-        //  set up presenter
         detailPresenter.setUpRecordingToBeDeleted(recording);
-        //  snack barrrr
         Snackbar.make(cl_layout, "Recording deleted", Snackbar.LENGTH_LONG)
                 .setAction("Undo", v -> detailPresenter.undoDeleteRecording())
                 .setCallback(undoDeleteRecordingCallback)
                 .show();
-        //fuck off
-        /*if (this.detailPresenter.deleteRecording(recording)){
-            Log.i(TAG, "onRecordingDeleteClicked: Delete was successful.");
-            this.cassetteAndRecordingDeleter.deleteRecordingContent(recording);
-            this.recordingSwipeAdapter.deleteRecording(recording);
-        }*/
-        //// TODO: 27.12.2015 UNDO?!
     }
 
     //endregion OnRecording{...} handlers
+
+    //region SeekBar related methods
+
+    private Runnable seekBarMediaPlayerUpdater = new Runnable() {
+        @Override
+        public void run() {
+            if (recordingPlayer.isPlaying()) {
+                int mCurrentPosition = recordingPlayer.getCurrentPosition();
+                sb_playback.setProgress(mCurrentPosition);
+                //  set playback progress
+                String currentPositionString = DurationFormatter.formatTimeInMilliseconds(mCurrentPosition);
+                tv_currentPlaybackProgress.setText(currentPositionString);
+                //  set duration left
+                int durationLeft = recordingPlayer.getDuration() - mCurrentPosition;
+                String durationLeftString = "-" + DurationFormatter.formatTimeInMilliseconds(durationLeft);
+                tv_durationLeft.setText(durationLeftString);
+            }
+            playbackHandler.postDelayed(this, 100);
+        }
+    };
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        Log.d(TAG, "onProgressChanged() called with: progress = [" + progress + "], fromUser = [" + fromUser + "]");
+        if (fromUser) {
+            recordingPlayer.seekTo(progress);
+            if (!recordingPlayer.isPlaying()) {
+                //  set playback progress
+                String currentPositionString = DurationFormatter.formatTimeInMilliseconds(progress);
+                tv_currentPlaybackProgress.setText(currentPositionString);
+                //  set duration left
+                int durationLeft = recordingPlayer.getDuration() - progress;
+                String durationLeftString = "-" + DurationFormatter.formatTimeInMilliseconds(durationLeft);
+                tv_durationLeft.setText(durationLeftString);
+            }
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        Log.d(TAG, "onCompletion: ");
+        ib_playPause.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
+        mp.start();
+        mp.pause();
+        playbackHandler.removeCallbacks(seekBarMediaPlayerUpdater);
+    }
+
+    //endregion SeekBar related methods
 
     //region LoadDataView Methods
 
@@ -259,21 +359,18 @@ public class DetailCassetteActivity
 
     //region Private Methods
 
-    private RecordingListenerBundle produceListenerBundle(){
-        return new RecordingListenerBundle(this, this);
-    }
-
-    private void setUpRecyclerView(){
+    private void setUpRecyclerView() {
         Log.i(TAG, "setUpRecyclerView beginning");
         RecordingLayoutManager recordingLayoutManager = new RecordingLayoutManager(this);
         this.rv_recordings.setLayoutManager(recordingLayoutManager);
-        this.recordingSwipeAdapter = new RecordingSwipeAdapter(new ArrayList<RecordingModel>(), this.produceListenerBundle());
+        this.recordingSwipeAdapter = new RecordingSwipeAdapter(new ArrayList<RecordingModel>(), this);
         this.rv_recordings.setAdapter(recordingSwipeAdapter);
         this.rv_recordings.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
+        this.rv_recordings.addOnItemTouchListener(new RecordingRecyclerItemClickListener(this));
         Log.i(TAG, "setUpRecyclerView ending");
     }
 
-    private void initializeActivity(Bundle savedInstanceState){
+    private void initializeActivity(Bundle savedInstanceState) {
         Log.i(TAG, "initializeActivity");
         if (savedInstanceState == null) {
             this.cassetteId = this.getIntent().getIntExtra(INTENT_EXTRA_PARAM_CASSETTE_ID, -1);
@@ -284,19 +381,19 @@ public class DetailCassetteActivity
         this.detailPresenter.initialize(cassetteId);
     }
 
-    private boolean isEmpty(EditText editTextToCheck){
+    private boolean isEmpty(EditText editTextToCheck) {
         return editTextToCheck.getText().length() == 0;
     }
 
-    private boolean isTitleEmpty(){
+    private boolean isTitleEmpty() {
         return isEmpty(et_title);
     }
 
-    private void updateCassette(){
-        String  title = et_title.getText().toString(),
+    private void updateCassette() {
+        String title = et_title.getText().toString(),
                 description = et_description.getText().toString();
         wasCassetteUpdated = detailPresenter.updateCassette(title, description);
-        Log.d(TAG, "updateCassette() wasCassetteUpdate = [" + wasCassetteUpdated +"]");
+        Log.d(TAG, "updateCassette() wasCassetteUpdate = [" + wasCassetteUpdated + "]");
     }
 
     //endregion Private Methods
@@ -318,7 +415,7 @@ public class DetailCassetteActivity
         }
     };
 
-    private void showDeleteDialog(){
+    private void showDeleteDialog() {
         DialogFragment dialog = new DeleteCassetteDialogFragment();
         dialog.show(this.getSupportFragmentManager(), "DeleteCassetteDialogFragment");
     }
@@ -358,9 +455,9 @@ public class DetailCassetteActivity
 
     private EditText.OnEditorActionListener editTextOnEditorListener = (v, actionId, event) -> {
         boolean handled = false;
-        if(actionId == EditorInfo.IME_ACTION_DONE){
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
             v.clearFocus();
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
             handled = true;
         }
@@ -371,7 +468,7 @@ public class DetailCassetteActivity
 
     //region Static Methods
 
-    public static Intent getCallingIntent(Context context, int cassetteId){
+    public static Intent getCallingIntent(Context context, int cassetteId) {
         Intent intent = new Intent(context, DetailCassetteActivity.class);
         intent.putExtra(INTENT_EXTRA_PARAM_CASSETTE_ID, cassetteId);
         return intent;

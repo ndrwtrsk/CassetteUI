@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:swipe="http://schemas.android.com/tools"
+    android:id="@+id/swipe_layout_recording"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dense_two_line_list_item_height"
+    android:background="?android:selectableItemBackground"
+    android:gravity="center"
+    swipe:leftEdgeSwipeOffset="line_list_item_left_right_padding"
+    swipe:rightEdgeSwipeOffset="line_list_item_left_right_padding">
+    <!-- Bottom View Start-->
+    <LinearLayout
+        android:id="@+id/bottom_wrapper"
+        android:layout_width="@dimen/line_list_item_text_left_padding"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:id="@+id/swipe_button_delete_recording"
+            android:layout_width="@dimen/line_list_item_text_left_padding"
+            android:layout_height="match_parent"
+            android:background="@color/divider"
+            android:gravity="center"
+            android:src="@drawable/ic_delete_24dp" />
+    </LinearLayout>
+    <!-- Bottom View End-->
+    <RelativeLayout
+        android:id="@+id/list_view_recording_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/double_dense_two_line_list_item_height"
+        android:paddingRight="@dimen/line_list_item_left_right_padding"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:paddingTop="0dp">
+
+        <TableLayout
+            android:id="@+id/titular_table"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="@dimen/line_list_item_left_right_padding">
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/list_view_recording_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Recording"
+                    android:textColor="@color/primary_text"
+                    android:textSize="@dimen/font_large" />
+            </TableRow>
+
+            <TableRow>
+
+                <TextView
+                    android:id="@+id/list_view_recording_recorded"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="15:15 15th December"
+                    android:textAlignment="textStart" />
+            </TableRow>
+        </TableLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/titular_table">
+            <ImageButton
+                android:id="@+id/play_stop_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:padding="0dp"
+                android:layout_marginLeft="@dimen/line_list_item_icon_left_padding"
+                android:background="@drawable/ic_play_arrow_black_24dp"
+                android:scaleType="fitXY"/>
+
+            <TextView
+                android:id="@+id/list_view_recording_current_playback_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/play_stop_button"
+                android:layout_marginLeft="8dp"
+                android:layout_centerVertical="true"
+                android:text="00:00"
+                android:textAlignment="textEnd"
+                android:textSize="@dimen/font_larger" />
+
+            <MediaController
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/play_stop_button"/>
+
+            <TextView
+                android:id="@+id/list_view_recording_remaining_playback_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="-02:11"
+                android:textAlignment="textEnd"
+                android:textSize="@dimen/font_larger" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+    <!-- Surface View Start -->
+    <!-- Surface View End -->
+</com.daimajia.swipe.SwipeLayout>

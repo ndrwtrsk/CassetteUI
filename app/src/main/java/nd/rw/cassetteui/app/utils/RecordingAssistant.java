@@ -51,6 +51,7 @@ public class RecordingAssistant {
     public void startRecording(){
         initializeForRecording();
         mediaRecorder = new MediaRecorder();
+        // TODO: 09.01.2016 try catch for no avaiable audio source
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mediaRecorder.setOutputFile(this.fileName);

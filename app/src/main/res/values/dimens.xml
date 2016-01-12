@@ -54,7 +54,13 @@
 
     <dimen name="two_line_list_item_height">72dp</dimen>
 
+    <dimen name="double_dense_two_line_list_item_height">120dp</dimen>
+
     <dimen name="dense_two_line_list_item_height">60dp</dimen>
     <dimen name="dense_two_line_list_item_top_padding">4dp</dimen>
 
+    <!-- Play Pause Drawable -->
+    <dimen name="pause_bar_width">48dp</dimen>
+    <dimen name="pause_bar_distance">40dp</dimen>
+    <dimen name="pause_bar_height">144dp</dimen>
 </resources>
