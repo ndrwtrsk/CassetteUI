@@ -1,15 +1,23 @@
 package nd.rw.cassetteui.app.view.adapter;
 
+import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
+import android.graphics.Color;
+import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
@@ -23,6 +31,7 @@ import nd.rw.cassetteui.R;
 import nd.rw.cassetteui.app.listeners.RecordingItemHandler;
 import nd.rw.cassetteui.app.model.RecordingModel;
 import nd.rw.cassetteui.app.model.descriptors.RecordingModelDescriptor;
+import nd.rw.cassetteui.app.view.ui.ResizeHeightAnimation;
 
 public class RecordingSwipeAdapter
         extends RecyclerSwipeAdapter<RecordingSwipeAdapter.RecordingSwipeViewHolder>{
@@ -126,27 +135,34 @@ public class RecordingSwipeAdapter
         @Bind(R.id.play_stop_button)
         public ImageButton ib_play_stop_button;
 
-        @Bind(R.id.bottom_wrapper)
+        @Bind(R.id.recording_bottom_wrapper)
         public LinearLayout ll_bottom_wrapper;
 
         @Bind(R.id.swipe_button_delete_recording)
         public ImageButton ib_delete_recording;
 
-        @Bind(R.id.list_view_recording_layout)
+        @Bind(R.id.recording_surface_layout)
         public RelativeLayout rl_surfaceView;
 
-        @Bind(R.id.swipe_layout_recording)
+        @Bind(R.id.recording_swipe_layout)
         public SwipeLayout sl_Layout;
 
         @Bind(R.id.rl_playback)
         public RelativeLayout rl_playback;
 
+        @Bind(R.id.rl_titular)
+        public RelativeLayout rl_titular;
+
+        @Bind(R.id.titular_table)
+        public TableLayout tl_titular;
+
         @Bind(R.id.seek_bar)
         public SeekBar sb_progress;
 
-        private boolean isExpanded = false;
+        private boolean isActive = false;
         private boolean isGreyedOut = false;
         private String duration;
+        private boolean greyedOut;
         //endregion Fields
 
         public RecordingSwipeViewHolder(View itemView) {
@@ -180,24 +196,133 @@ public class RecordingSwipeAdapter
         }
 
         public void toggleExpansion(){
+            ResizeHeightAnimation animation;
             ViewGroup.LayoutParams params = sl_Layout.getLayoutParams();
-            if (isExpanded){
-                params.height = params.height/2;
+            if (isActive){
+                animation = new ResizeHeightAnimation(itemView, params.height/2);
             } else {
-                params.height = 2 * params.height;
+                animation = new ResizeHeightAnimation(itemView, params.height * 2);
             }
-            sl_Layout.setLayoutParams(params);
+            animation.setDuration(200);
+            animation.setInterpolator(new FastOutLinearInInterpolator());
+            itemView.startAnimation(animation);
+            //oggleViewOptions();
             toggleHiddenViews();
-            isExpanded = !isExpanded;
+            isActive = !isActive;
+        }
+
+        private void toggleViewOptions(){
+            if (!isActive){
+                ViewGroup.LayoutParams tableParams = tl_titular.getLayoutParams();
+                tableParams.height = TableLayout.LayoutParams.WRAP_CONTENT;
+                tl_titular.setLayoutParams(tableParams);
+                ViewGroup.LayoutParams rlParams = rl_titular.getLayoutParams();
+                rlParams.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                rl_titular.setLayoutParams(rlParams);
+                rl_surfaceView.setGravity(Gravity.CENTER_VERTICAL);
+
+            } else {
+                ViewGroup.LayoutParams tableParams = tl_titular.getLayoutParams();
+                tableParams.height = TableLayout.LayoutParams.MATCH_PARENT;
+                tl_titular.setLayoutParams(tableParams);
+                ViewGroup.LayoutParams rlParams = rl_titular.getLayoutParams();
+                rlParams.height = RelativeLayout.LayoutParams.MATCH_PARENT;
+                rl_titular.setLayoutParams(rlParams);
+                rl_surfaceView.setGravity(Gravity.NO_GRAVITY);
+            }
+        }
+
+        public void shrink(){
+            ViewGroup.LayoutParams params = sl_Layout.getLayoutParams();
+            params.height = params.height/2;
+            sl_Layout.setLayoutParams(params);
+        }
+
+        public void expand(){
+            ViewGroup.LayoutParams params = sl_Layout.getLayoutParams();
+            params.height = params.height * 2;
+            sl_Layout.setLayoutParams(params);
         }
 
         private void toggleHiddenViews(){
-            int visibility1 = !isExpanded ? View.VISIBLE : View.GONE;
-            int visibility2 = !isExpanded ? View.GONE : View.VISIBLE;
+            int visibility1 = !isActive ? View.VISIBLE : View.GONE;
+            int visibility2 = !isActive ? View.GONE : View.VISIBLE;
+            float alpha1 = isActive ? 0F : 1F;
+            float alpha2 = isActive ? 1F : 0F;
+
+            int animationDuration = 400;
+
+            tv_currentProgress.animate()
+                    .alpha(alpha1)
+                    .setDuration(animationDuration)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .setListener(new GoneAnimationListener(tv_currentProgress, visibility1))
+                    ;
+
+            tv_duration.animate()
+                    .alpha(alpha1)
+                    .setDuration(animationDuration)
+                    .setInterpolator(new FastOutLinearInInterpolator())
+                    .setListener(new GoneAnimationListener(tv_duration, visibility1))
+                    ;
+
+            rl_playback.animate()
+                    .alpha(alpha1)
+                    .setDuration(animationDuration)
+                    .setInterpolator(new FastOutLinearInInterpolator())
+                    .setListener(new GoneAnimationListener(rl_playback, visibility1))
+                    ;
+
+            tv_durationLeft.animate()
+                    .alpha(alpha2)
+                    .setDuration(animationDuration)
+                    .setInterpolator(new FastOutLinearInInterpolator())
+                    .setListener(new GoneAnimationListener(tv_durationLeft, visibility2))
+                    .start();
+
+            /*tv_currentProgress.startAnimation(animation1);
+            tv_duration.startAnimation(animation1);
+            rl_playback.startAnimation(animation1);
+            tv_durationLeft.startAnimation(animation2);
+
             tv_currentProgress.setVisibility(visibility1);
             tv_duration.setVisibility(visibility1);
             rl_playback.setVisibility(visibility1);
-            tv_durationLeft.setVisibility(visibility2);
+            tv_durationLeft.setVisibility(visibility2);*/
+        }
+
+        private class GoneAnimationListener implements AnimatorListener{
+
+            View view;
+            int visibility;
+            public GoneAnimationListener(View view, int visibility) {
+                this.view = view;
+                this.visibility = visibility;
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                if (visibility == View.VISIBLE){
+                    view.setVisibility(visibility);
+                }
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (visibility == View.GONE){
+                    view.setVisibility(visibility);
+                }
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
         }
 
         public void reset(){
@@ -208,11 +333,27 @@ public class RecordingSwipeAdapter
 
         public void toggleGreyedOut(){
             if (isGreyedOut){
-                rl_surfaceView.setBackgroundColor(0x727272);
+                rl_surfaceView.setBackgroundColor(Color.parseColor("#FFFFFF"));
             } else {
-                rl_surfaceView.setBackgroundColor(0xFFFFFF);
+                rl_surfaceView.setBackgroundColor(Color.parseColor("#B6B6B6"));
             }
             isGreyedOut = !isGreyedOut;
+        }
+
+        public void whiteOut(){
+            rl_surfaceView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        }
+
+        public void greyOut(){
+            rl_surfaceView.setBackgroundColor(Color.parseColor("#B6B6B6"));
+        }
+
+        public boolean isActive() {
+            return isActive;
+        }
+
+        public boolean isGreyedOut() {
+            return greyedOut;
         }
     }
 }

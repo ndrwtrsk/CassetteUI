@@ -123,6 +123,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/cassette_details_no_of_recordings"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 android:isScrollContainer="false"
                 android:paddingTop="@dimen/line_list_item_top_padding" />
 
