@@ -32,7 +32,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <nd.rw.cassetteui.app.view.ui.MainViewPager
+    <nd.rw.cassette.app.view.ui.MainViewPager
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

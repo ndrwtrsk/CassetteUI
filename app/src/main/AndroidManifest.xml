@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="nd.rw.cassetteui">
+    package="nd.rw.cassette">
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -9,14 +9,14 @@
 
     <!-- It's essential to reference custom application class CassetteApplication -->
     <application
-        android:name=".app.CassetteApplication"
+        android:name="nd.rw.cassette.app.CassetteApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".app.view.activity.MainActivity"
+            android:name="nd.rw.cassette.app.view.activity.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -26,10 +26,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".app.view.activity.DetailCassetteActivity"
+            android:name="nd.rw.cassette.app.view.activity.DetailCassetteActivity"
             android:label="Cassette"></activity>
         <activity
-            android:name=".app.view.activity.AddCassetteActivity"
+            android:name="nd.rw.cassette.app.view.activity.AddCassetteActivity"
             android:label="New cassette"
             android:windowSoftInputMode="stateVisible">
 
@@ -39,7 +39,7 @@
             -->
         </activity>
         <activity
-            android:name=".app.view.activity.DebugStorageActivity"
+            android:name="nd.rw.cassette.app.view.activity.DebugStorageActivity"
             android:label="@string/title_activity_debug_storage"
             android:theme="@style/AppTheme"></activity>
     </application>

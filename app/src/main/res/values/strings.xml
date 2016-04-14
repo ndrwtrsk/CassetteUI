@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">CassetteUI</string>
+    <string name="app_name">Cassette</string>
     <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
+
     <!-- Transition names -->
     <string name="cassette_card_view_to_details_transition">cassetteCardViewToDetailsTransition</string>
 
