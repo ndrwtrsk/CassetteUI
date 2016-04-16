@@ -9,17 +9,17 @@ import nd.rw.cassette.app.model.descriptors.CassetteModelDescriptor;
 public class CassetteModel implements Comparable<CassetteModel>{
 
     private static final String TAG = "CAS_MOD";
-    int id;
-    String title;
-    String description;
-    GregorianCalendar date;
-    List<RecordingModel> recordingList = new LinkedList<>();
+    public int id;
+    public String title;
+    public String description;
+    public GregorianCalendar creationDate;
+    public List<RecordingModel> recordingList = new LinkedList<>();
 
     public CassetteModel(int id, String title, String description, GregorianCalendar date) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.date = date;
+        this.creationDate = date;
     }
 
     public CassetteModel(int id, String title, String description) {
@@ -29,26 +29,11 @@ public class CassetteModel implements Comparable<CassetteModel>{
     public CassetteModel(String title, String description) {
         this.title = title;
         this.description = description;
-        this.date = new GregorianCalendar();
+        this.creationDate = new GregorianCalendar();
     }
 
-    //region Getters
 
-    public int getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public GregorianCalendar getDate() {
-        return date;
-    }
+    //region Methods
 
     public int getNumberOfRecordings() {
         if (recordingList == null){
@@ -67,52 +52,15 @@ public class CassetteModel implements Comparable<CassetteModel>{
         return sumOfDurationsInSeconds;
     }
 
-    /**
-     * Returns humanly readable descriptor of this Cassette.
-     * @return Humanly readable descriptor of this Cassette.
-     */
     public CassetteModelDescriptor getDescriptor(){
         return new CassetteModelDescriptor(this);
     }
 
-    public List<RecordingModel> getRecordingList() {
-        return recordingList;
+    public void substituteTitleAndDescription(CassetteModel cassetteModel){
+        this.title = cassetteModel.title;
+        this.description = cassetteModel.description;
     }
 
-    //endregion Getters
-
-    //region Setters
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setRecordingList(List<RecordingModel> recordingList) {
-        this.recordingList = recordingList;
-    }
-
-    //endregion Setters
-
-    //region Methods
-
-    /**
-     * Substitutes the title and description of this Model with these of provided
-     * Model. Useful in updates.
-     */
-    public void update(CassetteModel cassetteModel){
-        this.title = cassetteModel.getTitle();
-        this.description = cassetteModel.getDescription();
-    }
-
-    /**
-     * Returns GregorianCalendar of the newest Recording.
-     * If no recordings are present, null is returned.
-     * @return GregorianCalendar of the newest Recording.
-     */
     public GregorianCalendar getNewestRecordingDate(){
         if(recordingList == null || recordingList.size() == 0){
             return null;
@@ -140,7 +88,7 @@ public class CassetteModel implements Comparable<CassetteModel>{
 
     /**
      * Compares this Cassette to another cassette. This Cassette is considered greater, if it's newest
-     * recording date is newer than the another one's.
+     * recording creationDate is newer than the another one's.
      *
      * However if their ID's are equal(meaning they are the same entity...) return 0.
      *
@@ -154,10 +102,11 @@ public class CassetteModel implements Comparable<CassetteModel>{
      */
     @Override
     public int compareTo(CassetteModel another) {
+        // TODO: 16.04.2016 Simplify this mess!!!!!!!
         if (another == null) {
             return 1;
         }
-        if (getId() == another.getId()){
+        if (id == another.id){
             return 0;
         }
         if (this.getNewestRecordingDate() == null) {

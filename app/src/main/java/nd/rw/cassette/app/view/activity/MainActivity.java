@@ -14,7 +14,7 @@ import android.view.Window;
 import nd.rw.cassette.R;
 import nd.rw.cassette.app.view.fragment.ListCassetteFragment;
 import nd.rw.cassette.app.view.fragment.RecordingFragment;
-import nd.rw.cassette.app.view.ui.MainViewPager;
+import nd.rw.cassette.app.view.ui.RecordingMotionBlockingViewPager;
 
 public class MainActivity
         extends BaseActivity {
@@ -23,7 +23,7 @@ public class MainActivity
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    public MainViewPager mViewPager;
+    public RecordingMotionBlockingViewPager mViewPager;
 
     private static final int RECORDING_FRAGMENT_SECTION_INDEX = 0;
     private static final int LIST_CASSETTE_SECTION_INDEX = 1;
@@ -42,11 +42,13 @@ public class MainActivity
         this.getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mViewPager = (MainViewPager) findViewById(R.id.container);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mViewPager = (RecordingMotionBlockingViewPager) findViewById(R.id.container);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
@@ -54,8 +56,6 @@ public class MainActivity
         listCassetteFragment = ListCassetteFragment.newInstance();
         mViewPager.setMotionBlocker(recordingFragment);
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

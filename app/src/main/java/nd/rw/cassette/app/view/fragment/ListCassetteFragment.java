@@ -17,11 +17,9 @@ import java.util.Collection;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import nd.rw.cassette.R;
-import nd.rw.cassette.app.listeners.OnCassetteClickedHandler;
 import nd.rw.cassette.app.model.CassetteModel;
 import nd.rw.cassette.app.presenter.ListCassettePresenter;
-import nd.rw.cassette.app.utils.AndroidFileUtils;
-import nd.rw.cassette.app.utils.CassetteAndRecordingDeleter;
+import nd.rw.cassette.app.utils.CassetteAndRecordingFileDeleter;
 import nd.rw.cassette.app.view.ListCassettesView;
 import nd.rw.cassette.app.view.activity.AddCassetteActivity;
 import nd.rw.cassette.app.view.activity.DetailCassetteActivity;
@@ -32,7 +30,7 @@ import nd.rw.cassette.app.view.decoration.DividerItemDecoration;
 public class ListCassetteFragment
         extends BaseFragment
         implements ListCassettesView,
-        OnCassetteClickedHandler {
+        CassettesAdapter.CassetteViewHolder.OnCassetteClickedHandler {
 
     //region Fields
 
@@ -47,128 +45,12 @@ public class ListCassetteFragment
     public FloatingActionButton fab_addCassette;
 
     public ListCassettePresenter presenter;
-    private CassetteAndRecordingDeleter cassetteAndRecordingDeleter;
+    private CassetteAndRecordingFileDeleter cassetteAndRecordingDeleter;
     private CassettesAdapter cassettesAdapter;
 
-    private OnCassetteClickedHandler onCassetteClickedHandler;
+    private CassettesAdapter.CassetteViewHolder.OnCassetteClickedHandler onCassetteClickedHandler;
 
     //endregion Fields
-
-    //region Constructor
-
-    public ListCassetteFragment() {
-
-    }
-
-    //endregion Constructor
-
-    //region Private Methods
-
-    private void setupUI() {
-        CassetteLayoutManager layoutManager = new CassetteLayoutManager(this.getContext());
-        this.rv_cassettes.setLayoutManager(layoutManager);
-        this.onCassetteClickedHandler = this;
-        this.cassettesAdapter = new CassettesAdapter(onCassetteClickedHandler);
-        this.rv_cassettes.setAdapter(cassettesAdapter);
-        this.fab_addCassette.setOnClickListener(fabAddListener);
-        this.rv_cassettes.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
-    }
-
-    private void onDeletedCassette(Intent data) {
-        if (data == null) {
-            Log.i(TAG, "onDeletedCassette: Received data was null.");
-            return;
-        }
-        int cassetteId = data.getIntExtra(DetailCassetteActivity.INTENT_EXTRA_PARAM_CASSETTE_ID, -1);
-        if (cassetteId == -1) {
-            Log.i(TAG, "onDeletedCassette: No Cassette Id was passed");
-            return;
-        }
-        //  set up delete in presenter
-        presenter.setUpCassetteToBeDeleted(cassetteId);
-        //  launch snackbar with undo action and set actions for what happens when something happens
-        Snackbar.make(cl_layout, "Cassette deleted", Snackbar.LENGTH_LONG)
-                .setAction("Undo", v -> presenter.undoDelete())
-                .setCallback(undoDeleteCassetteSnackbarCallback)
-                .show();
-        // piss off
-    }
-
-    //endregion Private Methods
-
-    //region ListCassetteView implemented methods
-
-    @Override
-    public void renderCassetteList(Collection<CassetteModel> cassetteModelCollection) {
-        Log.d(TAG, "renderCassetteList");
-        if (cassetteModelCollection == null) {
-            throw new RuntimeException("Cassette model collection should not be null.");
-        }
-        this.cassettesAdapter.initializeAdapterList(cassetteModelCollection);
-    }
-
-    @Override
-    public void viewCassette(CassetteModel cassetteModel) {
-    }
-
-    @Override
-    public void setOnCassetteClicked(OnCassetteClickedHandler onCassetteClickedHandler) {
-        this.onCassetteClickedHandler = this;
-    }
-
-    @Override
-    public void onAddedCassette(CassetteModel cassetteModel) {
-        Log.d(TAG, "onAddedCassette");
-        this.cassettesAdapter.addCassetteToTop(cassetteModel);
-    }
-
-    @Override
-    public void onUpdatedCassette(CassetteModel cassetteModel) {
-        Log.d(TAG, "onUpdatedCassette");
-        this.cassettesAdapter.updateCassette(cassetteModel);
-    }
-
-    @Override
-    public void onDeleteCassette(int cassetteId) {
-
-    }
-
-    @Override
-    public void onDeleteCassette(CassetteModel cassette) {
-        Log.d(TAG, "onDeleteCassette");
-        this.cassettesAdapter.deleteCassette(cassette);
-    }
-
-    //endregion ListCassetteView implemented methods
-
-    //region LoadDataView implemented methods
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showRetry() {
-
-    }
-
-    @Override
-    public void hideRetry() {
-
-    }
-
-    @Override
-    public void showError(String message) {
-
-    }
-
-    //endregion LoadDataView implemented methods
 
     //region Fragment overridden methods
 
@@ -178,20 +60,27 @@ public class ListCassetteFragment
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_section_cassettes, container, false);
         ButterKnife.bind(this, view);
-        this.setupUI();
+        setupUI();
         return view;
+    }
+
+    private void setupUI() {
+        CassetteLayoutManager layoutManager = new CassetteLayoutManager(this.getContext());
+        rv_cassettes.setLayoutManager(layoutManager);
+        onCassetteClickedHandler = this;
+        cassettesAdapter = new CassettesAdapter(onCassetteClickedHandler);
+        rv_cassettes.setAdapter(cassettesAdapter);
+        fab_addCassette.setOnClickListener(fabAddListener);
+        rv_cassettes.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         Log.d(TAG, "OnActivityCreated");
         super.onActivityCreated(savedInstanceState);
-        AndroidFileUtils androidFileUtils = new AndroidFileUtils(getContext());
-        cassetteAndRecordingDeleter = new CassetteAndRecordingDeleter(androidFileUtils);
-        //  why exactly is presenter instantiated here?
-        //  could it be done elsewhere?
-        this.presenter = new ListCassettePresenter(this);
-        this.presenter.initialize();
+        cassetteAndRecordingDeleter = new CassetteAndRecordingFileDeleter();
+        presenter = new ListCassettePresenter(this);
+        presenter.initialize();
     }
 
     @Override
@@ -204,12 +93,79 @@ public class ListCassetteFragment
         }
     }
 
+    @Override
+    public void onDestroy() {
+        presenter.destroy();
+    }
+
     //endregion Fragment overridden methods
+
+    //region Private Methods
+
+    private void onDeletedCassette(Intent data) {
+        if (data == null) {
+            Log.i(TAG, "onDeletedCassette: Received data was null.");
+            return;
+        }
+        int cassetteId = data.getIntExtra(DetailCassetteActivity.INTENT_EXTRA_PARAM_CASSETTE_ID, -1);
+        if (cassetteId == -1) {
+            Log.i(TAG, "onDeletedCassette: No Cassette Id was passed");
+            return;
+        }
+
+        presenter.setUpCassetteToBeDeleted(cassetteId);
+        Snackbar undoDeleteSnackbar = Snackbar.make(cl_layout, "Cassette deleted", Snackbar.LENGTH_LONG);
+        undoDeleteSnackbar.setAction("Undo", v -> presenter.undoDelete())
+                .setCallback(undoDeleteCassetteSnackbarCallback)
+                .show();
+    }
+
+    //endregion Private Methods
+
+    //region ListCassetteView implemented methods
+
+    @Override
+    public void renderCassetteList(Collection<CassetteModel> cassetteModelCollection) {
+        Log.d(TAG, "renderCassetteList");
+        if (cassetteModelCollection == null) {
+            throw new RuntimeException("Cassette model collection should not be null.");
+        }
+        cassettesAdapter.setCassetteSortedList(cassetteModelCollection);
+    }
+
+    @Override
+    public void onAddedCassette(CassetteModel cassetteModel) {
+        Log.d(TAG, "onAddedCassette");
+        cassettesAdapter.addCassetteToTop(cassetteModel);
+    }
+
+    @Override
+    public void onUpdatedCassette(CassetteModel cassetteModel) {
+        Log.d(TAG, "onUpdatedCassette");
+        cassettesAdapter.updateCassette(cassetteModel);
+    }
+
+    @Override
+    public void onDeleteCassette(CassetteModel cassette) {
+        Log.d(TAG, "onDeleteCassette");
+        cassettesAdapter.deleteCassette(cassette);
+    }
+
+    //endregion ListCassetteView implemented methods
+
+    //region LoadDataView implemented methods
+
+    @Override
+    public void showError(String message) {
+
+    }
+
+    //endregion LoadDataView implemented methods
 
     @Override
     public void onCassetteClicked(CassetteModel cassetteModel, View cassetteViewForTransition) {
         Log.i(TAG, "onCassetteClicked");
-        Intent intent = DetailCassetteActivity.getCallingIntent(this.getContext(), cassetteModel.getId());
+        Intent intent = DetailCassetteActivity.getCallingIntent(getContext(), cassetteModel.id);
 
 //        ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(getContext(),0,0);
 //        ActivityCompat.startActivityForResult(getActivity(), intent, LIST_TO_DETAILS_REQUEST_CODE, opts.toBundle());
@@ -246,7 +202,7 @@ public class ListCassetteFragment
     };
 
     private View.OnClickListener fabAddListener = view -> {
-        Intent intent = AddCassetteActivity.getCallingIntent(ListCassetteFragment.this.getContext());
+        Intent intent = AddCassetteActivity.getCallingIntent(getContext());
         startActivity(intent);
     };
 

@@ -7,5 +7,5 @@ import nd.rw.cassette.app.model.RecordingModel;
 public interface DetailCassetteView extends LoadDataView {
     void renderCassetteAndRecordings(CassetteModel cassetteModel);
     void refreshTitleAndDescription(CassetteModel cassetteModel);
-    void addUndidDeleteRecording(RecordingModel recordingModel);
+    void addRecentlyDeletedRecording(RecordingModel recordingModel);
 }

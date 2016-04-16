@@ -16,38 +16,17 @@ public class DeleteCassetteDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity(), R.style.AppCompatAlertDialogStyle);
-
         builder.setMessage(R.string.delete_cassette_dialog_title)
                 .setPositiveButton(R.string.delete_cassette_dialog_confirm, positiveListener)
                 .setNegativeButton(R.string.delete_cassette_dialog_no, negativeListener);
-
         return builder.create();
     }
-
-
-    //region Events and Listeners
-
-    private DeleteCassetteNoticeListener listener;
 
     public interface DeleteCassetteNoticeListener {
         void onDialogPositiveClick(DialogFragment dialog);
     }
 
-    private DialogInterface.OnClickListener positiveListener = new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialogInterface, int i) {
-            listener.onDialogPositiveClick(DeleteCassetteDialogFragment.this);
-        }
-    };
-
-    private DialogInterface.OnClickListener negativeListener = new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialogInterface, int i) {
-            //  do nothing
-        }
-    };
-
-    //endregion Events and Listeners
+    private DeleteCassetteNoticeListener listener;
 
     @Override
     public void onAttach(Activity activity) {
@@ -60,4 +39,14 @@ public class DeleteCassetteDialogFragment extends DialogFragment {
         }
     }
 
+    private DialogInterface.OnClickListener positiveListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            listener.onDialogPositiveClick(DeleteCassetteDialogFragment.this);
+        }
+    };
+
+    private DialogInterface.OnClickListener negativeListener = (dialogInterface, i) -> {
+        //  do nothing
+    };
 }

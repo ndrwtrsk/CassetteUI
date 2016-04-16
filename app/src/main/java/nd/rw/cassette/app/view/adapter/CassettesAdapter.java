@@ -14,22 +14,22 @@ import java.util.Collection;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import nd.rw.cassette.R;
-import nd.rw.cassette.app.listeners.OnCassetteClickedHandler;
 import nd.rw.cassette.app.model.CassetteModel;
 import nd.rw.cassette.app.model.descriptors.CassetteModelDescriptor;
 
 public class CassettesAdapter extends RecyclerView.Adapter<CassettesAdapter.CassetteViewHolder>{
 
     //region Fields
+
     private static final String TAG = "CassettesAdapter";
 
     private CassetteSortedListCallback cassetteSortedListCallback;
     private SortedList<CassetteModel> cassetteSortedList;
-    private OnCassetteClickedHandler onCassetteClickedHandler;
+    private CassetteViewHolder.OnCassetteClickedHandler onCassetteClickedHandler;
 
     //endregion Fields
 
-    public CassettesAdapter(OnCassetteClickedHandler onCassetteClickedHandler) {
+    public CassettesAdapter(CassetteViewHolder.OnCassetteClickedHandler onCassetteClickedHandler) {
         cassetteSortedListCallback = new CassetteSortedListCallback(this);
         cassetteSortedList = new SortedList<>(CassetteModel.class, cassetteSortedListCallback);
         this.onCassetteClickedHandler = onCassetteClickedHandler;
@@ -37,7 +37,7 @@ public class CassettesAdapter extends RecyclerView.Adapter<CassettesAdapter.Cass
 
     //region Methods
 
-    public void initializeAdapterList(Collection<CassetteModel> cassetteModelList) {
+    public void setCassetteSortedList(Collection<CassetteModel> cassetteModelList) {
         this.cassetteSortedList.addAll(cassetteModelList);
     }
 
@@ -70,7 +70,7 @@ public class CassettesAdapter extends RecyclerView.Adapter<CassettesAdapter.Cass
         Log.d(TAG, "deleteCassette() called with: " + " searched cassette = [" + cassette + "]");
 
         for (int i = 0; i < cassetteSortedList.size(); i++) {
-            if (cassetteSortedList.get(i).getId() == cassette.getId()) {
+            if (cassetteSortedList.get(i).id == cassette.id) {
                 cassetteSortedList.removeItemAt(i);
                 break;
             }
@@ -83,16 +83,15 @@ public class CassettesAdapter extends RecyclerView.Adapter<CassettesAdapter.Cass
 
     @Override
     public CassetteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view =
-                LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_cassette_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.list_cassette_item, parent, false);
         return new CassetteViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(CassetteViewHolder holder, int position) {
         CassetteModel cassetteAtPosition = this.cassetteSortedList.get(position);
-        holder.fill(cassetteAtPosition);
+        holder.bind(cassetteAtPosition);
         holder.bindListener(cassetteAtPosition, onCassetteClickedHandler);
     }
 
@@ -105,7 +104,13 @@ public class CassettesAdapter extends RecyclerView.Adapter<CassettesAdapter.Cass
 
     //region CassetteViewHolder class
 
-    static class CassetteViewHolder extends RecyclerView.ViewHolder{
+    public static class CassetteViewHolder extends RecyclerView.ViewHolder{
+
+        public interface OnCassetteClickedHandler {
+
+            void onCassetteClicked(CassetteModel cassetteModel, View cassetteViewForTransition);
+
+        }
 
         //region Fields
 
@@ -128,7 +133,7 @@ public class CassettesAdapter extends RecyclerView.Adapter<CassettesAdapter.Cass
             ButterKnife.bind(this, itemView);
         }
 
-        public void fill(CassetteModel cassette){
+        public void bind(CassetteModel cassette){
             if (cassette == null) {
                 return;
             }
@@ -168,14 +173,14 @@ public class CassettesAdapter extends RecyclerView.Adapter<CassettesAdapter.Cass
 
         @Override
         public boolean areContentsTheSame(CassetteModel oldItem, CassetteModel newItem) {
-            return oldItem.getTitle().equalsIgnoreCase(newItem.getTitle())
-                    && oldItem.getDescription().equalsIgnoreCase(newItem.getDescription())
+            return oldItem.title.equalsIgnoreCase(newItem.title)
+                    && oldItem.description.equalsIgnoreCase(newItem.description)
                     && oldItem.getNumberOfRecordings() == newItem.getNumberOfRecordings();
         }
 
         @Override
         public boolean areItemsTheSame(CassetteModel item1, CassetteModel item2) {
-            return item1.getId() == item2.getId();
+            return item1.id == item2.id;
         }
     }
 

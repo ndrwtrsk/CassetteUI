@@ -13,22 +13,25 @@ import java.util.List;
 import nd.rw.cassette.R;
 import nd.rw.cassette.app.model.CassetteModel;
 
-// TODO: 25.12.2015 Extract an abstract class from CassetteSpinnerAdapter and CassetteAdapter
-// there is some code that may be reused and that can be written just once.
-// Nice.
 public class CassetteSpinnerAdapter implements SpinnerAdapter {
+
+    //region Fields
+
     private static final String TAG = "CassSpinnerAdapter";
-    List<CassetteModel> cassetteModelList;
+
+    private List<CassetteModel> cassetteModelList;
+
+    //endregion Fields
 
     public CassetteSpinnerAdapter(List<CassetteModel> cassetteModelList) {
         this.cassetteModelList = cassetteModelList;
     }
 
+    //region Methods
+
     public void setCassetteModelList(List<CassetteModel> cassetteModelList) {
         this.cassetteModelList = cassetteModelList;
     }
-
-    //region Methods
 
     public void addCassette(CassetteModel cassetteModel){
         if (cassetteModelList == null || cassetteModel == null) {
@@ -48,7 +51,7 @@ public class CassetteSpinnerAdapter implements SpinnerAdapter {
         }
 
         for (int i = 0; i < cassetteModelList.size(); i++) {
-            if (cassetteModelList.get(i).getId() == cassetteModel.getId()){
+            if (cassetteModelList.get(i).id == cassetteModel.id){
                 cassetteModelList.set(i, cassetteModel);
                 return;
             }
@@ -61,13 +64,13 @@ public class CassetteSpinnerAdapter implements SpinnerAdapter {
             return;
         }
 
-        this.deleteCassette(cassetteModel.getId());
+        this.deleteCassette(cassetteModel.id);
 
     }
 
     public void deleteCassette(int cassetteId){
         for (int i = 0; i < cassetteModelList.size(); i++) {
-            if (cassetteModelList.get(i).getId() == cassetteId){
+            if (cassetteModelList.get(i).id == cassetteId){
                 cassetteModelList.remove(i);
                 return;
             }
@@ -82,15 +85,15 @@ public class CassetteSpinnerAdapter implements SpinnerAdapter {
 
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
-        CassetteModel cassetteModel = (CassetteModel) getItem(position);
-
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             convertView = inflater.inflate(R.layout.spinner_cassette_listed_item, parent, false);
         }
 
+        CassetteModel cassetteModel = (CassetteModel) getItem(position);
+
         TextView tv_cassetteTitle = (TextView) convertView.findViewById(R.id.cassette_title);
-        tv_cassetteTitle.setText(cassetteModel.getTitle());
+        tv_cassetteTitle.setText(cassetteModel.title);
 
         return convertView;
     }
@@ -126,7 +129,7 @@ public class CassetteSpinnerAdapter implements SpinnerAdapter {
         if (cassetteModelList == null) {
             return -1;
         }
-        return cassetteModelList.get(position).getId();
+        return cassetteModelList.get(position).id;
     }
 
     @Override
@@ -144,7 +147,7 @@ public class CassetteSpinnerAdapter implements SpinnerAdapter {
         }
 
         TextView tv_cassetteTitle = (TextView) convertView.findViewById(R.id.cassette_title);
-        tv_cassetteTitle.setText(cassetteModel.getTitle());
+        tv_cassetteTitle.setText(cassetteModel.title);
 
         return convertView;
     }

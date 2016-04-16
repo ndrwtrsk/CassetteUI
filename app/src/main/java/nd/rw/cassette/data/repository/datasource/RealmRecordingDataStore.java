@@ -54,7 +54,7 @@ public class RealmRecordingDataStore implements RecordingDataStore{
 
     @Override
     public RecordingEntity create(String path, int durationInMs, Date date, int cassetteId) {
-        Log.d(TAG, "create() called with: " + "path = [" + path + "], durationInMs = [" + durationInMs + "], date = [" + date + "], cassetteId = [" + cassetteId + "]");
+        Log.d(TAG, "create() called with: " + "path = [" + path + "], durationInMs = [" + durationInMs + "], creationDate = [" + date + "], cassetteId = [" + cassetteId + "]");
         CassetteEntity cassetteEntity = mRealm.where(CassetteEntity.class).equalTo("id", cassetteId).findFirst();
         if (cassetteEntity == null) {
             Log.e(TAG, "create: CassetteEntity was null!");

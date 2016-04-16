@@ -17,14 +17,15 @@ public class CassetteDataRepository implements CassetteRepository{
     }
 
     //region CassetteRepository Methods
+
     @Override
     public List<CassetteModel> getAll() {
-        return CassetteMapper.map(dataStore.getAll());
+        return CassetteMapper.mapWithRecordings(dataStore.getAll());
     }
 
     @Override
     public CassetteModel get(int id) {
-        return CassetteMapper.map(dataStore.get(id));
+        return CassetteMapper.mapWithRecordings(dataStore.get(id));
     }
 
     @Override
@@ -33,11 +34,11 @@ public class CassetteDataRepository implements CassetteRepository{
             return null;
         }
         CassetteEntity entity = new CassetteEntity();
-        entity.setTitle(cassetteModel.getTitle());
-        entity.setDescription(cassetteModel.getDescription());
-        entity.setDate(cassetteModel.getDate().getTime());
+        entity.setTitle(cassetteModel.title);
+        entity.setDescription(cassetteModel.description);
+        entity.setDate(cassetteModel.creationDate.getTime());
 
-        return CassetteMapper.map(dataStore.create(entity));
+        return CassetteMapper.mapWithRecordings(dataStore.create(entity));
     }
 
     @Override
@@ -45,7 +46,7 @@ public class CassetteDataRepository implements CassetteRepository{
         if (cassetteModel == null) {
             return false;
         }
-        return dataStore.update(cassetteModel.getId(), cassetteModel.getTitle(), cassetteModel.getDescription());
+        return dataStore.update(cassetteModel.id, cassetteModel.title, cassetteModel.description);
     }
 
     @Override
@@ -53,7 +54,7 @@ public class CassetteDataRepository implements CassetteRepository{
         if (cassetteModel == null) {
             return false;
         }
-        return dataStore.delete(cassetteModel.getId());
+        return dataStore.delete(cassetteModel.id);
     }
 
     @Override

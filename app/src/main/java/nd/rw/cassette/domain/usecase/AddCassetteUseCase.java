@@ -6,13 +6,7 @@ import nd.rw.cassette.app.model.CassetteModel;
 
 public class AddCassetteUseCase extends AbstractUseCase{
 
-    //region Fields
-
     private static final String TAG = "AddCasUseCase";
-
-    //endregion Fields
-
-    //region Methods
 
     public CassetteModel addCassetteModel(CassetteModel cassetteModel){
         CassetteModel result = cassetteRepository.create(cassetteModel);
@@ -32,7 +26,5 @@ public class AddCassetteUseCase extends AbstractUseCase{
         Log.d(TAG, "addCassetteModel() returned: " + newCassetteModel);
         return addCassetteModel(newCassetteModel);
     }
-
-    //endregion Methods
 
 }

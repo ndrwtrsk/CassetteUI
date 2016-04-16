@@ -9,7 +9,4 @@ public class CassetteLayoutManager extends LinearLayoutManager {
         super(context);
     }
 
-    public CassetteLayoutManager(Context context, int orientation, boolean reverseLayout) {
-        super(context, orientation, reverseLayout);
-    }
 }

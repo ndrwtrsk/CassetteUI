@@ -8,14 +8,15 @@ import java.io.IOException;
 import java.util.GregorianCalendar;
 
 import nd.rw.cassette.app.model.CassetteModel;
-import nd.rw.cassette.app.presenter.RecordPresenter;
+import nd.rw.cassette.app.presenter.NewRecordingPresenter;
 
 public class RecordingAssistant {
 
     //region Fields
 
     private static final String TAG = "RecordingAssistant";
-    private RecordPresenter recordingPresenter = new RecordPresenter();
+
+    private NewRecordingPresenter recordingPresenter = new NewRecordingPresenter();
     private MediaRecorder mediaRecorder;
     private String directoryRoot;
     private String fileName;
@@ -24,10 +25,11 @@ public class RecordingAssistant {
 
     //endregion Fields
 
-
     public RecordingAssistant(String directoryRoot) {
         this.directoryRoot = directoryRoot;
     }
+
+    //region Methods
 
     public void changeCassette(CassetteModel cassetteModel){
         recordingPresenter.setSelectedCassette(cassetteModel);
@@ -37,10 +39,7 @@ public class RecordingAssistant {
         return recordingPresenter.getCassetteTitle();
     }
 
-    /**
-     * Gets Cassette title, sets the date and builds the filename from these things..
-     */
-    private void initializeForRecording(){
+    private void initializeRecordingFileName(){
         String cassetteTitle = recordingPresenter.getCassetteTitle();
         dateOfRecording = new GregorianCalendar();
 
@@ -49,12 +48,12 @@ public class RecordingAssistant {
     }
 
     public void startRecording(){
-        initializeForRecording();
+        initializeRecordingFileName();
         mediaRecorder = new MediaRecorder();
         // TODO: 09.01.2016 try catch for no avaiable audio source
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mediaRecorder.setOutputFile(this.fileName);
+        mediaRecorder.setOutputFile(fileName);
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
         try {
@@ -73,16 +72,21 @@ public class RecordingAssistant {
         communicateRecordingToPresenter();
     }
 
+    private void communicateRecordingToPresenter(){
+        initializeDuration();
+        this.recordingPresenter.addNewRecording(fileName, dateOfRecording, duration);
+    }
+
     private void initializeDuration(){
         MediaPlayer mediaPlayer = new MediaPlayer();
         try {
-            /**
-             * Interesting feature of MediaPlayer class.
-             * MediaPlayer will refuse to open a file if there data source string is not prepended with
-             * 'file://'.
-             * As per:
-             * http://stackoverflow.com/questions/15402201/mediaplayer-preparing-failed/15444165#15444165
-             */
+            /*
+              Interesting feature of MediaPlayer class.
+              MediaPlayer will refuse to open a file if there data source string is not prepended with
+              'file://'.
+              As per:
+              http://stackoverflow.com/questions/15402201/mediaplayer-preparing-failed/15444165#15444165
+            */
             mediaPlayer.setDataSource("file://"+fileName);
             mediaPlayer.prepare();
             duration = mediaPlayer.getDuration();
@@ -92,8 +96,5 @@ public class RecordingAssistant {
         mediaPlayer.release();
     }
 
-    private void communicateRecordingToPresenter(){
-        initializeDuration();
-        this.recordingPresenter.addNewRecording(fileName, dateOfRecording, duration);
-    }
+    //endregion Methods
 }

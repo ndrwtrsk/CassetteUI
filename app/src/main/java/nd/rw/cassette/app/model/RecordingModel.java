@@ -74,7 +74,7 @@ public class RecordingModel implements Comparable<RecordingModel>{
 
     /**
      * Compares this Recording to another Recording. This Recording is considered greater, if it's
-     * recording date is newer than the another one's.
+     * recording creationDate is newer than the another one's.
      *
      * @param another the object to compare to this instance.
      * @return a negative integer if this instance is less than {@code another};

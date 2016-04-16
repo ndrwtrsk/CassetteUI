@@ -35,7 +35,7 @@ public class DataHolderSingleton {
 
         for (CassetteModel cassetteModel :
                 cassetteModelList) {
-            recordingModels.addAll(cassetteModel.getRecordingList());
+            recordingModels.addAll(cassetteModel.recordingList);
         }
 
         return recordingModels;

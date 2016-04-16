@@ -30,7 +30,7 @@ public class RecordingDataRepository implements RecordingRepository {
         if (cassetteModel == null) {
             return null;
         }
-        return this.getAllForCassette(cassetteModel.getId());
+        return this.getAllForCassette(cassetteModel.id);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class RecordingDataRepository implements RecordingRepository {
         }
         String path = recordingModel.path;
         Date date = recordingModel.dateRecorded.getTime();
-        int cassetteId = recordingModel.cassette.getId();
+        int cassetteId = recordingModel.cassette.id;
         int duration = recordingModel.durationInMs;
         return RecordingMapper.map(dataStore.create(path, duration, date, cassetteId));
     }

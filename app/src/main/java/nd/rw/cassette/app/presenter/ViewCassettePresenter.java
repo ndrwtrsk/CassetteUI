@@ -28,9 +28,6 @@ public class ViewCassettePresenter implements Presenter{
         this.view = view;
     }
 
-    public ViewCassettePresenter() {
-    }
-
     //endregion Constructors
 
     //region Methods
@@ -49,16 +46,16 @@ public class ViewCassettePresenter implements Presenter{
     }
 
     public boolean updateCassette(String title, String description){
-        String oldTitle = cassetteModel.getTitle();
-        String oldDesc = cassetteModel.getDescription();
-        this.cassetteModel.setTitle(title);
-        this.cassetteModel.setDescription(description);
+        String oldTitle = cassetteModel.title;
+        String oldDesc = cassetteModel.description;
+        this.cassetteModel.title = title;
+        this.cassetteModel.description = description;
 
         boolean updateWasSuccessful = this.useCase.updateCassette(cassetteModel);
 
         if(!updateWasSuccessful){
-            this.cassetteModel.setTitle(oldTitle);
-            this.cassetteModel.setDescription(oldDesc);
+            this.cassetteModel.title = oldTitle;
+            this.cassetteModel.description = oldDesc;
         } else {
             ListCassettePresenterSubject.getInstance().notifyAboutUpdatedCassette(cassetteModel);
         }
@@ -95,7 +92,7 @@ public class ViewCassettePresenter implements Presenter{
     }
 
     public void undoDeleteRecording(){
-        view.addUndidDeleteRecording(recordingToBeDeleted);
+        view.addRecentlyDeletedRecording(recordingToBeDeleted);
         recordingToBeDeleted = null;
     }
 

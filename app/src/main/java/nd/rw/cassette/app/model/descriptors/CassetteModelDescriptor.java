@@ -18,13 +18,13 @@ public class CassetteModelDescriptor {
     public String dateOfLastRecording;
 
     public CassetteModelDescriptor(CassetteModel cassetteModel) {
-        this.title = cassetteModel.getTitle();
-        this.description = cassetteModel.getDescription();
+        this.title = cassetteModel.title;
+        this.description = cassetteModel.description;
 
         this.numberOfRecordings = this.getNumberOfRecordingsNicelyFormatted(cassetteModel.getNumberOfRecordings());
         this.totalDurationOfAllRecordings = DurationFormatter.formatTimeInSeconds(cassetteModel.getTotalDuration());
 
-        this.dateCreated = NiceDateFormatter.getNiceDate(cassetteModel.getDate());
+        this.dateCreated = NiceDateFormatter.getNiceDate(cassetteModel.creationDate);
         this.dateOfLastRecording = NiceDateFormatter.getNiceDate(cassetteModel.getNewestRecordingDate());
     }
 

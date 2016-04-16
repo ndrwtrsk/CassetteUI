@@ -28,17 +28,16 @@ import butterknife.Bind;
 import butterknife.BindColor;
 import butterknife.ButterKnife;
 import nd.rw.cassette.R;
-import nd.rw.cassette.app.listeners.MainViewPagerMotionBlocker;
-import nd.rw.cassette.app.listeners.OnCassetteClickedHandler;
 import nd.rw.cassette.app.model.CassetteModel;
 import nd.rw.cassette.app.presenter.ListCassettePresenter;
 import nd.rw.cassette.app.utils.RecordingAssistant;
 import nd.rw.cassette.app.view.ListCassettesView;
 import nd.rw.cassette.app.view.adapter.CassetteSpinnerAdapter;
+import nd.rw.cassette.app.view.ui.RecordingMotionBlockingViewPager;
 
 public class RecordingFragment
         extends Fragment
-        implements MainViewPagerMotionBlocker,
+        implements RecordingMotionBlockingViewPager.BlockOrNot,
         ListCassettesView{
 
     enum ActivationMethod{
@@ -48,7 +47,7 @@ public class RecordingFragment
 
     //region Fields
 
-    private static String TAG = "REC_ACT";
+    private static String TAG = "RecordingFragment";
 
     // TODO: 14.12.2015 Create a separate class for recording button and move some of the behaviour
     // defined for the button in this fragment class to aforementioned recording button class.
@@ -86,8 +85,13 @@ public class RecordingFragment
         View rootView = inflater.inflate(R.layout.fragment_section_recording, container, false);
         ButterKnife.bind(this, rootView);
         this.setUpListeners();
-        this.cassetteSpinnerAdapter = new CassetteSpinnerAdapter(new LinkedList<CassetteModel>());
+        this.cassetteSpinnerAdapter = new CassetteSpinnerAdapter(new LinkedList<>());
         return rootView;
+    }
+
+    private void setUpListeners(){
+        b_recording.setOnTouchListener(speakTouchListener);
+        sp_cassettesToChoose.setOnItemSelectedListener(cassetteSpinnerSelectionListener);
     }
 
     @Override
@@ -100,9 +104,9 @@ public class RecordingFragment
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        String internalSotrageDirectoryRoot
+        String internalStorageDirectoryRoot
                 = context.getFilesDir()+ "/";
-        recordingAssistant = new RecordingAssistant(internalSotrageDirectoryRoot);
+        recordingAssistant = new RecordingAssistant(internalStorageDirectoryRoot);
     }
 
     //endregion Fragment overridden methods
@@ -119,16 +123,6 @@ public class RecordingFragment
     }
 
     @Override
-    public void viewCassette(CassetteModel cassetteModel) {
-
-    }
-
-    @Override
-    public void setOnCassetteClicked(OnCassetteClickedHandler onCassetteClickedHandlerListener) {
-
-    }
-
-    @Override
     public void onAddedCassette(CassetteModel cassetteModel) {
         cassetteSpinnerAdapter.addCassette(cassetteModel);
         refreshSpinner();
@@ -137,12 +131,6 @@ public class RecordingFragment
     @Override
     public void onUpdatedCassette(CassetteModel cassetteModel) {
         cassetteSpinnerAdapter.updateCassette(cassetteModel);
-        refreshSpinner();
-    }
-
-    @Override
-    public void onDeleteCassette(int cassetteId) {
-        cassetteSpinnerAdapter.deleteCassette(cassetteId);
         refreshSpinner();
     }
 
@@ -158,26 +146,6 @@ public class RecordingFragment
     }
 
     @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showRetry() {
-
-    }
-
-    @Override
-    public void hideRetry() {
-
-    }
-
-    @Override
     public void showError(String message) {
 
     }
@@ -187,11 +155,6 @@ public class RecordingFragment
     //region Helper methods
 
     //region Recording Helper Methods
-
-    private void setUpListeners(){
-        b_recording.setOnTouchListener(speakTouchListener);
-        sp_cassettesToChoose.setOnItemSelectedListener(cassetteSpinnerSelectionListener);
-    }
 
     private void stopRecording(){
         if (this.isRecording){

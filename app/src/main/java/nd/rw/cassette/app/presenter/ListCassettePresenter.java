@@ -61,7 +61,7 @@ public class ListCassettePresenter implements Presenter{
      * This method takes part in Observer design part.
      */
     public void onUpdateCassette(CassetteModel cassette){
-        CassetteModel updatedCassette = this.useCase.getCassetteById(cassette.getId());
+        CassetteModel updatedCassette = this.useCase.getCassetteById(cassette.id);
         //  old cassette doesn't have it's recordings updated, hence the call to get the new one
         this.view.onUpdatedCassette(updatedCassette);
     }

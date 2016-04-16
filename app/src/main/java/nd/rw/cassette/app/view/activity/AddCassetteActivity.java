@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,8 +30,7 @@ public class AddCassetteActivity extends BaseActivity implements AddCassetteView
     @Bind(R.id.toolbar)
     public Toolbar toolbar;
 
-    @Bind(R.id.add_cassette_toolbar_button)
-    public Button b_addCassette;
+    private Menu menu;
 
     @Bind(R.id.add_cassette_title)
     public EditText et_title;
@@ -53,19 +55,35 @@ public class AddCassetteActivity extends BaseActivity implements AddCassetteView
         this.getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         this.getSupportActionBar().setDisplayShowHomeEnabled(true);
-        this.toolbar.setTitle("Cassette Details");
 
         this.toolbar.setNavigationOnClickListener(this.toolbarNavigationButtonListener);
         this.presenter = new AddCassettePresenter(this);
         this.et_title.addTextChangedListener(this.titleTextWatcher);
-        this.b_addCassette.setOnClickListener(this.addCassetteButtonListener);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_add_cassette, menu);
+        this.menu = menu;
+        menu.findItem(R.id.action_add_cassette).setEnabled(false);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_add_cassette) {
+            Log.d(TAG, "onOptionsItemSelected: Action Add Clicked");
+            addCassette();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     //endregion Activity Methods
 
     //region Methods
 
-    /** AddCassetteView Method */
     @Override
     public void addCassette() {
         this.title = et_title.getText().toString();
@@ -79,19 +97,7 @@ public class AddCassetteActivity extends BaseActivity implements AddCassetteView
 
     //region Listeners and events
 
-    private View.OnClickListener addCassetteButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            addCassette();
-        }
-    };
-
-    private View.OnClickListener toolbarNavigationButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            AddCassetteActivity.this.finish();
-        }
-    };
+    private View.OnClickListener toolbarNavigationButtonListener = view -> AddCassetteActivity.this.finish();
 
     private TextWatcher titleTextWatcher = new TextWatcher() {
         @Override
@@ -104,8 +110,8 @@ public class AddCassetteActivity extends BaseActivity implements AddCassetteView
 
         @Override
         public void afterTextChanged(Editable editable) {
-            boolean shouldAddCassetteButtonBeEnabled = editable.length() > 0;
-            AddCassetteActivity.this.b_addCassette.setEnabled(shouldAddCassetteButtonBeEnabled);
+            boolean shouldAddBeEnabled = editable.length() > 0;
+            menu.findItem(R.id.action_add_cassette).setEnabled(shouldAddBeEnabled);
         }
     };
 

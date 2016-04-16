@@ -22,8 +22,8 @@ public final class DurationFormatter {
         return result;
     }
 
-    public static String formatTimeInMilliseconds(final int msecs){
-        return formatTimeInSeconds(msecs/1000);
+    public static String formatTimeInMilliseconds(final int milliseconds){
+        return formatTimeInSeconds(milliseconds/1000);
     }
 
 }

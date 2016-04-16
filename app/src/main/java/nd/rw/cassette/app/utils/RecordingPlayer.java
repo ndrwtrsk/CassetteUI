@@ -7,9 +7,6 @@ import java.io.IOException;
 
 import nd.rw.cassette.app.model.RecordingModel;
 
-/**
- * Recording player.
- */
 public class RecordingPlayer {
 
     //region Fields
@@ -21,8 +18,6 @@ public class RecordingPlayer {
     private MediaPlayer.OnCompletionListener onCompletionListener;
 
     //endregion Fields
-
-    //default constructor
 
     //region Methods
 
@@ -74,6 +69,9 @@ public class RecordingPlayer {
     }
 
     public int getDuration() {
+        if (mediaPlayer == null) {
+            return -1;
+        }
         return mediaPlayer.getDuration();
     }
 

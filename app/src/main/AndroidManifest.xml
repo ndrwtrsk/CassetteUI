@@ -38,10 +38,6 @@
                     as soon as the user sees the activity
             -->
         </activity>
-        <activity
-            android:name="nd.rw.cassette.app.view.activity.DebugStorageActivity"
-            android:label="@string/title_activity_debug_storage"
-            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

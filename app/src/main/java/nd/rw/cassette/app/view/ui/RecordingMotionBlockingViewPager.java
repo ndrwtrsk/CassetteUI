@@ -5,17 +5,21 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
-import nd.rw.cassette.app.listeners.MainViewPagerMotionBlocker;
+public class RecordingMotionBlockingViewPager extends ViewPager {
 
-public class MainViewPager extends ViewPager {
+    public interface BlockOrNot {
 
-    private MainViewPagerMotionBlocker motionBlocker;
+        boolean blockOrNot();
 
-    public MainViewPager(Context context, AttributeSet attrs) {
+    }
+
+    private BlockOrNot motionBlocker;
+
+    public RecordingMotionBlockingViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public void setMotionBlocker(MainViewPagerMotionBlocker motionBlocker) {
+    public void setMotionBlocker(BlockOrNot motionBlocker) {
         this.motionBlocker = motionBlocker;
     }
 

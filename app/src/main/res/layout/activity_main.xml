@@ -13,7 +13,6 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/appbar_padding_top"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
@@ -32,7 +31,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <nd.rw.cassette.app.view.ui.MainViewPager
+    <nd.rw.cassette.app.view.ui.RecordingMotionBlockingViewPager
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

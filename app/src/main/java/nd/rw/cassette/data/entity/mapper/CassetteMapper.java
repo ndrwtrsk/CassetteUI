@@ -11,13 +11,13 @@ import nd.rw.cassette.data.entity.CassetteEntity;
 
 public final class CassetteMapper {
     
-    public static CassetteModel map(CassetteEntity cassetteEntity){
+    public static CassetteModel mapWithRecordings(CassetteEntity cassetteEntity){
         if (cassetteEntity == null) {
             return null;
         }
         CassetteModel cassetteModel = mapWithoutRecordings(cassetteEntity);
         List<RecordingModel> recordingModelList = RecordingMapper.map(cassetteEntity.getRecordingEntities());
-        cassetteModel.setRecordingList(recordingModelList);
+        cassetteModel.recordingList = recordingModelList;
         return cassetteModel;
     }
 
@@ -37,14 +37,14 @@ public final class CassetteMapper {
         return cassetteModel;
     }
 
-    public static List<CassetteModel> map(Collection<CassetteEntity> cassetteEntities){
+    public static List<CassetteModel> mapWithRecordings(Collection<CassetteEntity> cassetteEntities){
         if (cassetteEntities == null) {
             return new LinkedList<>();
         }
         List<CassetteModel> result = new LinkedList<>();
         for (CassetteEntity cassetteEntity :
                 cassetteEntities) {
-            CassetteModel cassetteModel = map(cassetteEntity);
+            CassetteModel cassetteModel = mapWithRecordings(cassetteEntity);
             result.add(cassetteModel);
         }
         return result;

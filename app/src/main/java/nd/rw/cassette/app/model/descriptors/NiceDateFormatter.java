@@ -5,12 +5,12 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 /**
- * Formats provided date using relative dates. If provided date was yesterday, instead of
+ * Formats provided creationDate using relative dates. If provided creationDate was yesterday, instead of
  */
 public final class NiceDateFormatter {
 
     /**
-     * Gets nicely formatted, human readable version of provided date.
+     * Gets nicely formatted, human readable version of provided creationDate.
      */
     public static String getNiceDate(GregorianCalendar date){
         // TODO: 28.12.2015 Clean this mess
@@ -39,7 +39,7 @@ public final class NiceDateFormatter {
             return result;
         }
 
-        yesterday.add(Calendar.DAY_OF_YEAR, 1); //  repurpose the object by bringing to today's date.
+        yesterday.add(Calendar.DAY_OF_YEAR, 1); //  repurpose the object by bringing to today's creationDate.
 
         SimpleDateFormat format;
         String stringFormat = "";

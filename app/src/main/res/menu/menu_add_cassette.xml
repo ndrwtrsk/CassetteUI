@@ -6,8 +6,8 @@
     tools:context=".app.view.activity.AddCassetteActivity">
     <item
         android:id="@+id/action_add_cassette"
-        android:title="Add Cassette"
-        app:showAsAction="withText"
+        android:title="Add"
+        app:showAsAction="always"
         />
 
 </menu>

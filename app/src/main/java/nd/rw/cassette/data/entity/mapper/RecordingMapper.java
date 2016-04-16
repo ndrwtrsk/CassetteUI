@@ -32,7 +32,7 @@ public final class RecordingMapper {
 
     public static List<RecordingModel> map(Collection<RecordingEntity> recordingEntities){
         if (recordingEntities == null) {
-            return new LinkedList<RecordingModel>();
+            return new LinkedList<>();
         }
         LinkedList<RecordingModel> resultList = new LinkedList<>();
 

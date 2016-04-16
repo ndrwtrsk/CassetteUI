@@ -27,7 +27,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import nd.rw.cassette.R;
-import nd.rw.cassette.app.listeners.RecordingItemHandler;
 import nd.rw.cassette.app.model.RecordingModel;
 import nd.rw.cassette.app.model.descriptors.RecordingModelDescriptor;
 import nd.rw.cassette.app.view.ui.ResizeHeightAnimation;
@@ -37,9 +36,10 @@ public class RecordingSwipeAdapter
 
     private static final String TAG = "RecordingSwipeAdapter";
     private List<RecordingModel> recordingList;
-    private RecordingItemHandler recordingItemHandler;
+    private RecordingSwipeViewHolder.RecordingItemHandler recordingItemHandler;
 
-    public RecordingSwipeAdapter(List<RecordingModel> recordingModelList, RecordingItemHandler recordingItemHandler) {
+    public RecordingSwipeAdapter(List<RecordingModel> recordingModelList,
+                                 RecordingSwipeViewHolder.RecordingItemHandler recordingItemHandler) {
         this.recordingList = recordingModelList;
         this.recordingItemHandler = recordingItemHandler;
 
@@ -55,7 +55,7 @@ public class RecordingSwipeAdapter
     @Override
     public void onBindViewHolder(RecordingSwipeViewHolder viewHolder, int position) {
         RecordingModel recording = recordingList.get(position);
-        viewHolder.bind(recording);
+        viewHolder.bindWithModel(recording);
         viewHolder.bindListeners(recording, this.recordingItemHandler);
         viewHolder.sl_Layout.setShowMode(SwipeLayout.ShowMode.PullOut);
         viewHolder.sl_Layout.addDrag(SwipeLayout.DragEdge.Right, viewHolder.ll_bottom_wrapper);
@@ -106,24 +106,26 @@ public class RecordingSwipeAdapter
 
     public static class RecordingSwipeViewHolder extends RecyclerView.ViewHolder{
 
+        public interface RecordingItemHandler {
+
+            void recordingItemClicked(RecordingModel recordingModel, RecordingSwipeAdapter.RecordingSwipeViewHolder viewHolder);
+            void playClicked(RecordingModel recordingModel);
+            void deleteClicked(RecordingModel recordingModel);
+
+        }
+
         //region Fields
 
         private static final String TAG = "RecordingViewHolder";
+
         @Bind(R.id.list_view_recording_title)
         public TextView tv_title;
 
-        /*
-                TODO: 09.01.2016 Refactor Duration and duration left names
-                right duration points to duration left
-                and duration left to duration...
-
-         */
-
         @Bind(R.id.list_view_recording_duration)
-        public TextView tv_duration;
+        public TextView tv_currentPlayBackTime;
 
         @Bind(R.id.list_view_recording_duration_left)
-        public TextView tv_durationLeft;
+        public TextView tv_playbackTimeLeft;
 
         @Bind(R.id.list_view_recording_current_progress)
         public TextView tv_currentProgress;
@@ -162,6 +164,7 @@ public class RecordingSwipeAdapter
         private boolean isGreyedOut = false;
         private String duration;
         private boolean greyedOut;
+
         //endregion Fields
 
         public RecordingSwipeViewHolder(View itemView) {
@@ -169,9 +172,9 @@ public class RecordingSwipeAdapter
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(RecordingModel recording){
+        public void bindWithModel(RecordingModel recording){
             if (recording == null) {
-                Log.e(TAG, "bind: Recording is null");
+                Log.e(TAG, "bindWithModel: Recording is null");
                 return;
             }
 
@@ -184,8 +187,8 @@ public class RecordingSwipeAdapter
 
             tv_title.setText(title);
             tv_recordedOn.setText(date);
-            tv_duration.setText("-" + duration);
-            tv_durationLeft.setText(duration);
+            tv_currentPlayBackTime.setText("-" + duration);
+            tv_playbackTimeLeft.setText(duration);
         }
 
         public void bindListeners(RecordingModel recording, RecordingItemHandler handler){
@@ -258,11 +261,11 @@ public class RecordingSwipeAdapter
                     .setListener(new GoneAnimationListener(tv_currentProgress, visibility1))
                     ;
 
-            tv_duration.animate()
+            tv_currentPlayBackTime.animate()
                     .alpha(alpha1)
                     .setDuration(animationDuration)
                     .setInterpolator(new FastOutLinearInInterpolator())
-                    .setListener(new GoneAnimationListener(tv_duration, visibility1))
+                    .setListener(new GoneAnimationListener(tv_currentPlayBackTime, visibility1))
                     ;
 
             rl_playback.animate()
@@ -272,22 +275,22 @@ public class RecordingSwipeAdapter
                     .setListener(new GoneAnimationListener(rl_playback, visibility1))
                     ;
 
-            tv_durationLeft.animate()
+            tv_playbackTimeLeft.animate()
                     .alpha(alpha2)
                     .setDuration(animationDuration)
                     .setInterpolator(new FastOutLinearInInterpolator())
-                    .setListener(new GoneAnimationListener(tv_durationLeft, visibility2))
+                    .setListener(new GoneAnimationListener(tv_playbackTimeLeft, visibility2))
                     .start();
 
             /*tv_currentProgress.startAnimation(animation1);
-            tv_duration.startAnimation(animation1);
+            tv_currentPlayBackTime.startAnimation(animation1);
             rl_playback.startAnimation(animation1);
-            tv_durationLeft.startAnimation(animation2);
+            tv_playbackTimeLeft.startAnimation(animation2);
 
             tv_currentProgress.setVisibility(visibility1);
-            tv_duration.setVisibility(visibility1);
+            tv_currentPlayBackTime.setVisibility(visibility1);
             rl_playback.setVisibility(visibility1);
-            tv_durationLeft.setVisibility(visibility2);*/
+            tv_playbackTimeLeft.setVisibility(visibility2);*/
         }
 
         private class GoneAnimationListener implements AnimatorListener{
@@ -315,19 +318,19 @@ public class RecordingSwipeAdapter
 
             @Override
             public void onAnimationCancel(Animator animation) {
-
+                //  empty by design
             }
 
             @Override
             public void onAnimationRepeat(Animator animation) {
-
+                //  empty by design
             }
         }
 
         public void reset(){
             sb_progress.setProgress(0);
             tv_currentProgress.setText("00:00");
-            tv_duration.setText("-" + duration);
+            tv_currentPlayBackTime.setText("-" + duration);
         }
 
         public void toggleGreyedOut(){
