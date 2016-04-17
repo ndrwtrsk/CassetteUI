@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import nd.rw.cassette.R;
+import nd.rw.cassette.app.listeners.RecordingRecyclerItemClickListener;
 import nd.rw.cassette.app.model.CassetteModel;
 import nd.rw.cassette.app.model.RecordingModel;
 import nd.rw.cassette.app.model.descriptors.CassetteModelDescriptor;
@@ -38,8 +39,6 @@ import nd.rw.cassette.app.presenter.ViewCassettePresenter;
 import nd.rw.cassette.app.utils.CassetteAndRecordingFileDeleter;
 import nd.rw.cassette.app.utils.RecordingPlayer;
 import nd.rw.cassette.app.view.DetailCassetteView;
-import nd.rw.cassette.app.listeners.RecordingRecyclerItemClickListener;
-import nd.rw.cassette.app.view.adapter.layoutmanagers.RecordingLayoutManager;
 import nd.rw.cassette.app.view.adapter.RecordingSwipeAdapter;
 import nd.rw.cassette.app.view.decoration.DividerItemDecoration;
 import nd.rw.cassette.app.view.fragment.DeleteCassetteDialogFragment;
@@ -50,7 +49,6 @@ public class DetailCassetteActivity
         DeleteCassetteDialogFragment.DeleteCassetteNoticeListener,
         RecordingSwipeAdapter.RecordingSwipeViewHolder.RecordingItemHandler,
         SeekBar.OnSeekBarChangeListener,
-        MediaPlayer.OnPreparedListener,
         MediaPlayer.OnCompletionListener {
 
     //region Fields
@@ -72,7 +70,7 @@ public class DetailCassetteActivity
     public TextView tv_numberOfRecordings;
     @Bind(R.id.cassette_details_creation_date)
     public TextView tv_creationDate;
-    @Bind(R.id.coordinator_layout)
+    @Bind(R.id.cl_layout)
     public CoordinatorLayout cl_layout;
     @Bind(R.id.rv_recordings)
     public RecyclerView rv_recordings;
@@ -142,12 +140,11 @@ public class DetailCassetteActivity
     }
 
     private void setUpRecyclerView() {
-        RecordingLayoutManager recordingLayoutManager = new RecordingLayoutManager(this);
-        this.rv_recordings.setLayoutManager(recordingLayoutManager);
         this.recordingSwipeAdapter = new RecordingSwipeAdapter(new ArrayList<>(), this);
         this.rv_recordings.setAdapter(recordingSwipeAdapter);
         this.rv_recordings.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
         this.rv_recordings.addOnItemTouchListener(new RecordingRecyclerItemClickListener(this));
+        this.rv_recordings.setNestedScrollingEnabled(false);
     }
 
     @Override
@@ -303,11 +300,6 @@ public class DetailCassetteActivity
     }
 
     @Override
-    public void onPrepared(MediaPlayer mp) {
-
-    }
-
-    @Override
     public void onCompletion(MediaPlayer mp) {
         Log.d(TAG, "onCompletion: ");
         ib_playPause.setBackgroundResource(R.drawable.ic_play_arrow_black_24dp);
@@ -320,22 +312,9 @@ public class DetailCassetteActivity
 
     //region LoadDataView Methods
 
-    /**
-     * Show an error message
-     *
-     * @param message A string representing an error.
-     */
     @Override
     public void showError(String message) {
         Snackbar.make(cl_layout, message, Snackbar.LENGTH_LONG).show();
-    }
-
-    /**
-     * Get a {@link Context}.
-     */
-    @Override
-    public Context getContext() {
-        return this;
     }
 
     //endregion LoadDataView Methods
